@@ -1,5 +1,3 @@
-import { tracingChannel } from "diagnostics_channel";
-import { eventNames } from "process";
 import React, { useEffect, useState } from "react";
 
 export default function useAuth() {
@@ -37,21 +35,6 @@ export default function useAuth() {
     action: string,
     dataInput: Record<string, string>
   ) => {
-    setError(null);
-    const inputForm =
-      action === "register"
-        ? {
-            email: null,
-            username: null,
-            password: null,
-            confirm_password: null,
-            role: null,
-          }
-        : {
-            email: null,
-            password: null,
-          };
-
     if (action === "register") {
       // Check email, username, password
       for (const key of ["email", "username", "password"]) {
@@ -61,7 +44,8 @@ export default function useAuth() {
             username: "Vui lòng nhập tên người dùng",
             password: "Vui lòng nhập mật khẩu",
           };
-          return setError(errMessage[key]);
+          setError(errMessage[key]);
+          return true;
         }
       }
 
@@ -70,24 +54,28 @@ export default function useAuth() {
         !dataInput["confirm_password"] ||
         dataInput["password"] != dataInput["confirm_password"]
       ) {
-        return setError("Mật khẩu xác nhận không khớp");
+        setError("Mật khẩu xác nhận không khớp");
+        return true;
       }
 
       // Check role
       if (!dataInput["role"]) {
-        return setError("Vui lòng chọn vai trò người dùng");
+        setError("Vui lòng chọn vai trò người dùng");
+        return true;
       }
     } else if (action === "login") {
-      for (const key in Object.keys(inputForm)) {
-        if (!dataInput[key] && ["email", "password"].includes(key)) {
+      for (const key of ["email", "username", "password"]) {
+        if (!dataInput[key]) {
           const errMessage: Record<string, string> = {
             email: "Vui lòng nhập email",
             password: "Vui lòng nhập mật khẩu",
           };
-          return setError(errMessage[key]);
+          setError(errMessage[key]);
+          return true;
         }
       }
     }
+    return false;
   };
 
   useEffect(() => {

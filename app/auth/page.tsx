@@ -55,8 +55,9 @@ export default function Auth() {
     event: React.MouseEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-    console.log("clicked login");
-    await login(fieldData, setError);
+    if (!handleMissingInput("login", fieldData)) {
+      await login(fieldData, setError);
+    }
   };
 
   const handleSubmitRegisterForm = async (
@@ -65,10 +66,11 @@ export default function Auth() {
     event.preventDefault();
     if (!acceptTerm) {
       setError("Vui lòng chấp nhận điều khoản...");
+      return;
     }
-    handleMissingInput("register", fieldData);
-    if (error) return;
-    await register(fieldData, setError);
+    if (!handleMissingInput("register", fieldData)) {
+      await register(fieldData, setError);
+    }
   };
 
   return (
@@ -159,7 +161,6 @@ export default function Auth() {
                     <input
                       type="email"
                       name="email"
-                      required
                       value={fieldData?.email || ""}
                       placeholder="Nhập địa chỉ email của bạn"
                       className="md:w-xl sm:w-lg w-screen py-2 px-3 bg-[#F6F7FB] rounded-md placeholder:font-semibold focus:outline-indigo-500"
@@ -178,7 +179,6 @@ export default function Auth() {
                         type={inputType}
                         name="password"
                         value={fieldData?.password || ""}
-                        required
                         placeholder="Nhập mật khẩu của bạn"
                         className="md:w-xl sm:w-lg w-screen py-2 px-3 bg-[#F6F7FB] rounded-md placeholder:font-semibold focus:outline-indigo-500"
                         onChange={handleInputChange}
@@ -353,14 +353,14 @@ export default function Auth() {
                     <div className="grid grid-cols-2 gap-3">
                       <div
                         id="student"
-                        className="bg-[#F6F7FB] text-center p-2 rounded-full cursor-pointer hover:bg-indigo-300 hover:text-white"
+                        className="bg-[#F6F7FB] text-center p-2 rounded-full select-none cursor-pointer hover:bg-indigo-400 hover:text-white"
                         onClick={handleRoleChoice}
                       >
                         Học sinh
                       </div>
                       <div
                         id="teacher"
-                        className="bg-[#F6F7FB] text-center p-2 rounded-full cursor-pointer hover:bg-indigo-300 hover:text-white"
+                        className="bg-[#F6F7FB] text-center p-2 rounded-full select-none cursor-pointer hover:bg-indigo-400 hover:text-white"
                         onClick={handleRoleChoice}
                       >
                         Giáo viên
