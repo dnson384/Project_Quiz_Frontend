@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import auth_theme from "../../public/auth_theme.png";
 import useAuth from "@/hooks/useAuth";
 import { login, register } from "@/api/auth";
+import { useAuthStore, useRoleStore } from "@/store/authStore";
 
 export default function Auth() {
   const {
@@ -12,10 +13,25 @@ export default function Auth() {
     setFieldData,
     setError,
     handleInputChange,
+    setRole,
     handleRoleChoice,
     handleMissingInput,
+    handleCloseAuthForm,
   } = useAuth();
-  const [isLogin, setIsLogin] = useState(true);
+
+  // Check phương thức
+  const method = useAuthStore((state) => state.authMethod);
+  const [isLogin, setIsLogin] = useState(method === "login");
+
+  // Check role
+  const role = useRoleStore((state) => state.authRole);
+  useEffect(() => {
+    setIsLogin(method === "login");
+    if (role) {
+      setRole(role);
+    }
+  }, [method, role]);
+
   const [acceptTerm, setAcceptTerm] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [inputType, setInputType] = useState("password");
@@ -112,7 +128,11 @@ export default function Auth() {
             </div>
           )}
           {/* Close btn */}
-          <div id="close_auth_form_btn" className="flex justify-end">
+          <div
+            id="close_auth_form_btn"
+            className="flex justify-end"
+            onClick={handleCloseAuthForm}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -133,14 +153,18 @@ export default function Auth() {
             <div className="flex gap-8 sm:justify-start justify-center w-full">
               <h1
                 id="register_title"
-                className="text-[1.75rem] font-bold cursor-pointer select-none text-gray-500"
+                className={`text-[1.75rem] font-bold cursor-pointer select-none ${
+                  isLogin ? "text-gray-500" : ""
+                }`}
                 onClick={handleTitleClick}
               >
                 Đăng ký
               </h1>
               <h1
                 id="login_title"
-                className="text-[1.75rem] font-bold cursor-pointer select-none"
+                className={`text-[1.75rem] font-bold cursor-pointer select-none ${
+                  isLogin ? "" : "text-gray-500"
+                }`}
                 onClick={handleTitleClick}
               >
                 Đăng nhập
@@ -353,14 +377,22 @@ export default function Auth() {
                     <div className="grid grid-cols-2 gap-3">
                       <div
                         id="student"
-                        className="bg-[#F6F7FB] text-center p-2 rounded-full select-none cursor-pointer hover:bg-indigo-400 hover:text-white"
+                        className={`text-center p-2 rounded-full select-none cursor-pointer ${
+                          fieldData?.role === "STUDENT"
+                            ? "bg-indigo-500 text-white"
+                            : "bg-[#F6F7FB] text-black hover:bg-indigo-400 hover:text-white"
+                        }`}
                         onClick={handleRoleChoice}
                       >
                         Học sinh
                       </div>
                       <div
                         id="teacher"
-                        className="bg-[#F6F7FB] text-center p-2 rounded-full select-none cursor-pointer hover:bg-indigo-400 hover:text-white"
+                        className={`text-center p-2 rounded-full select-none cursor-pointer ${
+                          fieldData?.role === "TEACHER"
+                            ? "bg-indigo-500 text-white"
+                            : "bg-[#F6F7FB] text-black hover:bg-indigo-400 hover:text-white"
+                        }`}
                         onClick={handleRoleChoice}
                       >
                         Giáo viên

@@ -1,34 +1,23 @@
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function useAuth() {
   const [fieldData, setFieldData] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFieldData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const setRole = (roleInput: string) => {
+    setFieldData((prev) => ({ ...prev, role: roleInput.toUpperCase() }));
+  };
+
   const handleRoleChoice = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement;
-    setFieldData((prev) => ({ ...prev, role: target.id.toUpperCase() }));
-    if (target.id === "student") {
-      const teacherElement = document.getElementById("teacher");
-      if (teacherElement) {
-        teacherElement.classList.add("bg-[#F6F7FB]", "text-black");
-        teacherElement.classList.remove("bg-indigo-500", "text-white");
-      }
-      target.classList.add("bg-indigo-500", "text-white");
-      target.classList.remove("bg-[#F6F7FB]", "text-black");
-    } else {
-      const studentElement = document.getElementById("student");
-      if (studentElement) {
-        studentElement.classList.add("bg-[#F6F7FB]", "text-black");
-        studentElement.classList.remove("bg-indigo-500", "text-white");
-      }
-      target.classList.add("bg-indigo-500", "text-white");
-      target.classList.remove("bg-[#F6F7FB]", "text-black");
-    }
+    setRole(target.id);
   };
 
   const handleMissingInput = (
@@ -78,6 +67,10 @@ export default function useAuth() {
     return false;
   };
 
+  const handleCloseAuthForm = () => {
+    router.push("/");
+  };
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setError(null);
@@ -91,7 +84,9 @@ export default function useAuth() {
     setFieldData,
     setError,
     handleInputChange,
+    setRole,
     handleRoleChoice,
     handleMissingInput,
+    handleCloseAuthForm,
   };
 }
