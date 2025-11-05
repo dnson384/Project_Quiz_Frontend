@@ -3,11 +3,11 @@ import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import Image from "next/image";
-import learn_default_page from "../public/learn_default_page.png";
-import flashcard_default_page from "../public/flashcard_default_page.png";
-import test_default_page from "../public/test_default_page.png";
-import card_matching_default_page from "../public/card_matching_default_page.png";
-import teacher_default_page from "../public/teacher_default_page.png";
+import learn_default_page from "../public/default_page/learn_default_page.png";
+import flashcard_default_page from "../public/default_page/flashcard_default_page.png";
+import test_default_page from "../public/default_page/test_default_page.png";
+import card_matching_default_page from "../public/default_page/card_matching_default_page.png";
+import teacher_default_page from "../public/default_page/teacher_default_page.png";
 
 import { useAuthStore, useRoleStore } from "@/store/authStore";
 
@@ -37,11 +37,11 @@ export default function Home() {
   return (
     <main className="bg-gray-100">
       {/* Nav bar */}
-      <nav className="flex justify-between items-center px-6 py-3 bg-white">
+      <nav className="flex justify-between items-center px-6 py-4 bg-white">
         {/* Menu */}
         <div id="menu" className="flex items-center gap-10">
           <h1 className="text-3xl font-bold text-indigo-500 cursor-pointer select-none">
-            Quizlet
+            Quizz
           </h1>
           <div className="flex items-center gap-1 cursor-pointer select-none">
             <h3 className="font-semibold text-sm">Công cụ học</h3>
