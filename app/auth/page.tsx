@@ -127,6 +127,7 @@ export default function Auth() {
               </div>
             </div>
           )}
+          
           {/* Close btn */}
           <div
             id="close_auth_form_btn"
@@ -380,7 +381,7 @@ export default function Auth() {
                         className={`text-center p-2 rounded-full select-none cursor-pointer ${
                           fieldData?.role === "STUDENT"
                             ? "bg-indigo-500 text-white"
-                            : "bg-[#F6F7FB] text-black hover:bg-indigo-400 hover:text-white"
+                            : "bg-[#f6f7fb] text-black hover:bg-indigo-400 hover:text-white"
                         }`}
                         onClick={handleRoleChoice}
                       >
