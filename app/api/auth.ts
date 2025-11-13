@@ -14,7 +14,7 @@ export async function login(
 
   try {
     const response = await axios.post(`${base_url}/login`, payload);
-    console.log(response.data);
+    return response.data;
   } catch (err) {
     const axiosErr = err as AxiosError<{ detail: string }>;
     console.error(axiosErr.response?.data?.detail);
