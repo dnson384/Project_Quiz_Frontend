@@ -1,24 +1,22 @@
-import { useRef, useState } from "react";
-
+"use client";
 import Image from "next/image";
 import owlAvatar from "../public/avatar_icon/owl.jpg";
 
-import { useShowFullMenu } from "@/store/dashboard";
+import useNavigationBar from "@/hooks/useHeader";
 
 export default function Header() {
-  const [isFocused, setIsFocused] = useState(false);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const showFullMenu = useShowFullMenu((state) => state.showFullMenu);
-  const setShowFullMenu = useShowFullMenu((state) => state.setShowFullMenu);
+  const {
+    isFocused,
+    keyword,
+    inputRef,
+    setIsFocused,
+    handleMenuIcon,
+    handleSearchInputFocus,
+    handleSearchInputChange,
+    handleSubmitSearchForm,
+    handleLogoClick
+  } = useNavigationBar();
 
-  const handleSearchInputFocus = () => {
-    inputRef.current?.focus();
-  };
-
-  const handleMenuIcon = () => {
-    setShowFullMenu(!showFullMenu);
-  };
-  
   return (
     <nav className="pl-4 pr-6 py-4 flex justify-between items-center">
       {/* Menu & Logo */}
@@ -29,8 +27,8 @@ export default function Header() {
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="20"
+            height="20"
             viewBox="0 0 24 24"
           >
             <g fill="none">
@@ -43,19 +41,19 @@ export default function Header() {
           </svg>
         </div>
 
-        <h1 className="text-3xl font-bold text-indigo-500 select-none cursor-pointer">
+        <h1 className="text-3xl font-bold text-indigo-500 select-none cursor-pointer" onClick={handleLogoClick}>
           Quizz
         </h1>
       </div>
 
       {/* Search bar */}
-      <div
+      <form
         id="search-container"
-        // className="w-2xl bg-[#F6F7FB] py-2 px-4 rounded-lg flex items-center gap-2"
         className={`w-2xl bg-[#F6F7FB] py-2 px-4 rounded-lg flex items-center gap-2 transition-all duration-200 border ${
           isFocused ? "border-indigo-500" : "border-transparent"
         }`}
         onClick={handleSearchInputFocus}
+        onSubmit={handleSubmitSearchForm}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -71,21 +69,24 @@ export default function Header() {
         <input
           id="search-bar"
           className="w-full focus:outline-0"
+          ref={inputRef}
           type="text"
           placeholder="Tìm thẻ ghi nhớ"
+          value={keyword || ""}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          onChange={handleSearchInputChange}
         />
-      </div>
+      </form>
 
       {/* Create course & Account */}
-      <div className="flex gap-3">
+      <div className="flex gap-3 items-center">
         {/* Create */}
-        <div className="bg-indigo-500 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer hover:bg-indigo-700">
+        <div className="bg-indigo-500 w-9 h-9 flex items-center justify-center rounded-full cursor-pointer hover:bg-indigo-700">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="18"
+            height="18"
             viewBox="0 0 256 256"
           >
             <path
@@ -100,7 +101,7 @@ export default function Header() {
           <Image
             src={owlAvatar}
             alt="avatar"
-            className="w-10 h-10  rounded-full cursor-pointer"
+            className="w-9 h-9 rounded-full cursor-pointer"
           ></Image>
         </div>
       </div>

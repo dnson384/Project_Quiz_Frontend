@@ -1,9 +1,12 @@
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function useAuth() {
   const [fieldData, setFieldData] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
   const router = useRouter();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +56,7 @@ export default function useAuth() {
         return true;
       }
     } else if (action === "login") {
-      for (const key of ["email", "username", "password"]) {
+      for (const key of ["email", "password"]) {
         if (!dataInput[key]) {
           const errMessage: Record<string, string> = {
             email: "Vui lòng nhập email",
@@ -71,12 +74,17 @@ export default function useAuth() {
     router.push("/");
   };
 
+  // Check error
   useEffect(() => {
     const timeout = setTimeout(() => {
       setError(null);
     }, 3000);
     return () => clearTimeout(timeout);
   }, [error]);
+
+  useEffect(() => {
+    axios.get("")
+  }, [])
 
   return {
     fieldData,

@@ -1,3 +1,4 @@
+"use client";
 import useSideMenu from "@/hooks/useSideMenu";
 import { useShowFullMenu } from "@/store/dashboard";
 
@@ -8,12 +9,12 @@ export default function SideMenu() {
   return (
     <div
       className={`relative pt-3 transition-all duration-1000 ease-in-out ${
-        showFullMenu ? "w-3xs" : "w-fit"
+        showFullMenu ? "w-50" : "w-fit"
       } overflow-hidden`}
     >
       <div className="sticky px-3">
         {/* Dashboard - Lib */}
-        <div className="flex flex-col gap-2 mb-6">
+        <div className="flex flex-col gap-2 mb-3">
           {/* Dashboard */}
           <div
             id="dashboard"
@@ -28,8 +29,8 @@ export default function SideMenu() {
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
             >
               <path
@@ -42,7 +43,7 @@ export default function SideMenu() {
                 selectedPage === "dashboard"
                   ? "text-indigo-500"
                   : "text-gray-700"
-              } font-bold transition-all duration-1000 whitespace-nowrap ${
+              } text-sm font-bold transition-opacity duration-1000 whitespace-nowrap ${
                 showFullMenu ? "opacity-100" : "opacity-0 w-0 overflow-hidden"
               }`}
             >
@@ -64,8 +65,8 @@ export default function SideMenu() {
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
             >
               <g
@@ -84,7 +85,7 @@ export default function SideMenu() {
             <h3
               className={`${
                 selectedPage === "my_lib" ? "text-indigo-500" : "text-gray-700"
-              } font-bold transition-all duration-1000 whitespace-nowrap ${
+              } text-sm font-bold transition-opacity duration-1000 whitespace-nowrap ${
                 showFullMenu ? "opacity-100" : "opacity-0 w-0 overflow-hidden"
               }`}
             >
@@ -92,12 +93,12 @@ export default function SideMenu() {
             </h3>
           </div>
         </div>
-        <hr />
+        <hr className="border-gray-300" />
 
         {/* Thư mục của bạn */}
-        <div className={`mt-6 flex flex-col ${showFullMenu && "gap-3"} mb-6`}>
+        <div className={`mt-3 flex flex-col ${showFullMenu && "gap-3"} mb-3`}>
           <h2
-            className={`font-bold px-3 transition-all duration-1000 ease-in-out ${
+            className={`font-bold px-3 transition-opacity duration-1000 ease-in-out ${
               showFullMenu ? "opacity-100" : "opacity-0 w-0 h-0 overflow-hidden"
             }`}
           >
@@ -116,8 +117,8 @@ export default function SideMenu() {
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
+              width="16"
+              height="16"
               viewBox="0 0 32 32"
             >
               <path
@@ -136,7 +137,7 @@ export default function SideMenu() {
                 selectedPage === "create_folder"
                   ? "text-indigo-500"
                   : "text-gray-700"
-              } font-bold transition-all duration-1000 whitespace-nowrap ${
+              } text-sm font-bold transition-opacity duration-1000 whitespace-nowrap ${
                 showFullMenu ? "opacity-100" : "opacity-0 w-0 overflow-hidden"
               }`}
             >
@@ -144,12 +145,12 @@ export default function SideMenu() {
             </h3>
           </div>
         </div>
-        <hr />
+        <hr className="border-gray-300" />
 
         {/* Bắt đầu */}
-        <div className={`mt-6 flex flex-col ${showFullMenu && "gap-3"} mb-6`}>
+        <div className={`mt-3 flex flex-col ${showFullMenu && "gap-3"} mb-3`}>
           <h2
-            className={`font-bold px-3 transition-all duration-1000 ease-in-out ${
+            className={`font-bold px-3 transition-opacity duration-1000 ease-in-out ${
               showFullMenu ? "opacity-100" : "opacity-0 w-0 h-0 overflow-hidden"
             }`}
           >
@@ -168,8 +169,8 @@ export default function SideMenu() {
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
+              width="18"
+              height="18"
               viewBox="0 0 24 24"
             >
               <path
@@ -185,8 +186,10 @@ export default function SideMenu() {
             </svg>
             <h3
               className={`${
-                selectedPage === "" ? "text-indigo-500" : "text-gray-700"
-              } font-bold transition-all duration-1000 whitespace-nowrap ${
+                selectedPage === "create_flashcard"
+                  ? "text-indigo-500"
+                  : "text-gray-700"
+              } text-sm font-bold transition-opacity duration-1000 whitespace-nowrap ${
                 showFullMenu ? "opacity-100" : "opacity-0 w-0 overflow-hidden"
               }`}
             >
