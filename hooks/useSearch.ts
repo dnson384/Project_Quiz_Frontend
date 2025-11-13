@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
-import { SearchByKeyword } from "@/app/api/search";
+import { SearchByKeyword } from "@/app/api/search/search";
 
 export default function useSearch() {
   const searchParams = useSearchParams();
