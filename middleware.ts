@@ -4,6 +4,11 @@ const PUBLIC_PATHS = ["/auth", "/search", "/"];
 
 export function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
+  const accessToken = req.cookies.get("access_token");
+
+  if (accessToken && (pathname === "/" || pathname.startsWith("/auth"))) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
 
   if (
     pathname.startsWith("/api") ||
@@ -25,11 +30,8 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const accessToken = req.cookies.get("access_token");
-
   if (!accessToken) {
-    const loginURL = new URL("/auth", req.url);
-    return NextResponse.redirect(loginURL);
+    return NextResponse.redirect(new URL("/auth", req.url));
   }
 
   return NextResponse.next();

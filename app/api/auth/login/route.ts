@@ -10,9 +10,9 @@ export async function POST(req: NextRequest) {
 
     const response = await axios.post(REAL_BACKEND_URL, payload);
 
-    const { token, user } = response.data;
+    const { access_token, refresh_token, user } = response.data;
 
-    if (!token) {
+    if (!access_token || !refresh_token) {
       return NextResponse.json(
         { detail: "Không nhận được token từ máy chủ backend" },
         { status: 500 }
@@ -21,11 +21,18 @@ export async function POST(req: NextRequest) {
 
     const nextResponse = NextResponse.json({ user: user });
 
-    nextResponse.cookies.set("access_token", token, {
+    nextResponse.cookies.set("access_token", access_token, {
       httpOnly: true,
       path: "/",
       sameSite: "strict",
       maxAge: 15 * 60,
+    });
+
+    nextResponse.cookies.set("refresh_token", refresh_token, {
+      httpOnly: true,
+      path: "/",
+      sameSite: "strict",
+      maxAge: 30 * 24 * 60 * 60,
     });
 
     return nextResponse;

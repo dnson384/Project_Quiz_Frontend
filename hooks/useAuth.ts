@@ -1,11 +1,12 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { login, register } from "@/services/auth";
 
 export default function useAuth() {
   const [fieldData, setFieldData] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [acceptTerm, setAcceptTerm] = useState(false);
 
   const router = useRouter();
 
@@ -79,6 +80,38 @@ export default function useAuth() {
     router.push("/");
   };
 
+  const handleSubmitLoginForm = async (
+    event: React.MouseEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+    console.log(handleMissingInput("login", fieldData));
+    if (!handleMissingInput("login", fieldData)) {
+      try {
+        await login(fieldData, setError);
+        router.push("/dashboard");
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
+
+  const handleSubmitRegisterForm = async (
+    event: React.MouseEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+    if (!acceptTerm) {
+      setError("Vui lòng chấp nhận điều khoản...");
+      return;
+    }
+    if (!handleMissingInput("register", fieldData)) {
+      await register(fieldData, setError);
+    }
+  };
+
+  const handleAcceptTermChange = () => {
+    setAcceptTerm(!acceptTerm);
+  };
+
   // Check error
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -90,12 +123,15 @@ export default function useAuth() {
   return {
     fieldData,
     error,
+    acceptTerm,
     setFieldData,
     setError,
     handleInputChange,
     setRole,
     handleRoleChoice,
-    handleMissingInput,
     handleCloseAuthForm,
+    handleSubmitLoginForm,
+    handleSubmitRegisterForm,
+    handleAcceptTermChange,
   };
 }
