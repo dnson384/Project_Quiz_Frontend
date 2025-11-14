@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
-import { SearchByKeyword } from "@/app/api/search/search";
+import { search } from "@/services/search";
 
 export default function useSearch() {
   const searchParams = useSearchParams();
@@ -17,6 +17,8 @@ export default function useSearch() {
 
   useEffect(() => {
     setNotification(null);
+    setPracticeTests([]);
+    setCourses([]);
 
     const fetchSearchResult = async () => {
       if (!keyword || !type) return;
@@ -26,21 +28,21 @@ export default function useSearch() {
         let cursor_id = "";
         switch (type) {
           case "all":
-            result = await SearchByKeyword(keyword, type);
+            result = await search(keyword, type);
             break;
           case "courses":
             cursor_id =
               courses.length > 0
                 ? courses[courses.length - 1]["course_id"]
                 : null;
-            result = await SearchByKeyword(keyword, type, cursor_id);
+            result = await search(keyword, type, cursor_id);
             break;
           case "practice_tests":
             cursor_id =
               practiceTests.length > 0
                 ? practiceTests[practiceTests.length - 1]["practice_test_id"]
                 : null;
-            result = await SearchByKeyword(keyword, type, cursor_id);
+            result = await search(keyword, type, cursor_id);
             break;
         }
 
@@ -51,7 +53,7 @@ export default function useSearch() {
       }
     };
     fetchSearchResult();
-  }, [type]);
+  }, [keyword, type]);
 
   const HandlerShowResult = (
     event: React.MouseEvent<HTMLHeadingElement>,
@@ -83,7 +85,7 @@ export default function useSearch() {
     }
 
     try {
-      const response = await SearchByKeyword(keyword, type, cursor_id);
+      const response = await search(keyword, type, cursor_id);
 
       if (
         (response.courses.length == 0 && type === "courses") ||

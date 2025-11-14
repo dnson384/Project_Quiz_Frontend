@@ -71,7 +71,9 @@ export default function Auth() {
     event: React.MouseEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
+    console.log(handleMissingInput("login", fieldData))
     if (!handleMissingInput("login", fieldData)) {
+      console.log("run")
       await login(fieldData, setError);
     }
   };

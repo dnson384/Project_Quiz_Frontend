@@ -1,5 +1,4 @@
-import { AxiosError } from "axios";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
 const REAL_BACKEND_URL = "http://127.0.0.1:8000/api/auth/register";

@@ -14,7 +14,7 @@ export default function Header() {
     handleSearchInputFocus,
     handleSearchInputChange,
     handleSubmitSearchForm,
-    handleLogoClick
+    handleLogoClick,
   } = useNavigationBar();
 
   return (
@@ -41,7 +41,10 @@ export default function Header() {
           </svg>
         </div>
 
-        <h1 className="text-3xl font-bold text-indigo-500 select-none cursor-pointer" onClick={handleLogoClick}>
+        <h1
+          className="text-3xl font-bold text-indigo-500 select-none cursor-pointer"
+          onClick={handleLogoClick}
+        >
           Quizz
         </h1>
       </div>

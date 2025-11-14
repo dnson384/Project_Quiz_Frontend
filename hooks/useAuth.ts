@@ -64,6 +64,11 @@ export default function useAuth() {
           };
           setError(errMessage[key]);
           return true;
+        } else if (key === "password") {
+          if (dataInput[key].length < 8 || dataInput[key].length > 64) {
+            setError("Độ dài mật khẩu không hợp lệ");
+            return true;
+          }
         }
       }
     }
@@ -81,10 +86,6 @@ export default function useAuth() {
     }, 3000);
     return () => clearTimeout(timeout);
   }, [error]);
-
-  useEffect(() => {
-    axios.get("")
-  }, [])
 
   return {
     fieldData,
