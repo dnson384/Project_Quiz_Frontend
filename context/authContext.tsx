@@ -10,11 +10,11 @@ interface User {
   username: string;
   email: string;
   role: string;
+  avatar_url: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  isLoading: boolean;
   error: AxiosError | null;
 }
 
@@ -44,11 +44,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   const swrKey = isPublicPath ? null : "/api/user/me";
 
-  const {
-    data: user,
-    error,
-    isLoading,
-  } = useSWR<User, AxiosError>(swrKey, fetcher, {
+  const { data: user, error } = useSWR<User, AxiosError>(swrKey, fetcher, {
     revalidateOnFocus: false, // tránh gọi API liên tục khi đổi tab)
     shouldRetryOnError: false, // nếu lỗi 401, không thử lại
     revalidateIfStale: false,
@@ -64,7 +60,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         user: user || null,
-        isLoading: isLoading,
         error: error || null,
       }}
     >

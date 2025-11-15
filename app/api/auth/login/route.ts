@@ -2,13 +2,14 @@ import { AxiosError } from "axios";
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
-const REAL_BACKEND_URL = "http://127.0.0.1:8000/api/auth/login";
+const REAL_BACKEND_URL_API_LOGIN =
+  `${process.env.NEXT_PUBLIC_BACKEND_URL_API}/auth/login` || "";
 
 export async function POST(req: NextRequest) {
   try {
     const payload = await req.json();
 
-    const response = await axios.post(REAL_BACKEND_URL, payload);
+    const response = await axios.post(REAL_BACKEND_URL_API_LOGIN, payload);
 
     const { access_token, refresh_token, user } = response.data;
 

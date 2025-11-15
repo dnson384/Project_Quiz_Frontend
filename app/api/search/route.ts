@@ -1,13 +1,14 @@
 import axios, { AxiosError } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
-const REAL_BACKEND_URL = "http://127.0.0.1:8000/api/search";
+const REAL_BACKEND_URL_API_SEARCH =
+  `${process.env.NEXT_PUBLIC_BACKEND_URL_API}/search` || "";
 
 export async function GET(req: NextRequest) {
   try {
     const params = req.nextUrl.searchParams;
 
-    const resposne = await axios.get(REAL_BACKEND_URL, {
+    const resposne = await axios.get(REAL_BACKEND_URL_API_SEARCH, {
       params: {
         keyword: params.get("keyword"),
         type: params.get("type"),
