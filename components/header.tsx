@@ -1,8 +1,11 @@
 "use client";
 import Image from "next/image";
-import owlAvatar from "../public/avatar_icon/owl.jpg";
+
+import owlAva from "../public/avatar_icon/owl.jpg";
+import okAva from "../public/avatar_icon/ok.jpg";
 
 import useNavigationBar from "@/hooks/useHeader";
+import { useAuth } from "@/context/authContext";
 
 export default function Header() {
   const {
@@ -14,8 +17,10 @@ export default function Header() {
     handleSearchInputFocus,
     handleSearchInputChange,
     handleSubmitSearchForm,
-    handleLogoClick
+    handleLogoClick,
   } = useNavigationBar();
+
+  const { user } = useAuth();
 
   return (
     <nav className="pl-4 pr-6 py-4 flex justify-between items-center">
@@ -41,7 +46,10 @@ export default function Header() {
           </svg>
         </div>
 
-        <h1 className="text-3xl font-bold text-indigo-500 select-none cursor-pointer" onClick={handleLogoClick}>
+        <h1
+          className="text-3xl font-bold text-indigo-500 select-none cursor-pointer"
+          onClick={handleLogoClick}
+        >
           Quizz
         </h1>
       </div>
@@ -97,13 +105,19 @@ export default function Header() {
         </div>
 
         {/* Accout */}
-        <div>
-          <Image
-            src={owlAvatar}
-            alt="avatar"
-            className="w-9 h-9 rounded-full cursor-pointer"
-          ></Image>
-        </div>
+        {user ? (
+          <div>
+            <Image
+              src={`/api/images${user.avatar_url}`}
+              alt={user.username || "user avatar"}
+              width={36}
+              height={36}
+              className="w-9 h-9 rounded-full cursor-pointer"
+            ></Image>
+          </div>
+        ) : (
+          <div className="w-9 h-9 rounded-full cursor-pointer bg-gray-300"></div>
+        )}
       </div>
     </nav>
   );

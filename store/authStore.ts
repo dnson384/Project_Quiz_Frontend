@@ -6,7 +6,7 @@ interface authState {
 }
 
 export const useAuthStore = create<authState>((set) => ({
-  authMethod: "register",
+  authMethod: "login",
   setAuthMethod: (method: string) => set({ authMethod: method }),
 }));
 

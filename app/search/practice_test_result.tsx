@@ -19,7 +19,7 @@ export default function PracticeTestResult({
               <PracticeTestCard
                 key={practiceTest.practice_test_id}
                 practiceTestName={practiceTest.practice_test_name}
-                authorName={practiceTest.username}
+                authorName={practiceTest.author_username}
               />
             ))}
           </div>

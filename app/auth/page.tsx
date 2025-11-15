@@ -3,20 +3,21 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import auth_theme from "../../public/auth_theme.png";
 import useAuth from "@/hooks/useAuth";
-import { login, register } from "@/app/api/auth";
 import { useAuthStore, useRoleStore } from "@/store/authStore";
 
 export default function Auth() {
   const {
     fieldData,
     error,
+    acceptTerm,
     setFieldData,
-    setError,
     handleInputChange,
     setRole,
     handleRoleChoice,
-    handleMissingInput,
     handleCloseAuthForm,
+    handleSubmitLoginForm,
+    handleSubmitRegisterForm,
+    handleAcceptTermChange,
   } = useAuth();
 
   // Check phương thức
@@ -32,7 +33,6 @@ export default function Auth() {
     }
   }, [method, role]);
 
-  const [acceptTerm, setAcceptTerm] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [inputType, setInputType] = useState("password");
 
@@ -60,32 +60,6 @@ export default function Auth() {
     } else {
       setShowPassword(!showPassword);
       setInputType("password");
-    }
-  };
-
-  const handleAcceptTermChange = () => {
-    setAcceptTerm(!acceptTerm);
-  };
-
-  const handleSubmitLoginForm = async (
-    event: React.MouseEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
-    if (!handleMissingInput("login", fieldData)) {
-      await login(fieldData, setError);
-    }
-  };
-
-  const handleSubmitRegisterForm = async (
-    event: React.MouseEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
-    if (!acceptTerm) {
-      setError("Vui lòng chấp nhận điều khoản...");
-      return;
-    }
-    if (!handleMissingInput("register", fieldData)) {
-      await register(fieldData, setError);
     }
   };
 

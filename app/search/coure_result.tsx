@@ -23,8 +23,8 @@ export default function CourseResult({
                 key={course.course_id}
                 courseName={course.course_name}
                 termCount={course.num_of_terms}
-                authorName={course.username}
-                authorRole={course.role}
+                authorName={course.author_username}
+                authorRole={course.author_role}
               />
             ))}
           </div>

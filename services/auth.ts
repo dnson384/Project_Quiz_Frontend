@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import axios from "axios";
 
-const base_url = "http://127.0.0.1:8000/api/auth";
+const base_url = "/api/auth";
 
 export async function login(
   fieldData: Record<string, string>,
