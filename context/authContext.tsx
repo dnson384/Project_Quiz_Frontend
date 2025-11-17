@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, ReactNode, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  ReactNode,
+  useEffect,
+  useState,
+} from "react";
 import { useRouter, usePathname } from "next/navigation";
 import useSWR from "swr";
 import axios, { AxiosError } from "axios";
@@ -31,9 +37,21 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const PUBLIC_PATHS = ["/auth", "/search", "/"];
 
+const refreshAccessToken = async (): Promise<boolean> => {
+  try {
+    await axios.post("/api/auth/refresh");
+    return true;
+  } catch (error) {
+    console.error("Refresh token failed", error);
+    return false;
+  }
+};
+
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
+
+  const [sendRefresh, setSendRefresh] = useState<boolean>(false);
 
   const isPublicPath = PUBLIC_PATHS.some((path) => {
     if (path === "/") {
@@ -44,17 +62,44 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   const swrKey = isPublicPath ? null : "/api/user/me";
 
-  const { data: user, error } = useSWR<User, AxiosError>(swrKey, fetcher, {
+  const {
+    data: user,
+    error,
+    mutate,
+  } = useSWR<User, AxiosError>(swrKey, fetcher, {
     revalidateOnFocus: false, // tránh gọi API liên tục khi đổi tab)
     shouldRetryOnError: false, // nếu lỗi 401, không thử lại
     revalidateIfStale: false,
   });
 
   useEffect(() => {
-    if (error?.response?.status === 401) {
-      router.push("/auth");
+    if (error?.response?.status === 401 && !sendRefresh) {
+      setSendRefresh(true);
+
+      const handleRefresh = async () => {
+        const success = await refreshAccessToken();
+
+        if (success) {
+          console.log("Refresh successful, retrying fetch...");
+          try {
+            await mutate();
+            setSendRefresh(false);
+          } catch (mutateError) {
+            console.error(
+              "Mutate failed after refresh, redirecting.",
+              mutateError
+            );
+            router.push("/auth");
+          }
+        } else {
+          console.log("Refresh failed, redirecting to auth.");
+          router.push("/auth");
+        }
+      };
+
+      handleRefresh();
     }
-  }, [error, router]);
+  }, [error, router, sendRefresh, mutate]);
 
   return (
     <AuthContext.Provider

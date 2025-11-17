@@ -1,13 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 const REAL_BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
 
-// Đảm bảo "async" có ở đây
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ slug: string[] }> }
-) {
+export async function GET({ params }: { params: Promise<{ slug: string[] }> }) {
   try {
     const slug = (await params).slug.join("/");
 

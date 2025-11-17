@@ -8,14 +8,14 @@ export async function GET(req: NextRequest) {
   try {
     const params = req.nextUrl.searchParams;
 
-    const resposne = await axios.get(REAL_BACKEND_URL_API_SEARCH, {
+    const response = await axios.get(REAL_BACKEND_URL_API_SEARCH, {
       params: {
         keyword: params.get("keyword"),
         type: params.get("type"),
         cursor_id: params.get("cursor_id"),
       },
     });
-    return NextResponse.json(resposne.data, { status: 200 });
+    return NextResponse.json(response.data, { status: 200 });
   } catch (err: unknown) {
     const axiosErr = err as AxiosError<{ detail: string }>;
     const stateCode = axiosErr.response?.status || 500;
