@@ -14,8 +14,6 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    console.log(accessToken)
-
     const response = await axios.get(REAL_BACKEND_URL_API_ME, {
       withCredentials: true,
       headers: {
