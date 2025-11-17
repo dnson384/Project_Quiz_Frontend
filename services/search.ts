@@ -1,4 +1,3 @@
-import { login } from "@/services/auth";
 import axios, { AxiosError } from "axios";
 
 const base_url = "/api/search";

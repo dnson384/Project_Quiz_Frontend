@@ -32,12 +32,14 @@ export default function CourseResult({
             {notification ? (
               <p className="font-medium">{notification}</p>
             ) : (
-              <button
-                className="font-medium bg-indigo-50 w-fit py-3 px-6 rounded-xl cursor-pointer hover:bg-indigo-500 hover:text-white"
-                onClick={() => handleLoadMoreResults()}
-              >
-                Tải thêm
-              </button>
+              courses.length > 12 && (
+                <button
+                  className="font-medium bg-indigo-50 w-fit py-3 px-6 rounded-xl cursor-pointer hover:bg-indigo-500 hover:text-white"
+                  onClick={() => handleLoadMoreResults()}
+                >
+                  Tải thêm
+                </button>
+              )
             )}
           </div>
         </div>
