@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+body{
+  background: #F9FAFB;
+}
+
 /* Brand Primary */
 /* 100 */
 .text-brand-primary-100 {

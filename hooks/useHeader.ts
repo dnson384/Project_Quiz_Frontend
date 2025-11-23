@@ -1,9 +1,12 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { useShowFullMenu } from "@/store/dashboard";
 
 export default function useNavigationBar() {
+  const pathname = usePathname();
+  const router = useRouter();
+
   const [isFocused, setIsFocused] = useState(false);
   const [keyword, setKeyword] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -11,12 +14,17 @@ export default function useNavigationBar() {
   const showFullMenu = useShowFullMenu((state) => state.showFullMenu);
   const setShowFullMenu = useShowFullMenu((state) => state.setShowFullMenu);
 
-  const pathname = usePathname();
-  const router = useRouter();
-
   const handleSearchInputFocus = () => {
     inputRef.current?.focus();
   };
+
+  useEffect(() => {
+    if (pathname === "/dashboard") {
+      setShowFullMenu(true);
+    } else {
+      setShowFullMenu(false);
+    }
+  }, [pathname]);
 
   const handleMenuIcon = () => {
     setShowFullMenu(!showFullMenu);

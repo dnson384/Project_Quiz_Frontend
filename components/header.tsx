@@ -1,9 +1,6 @@
 "use client";
 import Image from "next/image";
 
-import owlAva from "../public/avatar_icon/owl.jpg";
-import okAva from "../public/avatar_icon/ok.jpg";
-
 import useNavigationBar from "@/hooks/useHeader";
 import { useAuth } from "@/context/authContext";
 

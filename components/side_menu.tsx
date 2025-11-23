@@ -8,7 +8,7 @@ export default function SideMenu() {
 
   return (
     <div
-      className={`relative pt-3 transition-all duration-1000 ease-in-out ${
+      className={`relative mt-3 transition-all duration-1000 ease-in-out ${
         showFullMenu ? "w-50" : "w-fit"
       } overflow-hidden`}
     >

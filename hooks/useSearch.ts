@@ -20,39 +20,28 @@ export default function useSearch() {
     setPracticeTests([]);
     setCourses([]);
 
+    if (!keyword || !type) return;
+
+    let isMounted = true;
+
     const fetchSearchResult = async () => {
-      if (!keyword || !type) return;
-
       try {
-        let result = { courses: [], practice_tests: [] };
-        let cursor_id = "";
-        switch (type) {
-          case "all":
-            result = await search(keyword, type);
-            break;
-          case "courses":
-            cursor_id =
-              courses.length > 0
-                ? courses[courses.length - 1]["course_id"]
-                : null;
-            result = await search(keyword, type, cursor_id);
-            break;
-          case "practice_tests":
-            cursor_id =
-              practiceTests.length > 0
-                ? practiceTests[practiceTests.length - 1]["practice_test_id"]
-                : null;
-            result = await search(keyword, type, cursor_id);
-            break;
-        }
+        let cursor_id = null;
+        const result = await search(keyword, type, cursor_id);
 
-        setCourses((prev) => [...prev, ...result.courses]);
-        setPracticeTests((prev) => [...prev, ...result.practice_tests]);
+        if (isMounted) {
+          setCourses(result.courses);
+          setPracticeTests(result.practice_tests);
+        }
       } catch (err) {
         console.error("Lỗi khi tìm kiếm:", err);
       }
     };
     fetchSearchResult();
+
+    return () => {
+      isMounted = false;
+    };
   }, [keyword, type]);
 
   const HandlerShowResult = (
@@ -61,11 +50,7 @@ export default function useSearch() {
   ) => {
     const target = event.target as HTMLElement;
     const newType = target.id;
-
     if (type === newType) return;
-
-    setPracticeTests([]);
-    setCourses([]);
 
     const newUrl = `${pathname}?keyword=${keyword}&type=${newType}`;
     router.push(newUrl);
@@ -77,10 +62,14 @@ export default function useSearch() {
     let cursor_id = null;
     switch (type) {
       case "courses":
-        cursor_id = courses[courses.length - 1]["course_id"];
+        cursor_id =
+          courses.length > 0 ? courses[courses.length - 1]["course_id"] : null;
         break;
       case "practice_tests":
-        cursor_id = practiceTests[practiceTests.length - 1]["practice_test_id"];
+        cursor_id =
+          practiceTests.length > 0
+            ? practiceTests[practiceTests.length - 1]["practice_test_id"]
+            : null;
         break;
     }
 

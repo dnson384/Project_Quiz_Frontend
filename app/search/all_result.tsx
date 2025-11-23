@@ -13,6 +13,7 @@ export default function AllResult({
   practiceTests,
   handleViewAllResult,
 }: AllResultData) {
+  console.log(courses)
   return (
     <>
       {/* Học phần */}
@@ -20,7 +21,7 @@ export default function AllResult({
         <div>
           <div className="flex justify-between items-center mb-5">
             <h3 className="font-bold">Học phần</h3>
-            {courses.length > 6 && (
+            {courses.length >= 6 && (
               <h3
                 className="text-indigo-500 font-bold cursor-pointer hover:text-indigo-700"
                 onClick={() => handleViewAllResult("courses")}
@@ -33,6 +34,7 @@ export default function AllResult({
             {courses.slice(0, 6).map((course) => (
               <CourseCard
                 key={course.course_id}
+                courseId={course.course_id}
                 courseName={course.course_name}
                 termCount={course.num_of_terms}
                 authorName={course.author_username}
