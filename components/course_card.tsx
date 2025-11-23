@@ -1,8 +1,10 @@
 "use client";
 import Image from "next/image";
 import owlAvatar from "../public/avatar_icon/owl.jpg";
+import useCourseCard from "@/hooks/useCourseCard";
 
 interface CourseData {
+  courseId: string;
   courseName: string;
   termCount: number;
   authorName: string;
@@ -10,11 +12,14 @@ interface CourseData {
 }
 
 export default function CourseCard({
+  courseId,
   courseName,
   termCount,
   authorName,
   authorRole,
 }: CourseData) {
+  const { handleCardClick } = useCourseCard();
+
   let role = authorRole;
   switch (authorName) {
     case "ADMIN":
@@ -29,7 +34,11 @@ export default function CourseCard({
   }
 
   return (
-    <main className="border border-gray-300 p-5 rounded-xl w-xs cursor-pointer hover:shadow-md shadow-indigo-300">
+    <main
+      className="border border-gray-300 p-5 rounded-xl w-xs cursor-pointer hover:shadow-md shadow-indigo-300"
+      onClick={() => handleCardClick(courseId, courseName)}
+    >
+      {/* Thông tin học phân */}
       <div className="flex flex-col gap-3 mb-8">
         {/* Tên học phần */}
         <h2 className="font-bold hover:text-indigo-700">{courseName}</h2>
