@@ -11,7 +11,12 @@ import useFlashcard from "@/hooks/useFlashcard";
 import { useEffect } from "react";
 
 export default function CourseDetail() {
-  const { courseDetail } = useCourseDetail();
+  const {
+    courseDetail,
+    handleLearnFlashcardClick,
+    handleLearnClick,
+    handleTestClick,
+  } = useCourseDetail();
   const course = courseDetail?.course;
   const detail = courseDetail?.course_detail;
 
@@ -70,7 +75,12 @@ export default function CourseDetail() {
               {/* Các tính năng học */}
               <article className="grid grid-cols-3 gap-3">
                 {/* Flashcard */}
-                <div className="bg-gray-100 flex gap-2 items-center justify-center py-3 rounded-lg cursor-pointer select-none hover:shadow-md hover:bg-indigo-50 hover:shadow-indigo-400">
+                <div
+                  className="bg-gray-100 flex gap-2 items-center justify-center py-3 rounded-lg cursor-pointer select-none hover:shadow-md hover:bg-indigo-50 hover:shadow-indigo-400"
+                  onClick={() =>
+                    handleLearnFlashcardClick(course.course_id, currentTerm)
+                  }
+                >
                   <svg
                     width="30"
                     height="24"
@@ -96,7 +106,10 @@ export default function CourseDetail() {
                   <h3 className=" font-semibold">Thẻ ghi nhớ</h3>
                 </div>
                 {/* Học */}
-                <div className="bg-gray-100 flex gap-2 items-center justify-center py-3 rounded-lg cursor-pointer select-none hover:shadow-md hover:bg-indigo-50 hover:shadow-indigo-400">
+                <div
+                  className="bg-gray-100 flex gap-2 items-center justify-center py-3 rounded-lg cursor-pointer select-none hover:shadow-md hover:bg-indigo-50 hover:shadow-indigo-400"
+                  onClick={() => handleLearnClick(course.course_id)}
+                >
                   <svg
                     width="26"
                     height="26"
@@ -156,7 +169,10 @@ export default function CourseDetail() {
                   <h3 className=" font-semibold">Học</h3>
                 </div>
                 {/* Kiểm tra */}
-                <div className="bg-gray-100 flex gap-2 items-center justify-center py-3 rounded-lg cursor-pointer select-none hover:shadow-md hover:bg-indigo-50 hover:shadow-indigo-400">
+                <div
+                  className="bg-gray-100 flex gap-2 items-center justify-center py-3 rounded-lg cursor-pointer select-none hover:shadow-md hover:bg-indigo-50 hover:shadow-indigo-400"
+                  onClick={() => handleTestClick(course.course_id)}
+                >
                   <svg
                     width="20"
                     height="25"
@@ -255,7 +271,11 @@ export default function CourseDetail() {
                 {detail &&
                   detail.length > 0 &&
                   detail.map((item) => (
-                    <TermCard term={item.term} definition={item.definition} />
+                    <TermCard
+                      key={item.course_detail_id}
+                      term={item.term}
+                      definition={item.definition}
+                    />
                   ))}
               </article>
             </section>

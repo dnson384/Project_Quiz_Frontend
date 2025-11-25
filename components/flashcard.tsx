@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 interface FlashcardData {
   term: string;
@@ -53,11 +54,16 @@ export default function Flashcard({
 }: FlashcardData) {
   const termLatin = isLatinText(term);
   const definitionLatin = isLatinText(definition);
+  const pathname = usePathname();
 
   return (
     <section className="flex flex-col gap-3">
       {/* Flashcard */}
-      <div className="h-[450px] w-full relative group cursor-pointer perspective-[1000px] overflow-visible">
+      <div
+        className={`${
+          pathname.includes("/flashcard") ? "h-180" : "h-[450px]"
+        } w-full relative group cursor-pointer perspective-[1000px] overflow-visible`}
+      >
         <AnimatePresence initial={false} custom={direction} mode="popLayout">
           <motion.div
             key={currentTerm}
@@ -80,7 +86,7 @@ export default function Flashcard({
               onClick={handleFlashcardClick}
             >
               {/* Term */}
-              <div className="absolute inset-0 flex items-center justify-center rounded-xl p-5 text-center shadow-[0_0_20px_rgb(0,0,0,0.1)] backface-hidden">
+              <div className="absolute bg-white inset-0 flex items-center justify-center rounded-xl p-5 text-center shadow-[0_0_20px_rgb(0,0,0,0.1)] backface-hidden">
                 <p
                   className={`${
                     termLatin
@@ -112,7 +118,7 @@ export default function Flashcard({
               </div>
 
               {/* Definition */}
-              <div className="absolute inset-0 flex items-center justify-center rounded-xl p-5 text-center shadow-[0_0_20px_rgba(0,0,0,0.1)] backface-hidden transform-[rotateX(180deg)]">
+              <div className="absolute bg-white inset-0 flex items-center justify-center rounded-xl p-5 text-center shadow-[0_0_20px_rgba(0,0,0,0.1)] backface-hidden transform-[rotateX(180deg)]">
                 <p
                   className={`${
                     definitionLatin
@@ -173,9 +179,11 @@ export default function Flashcard({
           </svg>
         </div>
 
-        <p className="text-lg font-bold text-gray-500">
-          {currentTerm} / {num_of_terms}
-        </p>
+        {pathname !== "/flashcard" && (
+          <p className="text-lg font-bold text-gray-500">
+            {currentTerm} / {num_of_terms}
+          </p>
+        )}
 
         {/* Arrow forward */}
         <div
