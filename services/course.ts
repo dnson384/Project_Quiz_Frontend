@@ -25,3 +25,17 @@ export async function getCourseDetail(courseId: string) {
     console.error(axiosErr.response?.data.detail);
   }
 }
+
+export async function getCourseLearnQuestions(courseId: string) {
+  try {
+    const response = await axios.get(`${base_url}/learn`, {
+      params: {
+        course_id: courseId,
+      },
+    });
+    return response.data;
+  } catch (err) {
+    const axiosErr = err as AxiosError<{ detail: string }>;
+    console.error(axiosErr.response?.data.detail);
+  }
+}

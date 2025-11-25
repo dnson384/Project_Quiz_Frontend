@@ -4,24 +4,20 @@ export default function useCourseCard() {
   const router = useRouter();
 
   const handleCardClick = (courseId: string, courseName: string) => {
-    try {
-      const courseNameArr = courseName
-        .replace(/[^a-zA-z0-1\s]/g, "")
-        .split(" ");
+    const courseNameArr = courseName.replace(/[^a-zA-z0-1\s]/g, "").split(" ");
 
-      // Tạo slug URL
-      let slugArr: Array<any> = [];
-      courseNameArr.forEach((word: string) => {
-        if (word) {
-          slugArr.push(word);
-        }
-      });
-      const slug = slugArr.join("-");
+    // Tạo slug URL
+    let slugArr: Array<any> = [];
+    courseNameArr.forEach((word: string) => {
+      if (word) {
+        slugArr.push(word);
+      }
+    });
+    const slug = slugArr.join("-");
 
-      // Điều hướng sang xem chi tiết học phần
-      const newPathname = `course/${slug}?uuid=${courseId}`;
-      router.push(newPathname);
-    } catch (err) {}
+    // Điều hướng sang xem chi tiết học phần
+    const newPathname = `course/${slug}?uuid=${courseId}`;
+    router.push(newPathname);
   };
 
   return { handleCardClick };
