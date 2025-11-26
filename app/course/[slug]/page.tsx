@@ -7,16 +7,11 @@ import Flashcard from "@/components/flashcard";
 import TermCard from "@/components/term_card";
 
 import useCourseDetail from "@/hooks/useCourseDetail";
-import useFlashcard from "@/hooks/useFlashcard";
+import useFlashcard from "@/hooks/useCourseFlashcard";
 import { useEffect } from "react";
 
 export default function CourseDetail() {
-  const {
-    courseDetail,
-    handleLearnFlashcardClick,
-    handleLearnClick,
-    handleTestClick,
-  } = useCourseDetail();
+  const { courseDetail, handleLearnOptionClick } = useCourseDetail();
   const course = courseDetail?.course;
   const detail = courseDetail?.course_detail;
 
@@ -76,9 +71,9 @@ export default function CourseDetail() {
               <article className="grid grid-cols-3 gap-3">
                 {/* Flashcard */}
                 <div
-                  className="bg-gray-100 flex gap-2 items-center justify-center py-3 rounded-lg cursor-pointer select-none hover:shadow-md hover:bg-indigo-50 hover:shadow-indigo-400"
+                  className="bg-gray-50 shadow-sm flex gap-2 items-center justify-center py-3 rounded-lg cursor-pointer select-none hover:shadow-md hover:bg-white hover:shadow-indigo-400"
                   onClick={() =>
-                    handleLearnFlashcardClick(course.course_id, currentTerm)
+                    handleLearnOptionClick("flashcard", course.course_id)
                   }
                 >
                   <svg
@@ -107,8 +102,10 @@ export default function CourseDetail() {
                 </div>
                 {/* Học */}
                 <div
-                  className="bg-gray-100 flex gap-2 items-center justify-center py-3 rounded-lg cursor-pointer select-none hover:shadow-md hover:bg-indigo-50 hover:shadow-indigo-400"
-                  onClick={() => handleLearnClick(course.course_id)}
+                  className="bg-gray-50 shadow-sm flex gap-2 items-center justify-center py-3 rounded-lg cursor-pointer select-none hover:shadow-md hover:bg-white hover:shadow-indigo-400"
+                  onClick={() =>
+                    handleLearnOptionClick("learn", course.course_id)
+                  }
                 >
                   <svg
                     width="26"
@@ -170,8 +167,10 @@ export default function CourseDetail() {
                 </div>
                 {/* Kiểm tra */}
                 <div
-                  className="bg-gray-100 flex gap-2 items-center justify-center py-3 rounded-lg cursor-pointer select-none hover:shadow-md hover:bg-indigo-50 hover:shadow-indigo-400"
-                  onClick={() => handleTestClick(course.course_id)}
+                  className="bg-gray-50 shadow-sm flex gap-2 items-center justify-center py-3 rounded-lg cursor-pointer select-none hover:shadow-md hover:bg-white hover:shadow-indigo-400"
+                  onClick={() =>
+                    handleLearnOptionClick("test", course.course_id)
+                  }
                 >
                   <svg
                     width="20"

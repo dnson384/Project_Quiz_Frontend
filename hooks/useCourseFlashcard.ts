@@ -2,7 +2,28 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import useCourseDetail from "./useCourseDetail";
+
+interface CourseData {
+  course_id: string;
+  course_name: string;
+  author_avatar_url: string;
+  author_username: string;
+  author_role: string;
+  num_of_terms: number;
+}
+
+interface DetailData {
+  course_detail_id: string;
+  term: string;
+  definition: string;
+}
+
 export default function useFlashcard() {
+  const { courseDetail } = useCourseDetail();
+  const [course, setCourse] = useState<CourseData | null>(null);
+  const [detail, setDetail] = useState<DetailData[] | null>(null);
+
   const [currentTerm, setCurrentTerm] = useState<number>(1);
   const [canBack, setCanBack] = useState<boolean>(false);
   const [canForward, setCanForward] = useState<boolean>(true);
@@ -10,6 +31,7 @@ export default function useFlashcard() {
   const [rotateX, setRotateX] = useState<number>(0);
   const [numOfTerms, setNumOfTerms] = useState<number>(0);
   const [direction, setDirection] = useState<number>(0);
+  const [noti, setNoti] = useState<string | null>(null);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -45,13 +67,6 @@ export default function useFlashcard() {
     return latinRegex.test(text);
   };
 
-  useEffect(() => {
-    const currentTerm = Number(searchParams.get("currentTerm"));
-    if (currentTerm) {
-      setCurrentTerm(currentTerm);
-    }
-  }, []);
-
   const handleCloseBtnClick = (courseName: string) => {
     const courseId = searchParams.get("uuid");
     const courseNameArr = courseName.replace(/[^a-zA-z0-1\s]/g, "").split(" ");
@@ -70,15 +85,44 @@ export default function useFlashcard() {
     router.push(newPathname);
   };
 
+  const shuffle = (array: DetailData[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
+
+  useEffect(() => {
+    if (courseDetail) {
+      setCourse(courseDetail.course);
+      setDetail(shuffle(courseDetail.course_detail));
+    }
+  }, [courseDetail]);
+
   useEffect(() => {
     setIsResetting(true);
     setRotateX(0);
+
+    if (currentTerm === course?.num_of_terms) {
+      setNoti("Xong rồi hẹ hẹ");
+      return;
+    }
 
     const timer = setTimeout(() => {
       setIsResetting(false);
     }, 150);
     return () => clearTimeout(timer);
   }, [currentTerm]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setNoti(null);
+      if (course) handleCloseBtnClick(course?.course_name);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [noti]);
 
   useEffect(() => {
     if (numOfTerms === 0) return;
@@ -96,12 +140,15 @@ export default function useFlashcard() {
   }, [currentTerm, numOfTerms]);
 
   return {
+    course,
+    detail,
     canBack,
     canForward,
     currentTerm,
     rotateX,
     isResetting,
     direction,
+    noti,
     setNumOfTerms,
     handleFlashcardClick,
     handleFlashcardSlider,

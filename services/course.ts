@@ -14,6 +14,7 @@ export async function getRandomCourse() {
 
 export async function getCourseDetail(courseId: string) {
   try {
+    
     const response = await axios.get(`${base_url}/detail`, {
       params: {
         course_id: courseId,
@@ -29,6 +30,20 @@ export async function getCourseDetail(courseId: string) {
 export async function getCourseLearnQuestions(courseId: string) {
   try {
     const response = await axios.get(`${base_url}/learn`, {
+      params: {
+        course_id: courseId,
+      },
+    });
+    return response.data;
+  } catch (err) {
+    const axiosErr = err as AxiosError<{ detail: string }>;
+    console.error(axiosErr.response?.data.detail);
+  }
+}
+
+export async function getCourseTestQuestions(courseId: string) {
+  try {
+    const response = await axios.get(`${base_url}/test`, {
       params: {
         course_id: courseId,
       },

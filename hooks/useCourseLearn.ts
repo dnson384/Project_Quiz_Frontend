@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { getCourseLearnQuestions } from "@/services/course";
 import { useSearchParams } from "next/navigation";
-import useFlashcard from "./useFlashcard";
-import { BlobOptions } from "buffer";
+import useFlashcard from "./useCourseFlashcard";
 
 interface QuestionData {
   course_detail_id: string;
@@ -43,7 +42,7 @@ export default function useCourseLearn() {
     useState<CourseLearnQUestion | null>(null);
   const [course, setCourse] = useState<CourseData | null>(null);
   const [questions, setQuestions] = useState<QuestionsData[] | null>(null);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(49);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [currentQuestion, setCurrentQuestion] = useState<OptionsData[]>([]);
   const [incorrectTerms, setIncorrectTerms] = useState<QuestionsData[]>([]);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -51,7 +50,7 @@ export default function useCourseLearn() {
   const [isDone, setIsDone] = useState<boolean>(false);
   const [noti, setNoti] = useState<string | null>(null);
 
-  const shuffle = (array: OptionsData[]) => {
+  const shuffle = (array: OptionsData[] | QuestionsData[]) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
@@ -118,8 +117,8 @@ export default function useCourseLearn() {
 
   useEffect(() => {
     if (!learnQuestions) return;
-    setCourse(learnQuestions?.course);
-    setQuestions(learnQuestions?.questions);
+    setCourse(learnQuestions.course);
+    setQuestions(shuffle(learnQuestions.questions) as QuestionsData[]);
   }, [learnQuestions]);
 
   useEffect(() => {
@@ -130,7 +129,7 @@ export default function useCourseLearn() {
         currentQuestionIndex,
         questions
       );
-      setCurrentQuestion(shuffledQuestions);
+      setCurrentQuestion(shuffledQuestions as OptionsData[]);
     }
   }, [currentQuestionIndex, course, questions]);
 
