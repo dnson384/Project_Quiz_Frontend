@@ -66,8 +66,21 @@ export default function CourseDetailLearn() {
 
   return (
     <>
+      {/* Noti - Done - All Correct */}
+      {noti && (
+        <div className="fixed inset-0 z-10 flex justify-center">
+          <div className="mt-3 h-fit bg-indigo-50 shadow-lg px-5 py-2 rounded-xl flex items-center gap-3">
+            {icon.all_correct}
+            <p className="font-medium text-indigo-700">{noti}</p>
+          </div>
+        </div>
+      )}
+
       <header className="py-3 px-5 relative h-18">
         <LearnMethodDropdown />
+        <div className="h-full flex justify-center items-center">
+          <p className="font-semibold text-lg capitalize">{course?.course_name}</p>
+        </div>
         <div
           className="absolute right-5 top-3 p-2 rounded-full hover:bg-gray-200"
           onClick={() => {
@@ -116,16 +129,6 @@ export default function CourseDetailLearn() {
                     Không
                   </button>
                 </div>
-              </div>
-            </div>
-          )}
-
-          {/* Noti - Done - All Correct */}
-          {noti && (
-            <div className="fixed inset-0 z-10 flex justify-center">
-              <div className="mt-3 h-fit bg-indigo-50 shadow-lg px-5 py-2 rounded-xl flex items-center gap-3">
-                {icon.all_correct}
-                <p className="font-semibold text-indigo-700">{noti}</p>
               </div>
             </div>
           )}

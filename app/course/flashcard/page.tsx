@@ -2,23 +2,21 @@
 import Flashcard from "@/components/flashcard";
 import LearnMethodDropdown from "@/components/learn_method_dropdown";
 
-import useCourseDetail from "@/hooks/useCourseDetail";
-import useFlashcard from "@/hooks/useFlashcard";
+import useFlashcard from "@/hooks/useCourseFlashcard";
 
 import { useEffect } from "react";
 
 export default function CourseDetailFlashCard() {
-  const { courseDetail } = useCourseDetail();
-  const course = courseDetail?.course;
-  const detail = courseDetail?.course_detail;
-
   const {
+    course,
+    detail,
     canBack,
     canForward,
     currentTerm,
     rotateX,
     isResetting,
     direction,
+    noti,
     setNumOfTerms,
     handleFlashcardClick,
     handleFlashcardSlider,
@@ -33,15 +31,32 @@ export default function CourseDetailFlashCard() {
 
   return (
     <>
+      {noti && (
+        <div className="fixed inset-0 z-10 flex justify-center">
+          <div className="mt-3 h-fit bg-indigo-50 shadow-lg px-5 py-2 rounded-xl flex items-center gap-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 15 15"
+            >
+              <path
+                fill="#6366F1"
+                fillRule="evenodd"
+                d="M0 7.5a7.5 7.5 0 1 1 15 0a7.5 7.5 0 0 1-15 0m7.072 3.21l4.318-5.398l-.78-.624l-3.682 4.601L4.32 7.116l-.64.768z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <p className="font-medium text-indigo-700">{noti}</p>
+          </div>
+        </div>
+      )}
       {course && (
         <>
-          <header className="py-3 px-5 relative">
+          <header className="py-3 px-5 h-18 relative">
             <LearnMethodDropdown />
-            <div className="flex flex-col justify-center items-center">
-              <p className="font-bold">
-                {currentTerm} / {course.num_of_terms}
-              </p>
-              <p className="font-bold">{course.course_name}</p>
+            <div className="h-full flex justify-center items-center ">
+              <p className="font-bold text-lg">{course.course_name}</p>
             </div>
             <div
               className="absolute right-3 top-3 p-2 rounded-full hover:bg-gray-200"
