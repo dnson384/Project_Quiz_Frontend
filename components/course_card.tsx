@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import owlAvatar from "../public/avatar_icon/owl.jpg";
-import useCourseCard from "@/hooks/useCourseCard";
+import useCourseCard from "@/hooks/Course/useCourseCard";
 
 interface CourseData {
   courseId: string;

@@ -2,7 +2,7 @@
 import LearnMethodDropdown from "@/components/learn_method_dropdown";
 import TestQuestion from "@/components/test_question";
 
-import useCourseTest from "@/hooks/useCourseTest";
+import useCourseTest from "@/hooks/Course/useCourseTest";
 
 export default function CourseDetailTest() {
   const {

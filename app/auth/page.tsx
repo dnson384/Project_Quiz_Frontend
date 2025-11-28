@@ -162,7 +162,7 @@ export default function Auth() {
                       name="email"
                       value={fieldData?.email || ""}
                       placeholder="Nhập địa chỉ email của bạn"
-                      className="md:w-xl sm:w-lg w-screen py-2 px-3 bg-[#F6F7FB] rounded-md placeholder:font-semibold focus:outline-indigo-500"
+                      className="md:w-xl sm:w-lg w-screen py-2 px-3 bg-indigo-50 rounded-md placeholder:font-semibold focus:outline-indigo-500"
                       onChange={handleInputChange}
                     />
                   </div>
@@ -179,7 +179,7 @@ export default function Auth() {
                         name="password"
                         value={fieldData?.password || ""}
                         placeholder="Nhập mật khẩu của bạn"
-                        className="md:w-xl sm:w-lg w-screen py-2 px-3 bg-[#F6F7FB] rounded-md placeholder:font-semibold focus:outline-indigo-500"
+                        className="md:w-xl sm:w-lg w-screen py-2 px-3 bg-indigo-50 rounded-md placeholder:font-semibold focus:outline-indigo-500"
                         onChange={handleInputChange}
                       />
                       {showPassword ? (
@@ -226,7 +226,7 @@ export default function Auth() {
                   </button>
                 </form>
                 {/* Đăng ký với Google */}
-                <div className="bg-[#F6F7FB] flex justify-center items-center p-4 w-full rounded-full gap-2 mt-3">
+                <div className="bg-indigo-50 flex justify-center items-center p-4 w-full rounded-full gap-2 mt-3 cursor-pointer hover:bg-indigo-100">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="32"
@@ -269,7 +269,7 @@ export default function Auth() {
                       name="email"
                       value={fieldData?.email || ""}
                       placeholder="Nhập địa chỉ email của bạn"
-                      className="md:w-xl sm:w-lg w-screen py-2 px-3 bg-[#F6F7FB] rounded-md placeholder:font-semibold focus:outline-indigo-500"
+                      className="md:w-xl sm:w-lg w-screen py-2 px-3 bg-indigo-50 rounded-md placeholder:font-semibold focus:outline-indigo-500"
                       onChange={handleInputChange}
                     />
                   </div>
@@ -283,7 +283,7 @@ export default function Auth() {
                       name="username"
                       value={fieldData?.username || ""}
                       placeholder="Nhập tên người dùng của bạn"
-                      className="md:w-xl sm:w-lg w-screen py-2 px-3 bg-[#F6F7FB] rounded-md placeholder:font-semibold focus:outline-indigo-500"
+                      className="md:w-xl sm:w-lg w-screen py-2 px-3 bg-indigo-50 rounded-md placeholder:font-semibold focus:outline-indigo-500"
                       onChange={handleInputChange}
                     />
                   </div>
@@ -296,7 +296,7 @@ export default function Auth() {
                         name="password"
                         value={fieldData?.password || ""}
                         placeholder="Nhập mật khẩu của bạn"
-                        className="md:w-xl sm:w-lg w-screen py-2 px-3 bg-[#F6F7FB] rounded-md placeholder:font-semibold focus:outline-indigo-500"
+                        className="md:w-xl sm:w-lg w-screen py-2 px-3 bg-indigo-50 rounded-md placeholder:font-semibold focus:outline-indigo-500"
                         onChange={handleInputChange}
                       />
                       {showPassword ? (
@@ -341,7 +341,7 @@ export default function Auth() {
                         name="confirm_password"
                         value={fieldData?.confirm_password || ""}
                         placeholder="Xác nhận mật khẩu của bạn"
-                        className="md:w-xl sm:w-lg w-screen py-2 px-3 bg-[#F6F7FB] rounded-md placeholder:font-semibold focus:outline-indigo-500"
+                        className="md:w-xl sm:w-lg w-screen py-2 px-3 bg-indigo-50 rounded-md placeholder:font-semibold focus:outline-indigo-500"
                         onChange={handleInputChange}
                       />
                     </div>
@@ -355,7 +355,7 @@ export default function Auth() {
                         className={`text-center p-2 rounded-full select-none cursor-pointer ${
                           fieldData?.role === "STUDENT"
                             ? "bg-indigo-500 text-white"
-                            : "bg-[#f6f7fb] text-black hover:bg-indigo-400 hover:text-white"
+                            : "bg-indigo-50 text-black hover:bg-indigo-100 "
                         }`}
                         onClick={handleRoleChoice}
                       >
@@ -366,7 +366,7 @@ export default function Auth() {
                         className={`text-center p-2 rounded-full select-none cursor-pointer ${
                           fieldData?.role === "TEACHER"
                             ? "bg-indigo-500 text-white"
-                            : "bg-[#F6F7FB] text-black hover:bg-indigo-400 hover:text-white"
+                            : "bg-indigo-50 text-black hover:bg-indigo-100"
                         }`}
                         onClick={handleRoleChoice}
                       >
@@ -397,7 +397,7 @@ export default function Auth() {
                   </button>
                 </form>
                 {/* Đăng ký với Google */}
-                <div className="bg-[#F6F7FB] flex justify-center items-center p-4 w-full rounded-full gap-2 mt-3">
+                <div className="bg-indigo-50 flex justify-center items-center p-4 w-full rounded-full gap-2 mt-3">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="32"

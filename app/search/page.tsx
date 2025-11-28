@@ -103,8 +103,8 @@ export default function Search() {
           {type === "practice_tests" && (
             <PracticeTestResult
               practiceTests={practiceTests}
-              handleLoadMoreResults={handleLoadMoreResults}
-              notification={notification}
+              // handleLoadMoreResults={handleLoadMoreResults}
+              // notification={notification}
             />
           )}
         </section>

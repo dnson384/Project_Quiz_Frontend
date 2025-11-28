@@ -7,7 +7,10 @@ export function middleware(req: NextRequest) {
   const accessToken = req.cookies.get("access_token");
   const refreshToken = req.cookies.get("refresh_token");
 
-  if (accessToken && (pathname === "/" || pathname.startsWith("/auth"))) {
+  if (
+    (accessToken || refreshToken) &&
+    (pathname === "/" || pathname.startsWith("/auth"))
+  ) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 

@@ -2,7 +2,7 @@
 import Flashcard from "@/components/flashcard";
 import LearnMethodDropdown from "@/components/learn_method_dropdown";
 
-import useFlashcard from "@/hooks/useCourseFlashcard";
+import useFlashcard from "@/hooks/Course/useCourseFlashcard";
 
 import { useEffect } from "react";
 

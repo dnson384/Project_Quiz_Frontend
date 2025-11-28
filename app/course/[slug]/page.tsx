@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import Image from "next/image";
 
 import Header from "@/components/header";
@@ -6,9 +7,8 @@ import SideMenu from "@/components/side_menu";
 import Flashcard from "@/components/flashcard";
 import TermCard from "@/components/term_card";
 
-import useCourseDetail from "@/hooks/useCourseDetail";
-import useFlashcard from "@/hooks/useCourseFlashcard";
-import { useEffect } from "react";
+import useCourseDetail from "@/hooks/Course/useCourseDetail";
+import useFlashcard from "@/hooks/Course/useCourseFlashcard";
 
 export default function CourseDetail() {
   const { courseDetail, handleLearnOptionClick } = useCourseDetail();
@@ -47,7 +47,7 @@ export default function CourseDetail() {
               {/* Tên học phần */}
               <article className="flex items-center justify-between">
                 <h2 className="text-3xl font-bold">{course.course_name}</h2>
-                <div className="w-fit flex gap-1 items-center px-3 py-2 bg-gray-100 rounded-full cursor-pointer select-none hover:bg-gray-300">
+                <div className="w-fit flex gap-1 items-center px-3 py-2 bg-gray-200 rounded-full cursor-pointer select-none hover:bg-gray-300">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="14"

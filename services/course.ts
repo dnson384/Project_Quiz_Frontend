@@ -14,7 +14,6 @@ export async function getRandomCourse() {
 
 export async function getCourseDetail(courseId: string) {
   try {
-    
     const response = await axios.get(`${base_url}/detail`, {
       params: {
         course_id: courseId,
