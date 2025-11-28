@@ -1,34 +1,33 @@
 "use client";
-import { useTestResult } from "@/store/courseTestStore";
-import useCourseTest from "@/hooks/Course/useCourseTest";
+import { usePracticeTestResult } from "@/store/practiceTestStore";
 
-import TestQuestionResult from "@/components/test_question_result";
-import LearnMethodDropdown from "@/components/learn_method_dropdown";
+import useTakePracticeTest from "@/hooks/PracticeTest/useTakePracticeTest";
+
 import TestScoreChart from "@/components/test_score_chart";
+import PracticeTestAnswerResult from "@/components/practice_test_result";
 
-export default function TestResult() {
-  const testResult = useTestResult((state) => state.testResult);
-  const { score, course, questions, shuffleQuestions, selectedOptions } =
-    testResult;
-  const { handleCloseBtnClick, handleSidebarClick } = useCourseTest();
+export default function PracticeTestResult() {
+  const practiceTestResult = usePracticeTestResult(
+    (state) => state.practiceTestResult
+  );
+  const { score, practiceTest, shuffleQuestions, selectedOptions } =
+    practiceTestResult;
 
+  const { handleCloseBtnClick, handleSidebarClick } = useTakePracticeTest();
   return (
     <>
-      {course && (
+      {practiceTest && (
         <>
           <header className="py-3 px-5 relative h-18">
-            <LearnMethodDropdown />
             <div className="h-full flex justify-center items-center">
               <p className="font-semibold text-lg capitalize">
-                {course?.course_name}
+                {practiceTest.practice_test_name}
               </p>
             </div>
             <div
               className="absolute right-5 top-3 p-2 rounded-full hover:bg-gray-200"
               onClick={() => {
-                if (course) {
-                  handleCloseBtnClick(course?.course_name);
-                }
+                handleCloseBtnClick(practiceTest.practice_test_name);
               }}
             >
               <svg
@@ -45,44 +44,39 @@ export default function TestResult() {
               </svg>
             </div>
           </header>
+
           <section className="flex justify-center mb-10">
-            <TestScoreChart score={score} total={questions.length} />
+            <TestScoreChart score={score} total={shuffleQuestions.length} />
           </section>
-          <section className="flex flex-col gap-5 relative">
-            {course && questions && shuffleQuestions && (
+
+          <section className="mt-15 py-10 w-4xl mx-auto flex flex-col gap-4">
+            {practiceTest && shuffleQuestions && shuffleQuestions && (
               <>
-                {questions.map((question, index) => {
-                  const currentQuestion = shuffleQuestions[index];
+                {shuffleQuestions.map((question, index) => {
                   return (
                     <div
-                      key={question.question.course_detail_id}
+                      key={question.question.question_id}
                       id={`question-${index}`}
-                      className="scroll-mt-4"
+                      className=""
                     >
-                      <TestQuestionResult
+                      <PracticeTestAnswerResult
                         questionIndex={index}
-                        correctAnswer={question.question}
-                        currentQuestion={currentQuestion}
-                        selectedOption={
-                          selectedOptions[index]?.optionId || null
-                        }
+                        questionText={question.question.question_text}
+                        selectedId={selectedOptions[index]?.option_id || ""}
+                        answerOptions={question.answer_option}
                       />
                     </div>
                   );
                 })}
                 <aside className="fixed inset-0 top-18 left-5 w-fit h-fit grid grid-cols-4 gap-2 select-none cursor-pointer">
-                  {questions.map((question, index) => {
-                    let isCorrect = false;
-                    if (selectedOptions[index]) {
-                      const currentOption = selectedOptions[index];
-                      isCorrect =
-                        currentOption.correctId === currentOption.optionId;
-                    }
+                  {shuffleQuestions.map((question, index) => {
                     return (
                       <div
-                        key={question.question.course_detail_id}
+                        key={question.question.question_id}
                         className={`w-8 h-8 text-sm p-2 text-white ${
-                          isCorrect ? "bg-teal-500" : "bg-red-400"
+                          selectedOptions[index]?.is_correct
+                            ? "bg-teal-500"
+                            : "bg-red-400"
                         } rounded-full flex justify-center items-center`}
                         onClick={() => handleSidebarClick(index)}
                       >
@@ -93,10 +87,12 @@ export default function TestResult() {
                 </aside>
 
                 {/* Submit Btn */}
-                <div className="my-5 flex justify-center">
+                <div className="mt-5 flex justify-center">
                   <button
                     className="px-5 py-3 rounded-full bg-indigo-500 text-white font-bold cursor-pointer hover:bg-indigo-600"
-                    onClick={() => handleCloseBtnClick(course.course_name)}
+                    onClick={() =>
+                      handleCloseBtnClick(practiceTest.practice_test_name)
+                    }
                   >
                     Xem xong thì cút!!!
                   </button>

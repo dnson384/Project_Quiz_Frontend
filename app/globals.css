@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-body{
-  background: #FAFAFA;
+body {
+  background: #F8F8FF;
 }
 
 /* Brand Primary */
@@ -56,4 +56,22 @@ body{
 }
 .bg-card {
   background: #fafafa;
+}
+
+/*
+Source - https://stackoverflow.com/a
+Posted by swehren, modified by community. See post 'Timeline' for change history
+Retrieved 2025-11-27, License - CC BY-SA 3.0
+*/
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }

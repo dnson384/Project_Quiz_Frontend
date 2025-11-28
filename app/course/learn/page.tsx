@@ -2,7 +2,7 @@
 import LearnMethodDropdown from "@/components/learn_method_dropdown";
 import QuestionProgressBar from "@/components/questionProgress";
 
-import useCourseLearn from "@/hooks/useCourseLearn";
+import useCourseLearn from "@/hooks/Course/useCourseLearn";
 
 export default function CourseDetailLearn() {
   const {
@@ -140,7 +140,7 @@ export default function CourseDetailLearn() {
           />
 
           {/* Question */}
-          <section className="w-5xl mx-auto px-7 py-5 border border-gray-300 rounded-lg">
+          <section className="w-5xl mx-auto px-7 py-5  border border-gray-300 rounded-lg">
             {/* Term */}
             <div className="mb-16">
               <h4 className="text-sm font-bold text-gray-500 mb-6">

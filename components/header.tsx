@@ -54,8 +54,8 @@ export default function Header() {
       {/* Search bar */}
       <form
         id="search-container"
-        className={`w-2xl bg-[#F6F7FB] py-2 px-4 rounded-lg flex items-center gap-2 transition-all duration-200 border ${
-          isFocused ? "border-indigo-500" : "border-transparent"
+        className={`w-2xl bg-gray-50 py-2 px-4 rounded-lg flex items-center gap-2 transition-all duration-200 border ${
+          isFocused ? "border-indigo-500" : "border-gray-200"
         }`}
         onClick={handleSearchInputFocus}
         onSubmit={handleSubmitSearchForm}

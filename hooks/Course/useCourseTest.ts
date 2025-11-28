@@ -1,4 +1,4 @@
-import { useTestResult } from "./../store/courseTestStore";
+import { useTestResult } from "../../store/courseTestStore";
 import { useEffect, useState } from "react";
 import { getCourseTestQuestions } from "@/services/course";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -122,7 +122,6 @@ export default function useCourseTest() {
       });
     }
   };
-
 
   useEffect(() => {
     const fetchQuestion = async () => {

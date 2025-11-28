@@ -40,7 +40,8 @@ export default function Dashboard() {
                 {practiceTestSample.map((test) => (
                   <PracticeTestCard
                     key={test.practice_test_id}
-                    practiceTestName={test.practice_test_name}
+                    practiceTestId={test.practice_test_id}
+                    practiceTestName={test.practice_test_name}  
                     authorName={test.author_username}
                   />
                 ))}
