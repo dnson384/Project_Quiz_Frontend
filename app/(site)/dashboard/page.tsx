@@ -1,0 +1,57 @@
+"use client";
+import Header from "@/presentation/components/layout/header";
+import SideMenu from "@/presentation/components/layout/sideMenu";
+import useDashboard from "@/presentation/hooks/Dashboard/useDashboard";
+import CourseCard from "@/presentation/components/Course/courseCard";
+import PracticeTestCard from "@/presentation/components/PracticeTest/practiceTestCard";
+
+export default function Dashboard() {
+  const { courseSample, practiceTestSample } = useDashboard();
+
+  return (
+    <>
+      <Header />
+      <div className="flex">
+        <SideMenu />
+
+        <section className="mx-auto mt-3 flex flex-col gap-8">
+          {courseSample.length > 0 && (
+            <div>
+              <h3 className="font-bold mb-5">Học phần đề xuất</h3>
+              <div className="grid grid-cols-3 gap-x-4">
+                {courseSample.map((course) => (
+                  <CourseCard
+                    key={course.id}
+                    courseId={course.id}
+                    courseName={course.name}
+                    termCount={course.termCount}
+                    authorAvatarURL={course.authorAvatar}
+                    authorName={course.authorName}
+                    authorRole={course.authorRole}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {practiceTestSample.length > 0 && (
+            <div className="mx-auto">
+              <h3 className="font-bold mb-5">Bài kiểm tra thử đề xuất</h3>
+              <div className="grid grid-cols-3 gap-x-4">
+                {practiceTestSample.map((test) => (
+                  <PracticeTestCard
+                    key={test.id}
+                    practiceTestId={test.id}
+                    practiceTestName={test.name}
+                    authorAvatar={test.authorAvatar}
+                    authorName={test.authorName}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+      </div>
+    </>
+  );
+}

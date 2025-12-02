@@ -1,29 +1,33 @@
-import axios, { AxiosError } from "axios";
+import { isAxiosError } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
-const REAL_BACKEND_URL_API_COURSE =
-  `${process.env.NEXT_PUBLIC_BACKEND_URL_API}/course` || "";
-
+import { GetCourseDetailUsecase } from "@/application/usecases/course/getCourseDetail";
+import { CourseRepositoryImpl } from "@/infrastructure/repositories/CourseRepositoryImpl";
 export async function GET(req: NextRequest) {
   try {
     const params = req.nextUrl.searchParams;
+    const courseId = params.get("course_id");
 
-    const response = await axios.get(REAL_BACKEND_URL_API_COURSE, {
-      params: {
-        course_id: params.get("course_id"),
-      },
-    });
-    return NextResponse.json(response.data, { status: 200 });
-  } catch (err: unknown) {
-    const axiosErr = err as AxiosError<{ detail: string }>;
-    const stateCode = axiosErr.response?.status || 500;
-    const errMessage =
-      axiosErr.response?.data.detail || "Đã có lỗi xảy ra từ máy chủ";
+    if (!courseId) return;
 
-    console.error(
-      "Lỗi khi gọi API lấy thông tin chi tiết học phần:",
-      errMessage
+    const repo = new CourseRepositoryImpl();
+    const usecase = new GetCourseDetailUsecase(repo);
+
+    const courseDetail = await usecase.execute(courseId);
+
+    return NextResponse.json(courseDetail, { status: 200 });
+  } catch (err) {
+    console.error("Lỗi API:", err);
+
+    if (isAxiosError(err) && err.response)
+      return NextResponse.json(
+        { detail: err.response.data.detail || "Lỗi từ Backend" },
+        { status: err.response.status }
+      );
+
+    return NextResponse.json(
+      { detail: "Lỗi máy chủ nội bộ (Internal Server Error)" },
+      { status: 500 }
     );
-    return NextResponse.json({ detail: errMessage }, { status: stateCode });
   }
 }

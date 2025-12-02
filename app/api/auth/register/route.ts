@@ -1,24 +1,35 @@
-import axios, { AxiosError } from "axios";
+import { RegisterRequest } from "@/application/dtos/auth/registerRequest";
+import { RegisterUserEmailUsecase } from "@/application/usecases/auth/registerUserEmail";
+import { AuthRepositoryImpl } from "@/infrastructure/repositories/AuthRepositoryImpl";
+import { isAxiosError } from "axios";
 import { NextRequest, NextResponse } from "next/server";
-
-const REAL_BACKEND_URL_API_REGISTER =
-  `${process.env.NEXT_PUBLIC_BACKEND_URL_API}/auth/register` || "";
-
 
 export async function POST(req: NextRequest) {
   try {
-    const payload = await req.json();
+    const payload: RegisterRequest = await req.json();
 
-    const response = await axios.post(REAL_BACKEND_URL_API_REGISTER, payload);
+    const repo = new AuthRepositoryImpl();
+    const usecase = new RegisterUserEmailUsecase(repo);
 
-    return NextResponse.json(response.data, { status: 201 });
+    const newUser = await usecase.execute(payload);
+
+    return NextResponse.json(newUser, { status: 201 });
   } catch (err: unknown) {
-    const axiosErr = err as AxiosError<{ detail: string }>;
-    const statusCode = axiosErr.response?.status || 500;
-    const errorMessage =
-      axiosErr.response?.data?.detail || "Đã có lỗi xảy ra từ máy chủ";
+    console.error("Lỗi API:", err);
 
-    console.error("Lỗi khi gọi API đăng ký:", errorMessage);
-    return NextResponse.json({ detail: errorMessage }, { status: statusCode });
+    if (isAxiosError(err) && err.response)
+      return NextResponse.json(
+        { detail: err.response.data.detail || "Lỗi từ Backend" },
+        { status: err.response.status }
+      );
+
+    if (err instanceof Error) {
+      return NextResponse.json({ detail: err.message }, { status: 400 });
+    }
+
+    return NextResponse.json(
+      { detail: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

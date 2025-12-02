@@ -1,14 +1,11 @@
-import axios from "axios";
-import { headers } from "next/headers";
+import { RefreshAccessTokenUsecase } from "@/application/usecases/auth/refreshAccessToken";
+import { AuthRepositoryImpl } from "@/infrastructure/repositories/AuthRepositoryImpl";
 import { NextRequest, NextResponse } from "next/server";
 
-const REAL_BACKEND_URL_API_REFRESH =
-  `${process.env.NEXT_PUBLIC_BACKEND_URL_API}/auth/refresh` || "";
-
 export async function POST(req: NextRequest) {
-  const refresh_token = req.cookies.get("refresh_token")?.value;
+  const refreshToken = req.cookies.get("refresh_token")?.value;
 
-  if (!refresh_token) {
+  if (!refreshToken) {
     return NextResponse.json(
       { detail: "Không có refresh token" },
       { status: 401 }
@@ -16,24 +13,15 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const response = await axios.post(
-      REAL_BACKEND_URL_API_REFRESH,
-      {},
-      {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${refresh_token}`,
-        },
-      }
-    );
-    const new_access_token = response.data.access_token;
-
+    const repo = new AuthRepositoryImpl();
+    const usecase = new RefreshAccessTokenUsecase(repo);
+    const newAccessToken = await usecase.execute(refreshToken);
 
     const nextResponse = NextResponse.json({
       detail: "Tạo lại access token thành công",
     });
 
-    nextResponse.cookies.set("access_token", new_access_token, {
+    nextResponse.cookies.set("access_token", newAccessToken, {
       httpOnly: true,
       path: "/",
       sameSite: "strict",

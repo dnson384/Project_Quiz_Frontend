@@ -1,22 +1,29 @@
-import axios, { AxiosError } from "axios";
+import { isAxiosError } from "axios";
 import { NextResponse } from "next/server";
 
-const REAL_BACKEND_URL_API_COURSE =
-  `${process.env.NEXT_PUBLIC_BACKEND_URL_API}/practice-test` || "";
+import { GetRandomPracticeTestsUsecase } from "@/application/usecases/practiceTest/getRandom";
+import { PracticeTestRepositoryImpl } from "@/infrastructure/repositories/PracticeTestRepositoryImpl";
 
 export async function GET() {
   try {
-    const response = await axios.get(
-      `${REAL_BACKEND_URL_API_COURSE}/random-practice-test`
-    );
-    return NextResponse.json(response.data, { status: 200 });
-  } catch (err: unknown) {
-    const axiosErr = err as AxiosError<{ detail: string }>;
-    const stateCode = axiosErr.response?.status || 500;
-    const errMessage =
-      axiosErr.response?.data.detail || "Đã có lỗi xảy ra từ máy chủ";
+    const repo = new PracticeTestRepositoryImpl();
+    const useCase = new GetRandomPracticeTestsUsecase(repo);
 
-    console.error("Lỗi khi gọi API lấy bài kiểm tra ngẫu nhiên:", errMessage);
-    return NextResponse.json({ detail: errMessage }, { status: stateCode });
+    const practiceTests = await useCase.execute();
+
+    return NextResponse.json(practiceTests, { status: 200 });
+  } catch (err: unknown) {
+    console.error("Lỗi API:", err);
+
+    if (isAxiosError(err) && err.response)
+      return NextResponse.json(
+        { detail: err.response.data.detail || "Lỗi từ Backend" },
+        { status: err.response.status }
+      );
+
+    return NextResponse.json(
+      { detail: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

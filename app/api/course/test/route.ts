@@ -1,29 +1,32 @@
-import axios, { AxiosError } from "axios";
+import { isAxiosError } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
-const REAL_BACKEND_URL_API_COURSE =
-  `${process.env.NEXT_PUBLIC_BACKEND_URL_API}/course/test` || "";
+import { CourseRepositoryImpl } from "@/infrastructure/repositories/CourseRepositoryImpl";
+import { GetCourseTestUsecase } from "@/application/usecases/course/getCourseTest";
 
 export async function GET(req: NextRequest) {
   try {
     const params = req.nextUrl.searchParams;
+    const courseId = params.get("course_id");
+    if (!courseId) return;
 
-    const response = await axios.get(REAL_BACKEND_URL_API_COURSE, {
-      params: {
-        course_id: params.get("course_id"),
-      },
-    });
-    return NextResponse.json(response.data, { status: 200 });
+    const repo = new CourseRepositoryImpl();
+    const usecase = new GetCourseTestUsecase(repo);
+    const courseTest = await usecase.execute(courseId);
+    
+    return NextResponse.json(courseTest, { status: 200 });
   } catch (err: unknown) {
-    const axiosErr = err as AxiosError<{ detail: string }>;
-    const stateCode = axiosErr.response?.status || 500;
-    const errMessage =
-      axiosErr.response?.data.detail || "Đã có lỗi xảy ra từ máy chủ";
+    console.error("Lỗi API:", err);
 
-    console.error(
-      "Lỗi khi gọi API lấy thông tin câu hỏi kiểm tra",
-      errMessage
+    if (isAxiosError(err) && err.response)
+      return NextResponse.json(
+        { detail: err.response.data.detail || "Lỗi từ Backend" },
+        { status: err.response.status }
+      );
+
+    return NextResponse.json(
+      { detail: "Lỗi máy chủ nội bộ (Internal Server Error)" },
+      { status: 500 }
     );
-    return NextResponse.json({ detail: errMessage }, { status: stateCode });
   }
 }
