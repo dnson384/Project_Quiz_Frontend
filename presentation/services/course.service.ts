@@ -1,0 +1,40 @@
+import { CourseLearn, CourseTest } from "@/domain/entities/Course";
+import axios from "axios";
+
+const base_url = "/api/course";
+
+export async function getRandomCourse() {
+  const response = await axios.get(`${base_url}/random`);
+  return response.data;
+}
+
+export async function getCourseDetail(courseId: string) {
+  const response = await axios.get(`${base_url}/detail`, {
+    params: {
+      course_id: courseId,
+    },
+  });
+  return response.data;
+}
+
+export async function getCourseLearnQuestions(
+  courseId: string
+): Promise<CourseLearn | null> {
+  const response = await axios.get(`${base_url}/learn`, {
+    params: {
+      course_id: courseId,
+    },
+  });
+  return response.data;
+}
+
+export async function getCourseTestQuestions(
+  courseId: string
+): Promise<CourseTest | null> {
+  const response = await axios.get(`${base_url}/test`, {
+    params: {
+      course_id: courseId,
+    },
+  });
+  return response.data;
+}

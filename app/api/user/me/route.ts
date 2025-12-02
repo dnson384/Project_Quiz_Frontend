@@ -1,8 +1,7 @@
-import axios from "axios";
+import { GetMeUsecase } from "@/application/usecases/user/getMe";
+import { UserRepositoryImpl } from "@/infrastructure/repositories/UserRepositoryImpl";
 import { NextRequest, NextResponse } from "next/server";
 
-const REAL_BACKEND_URL_API_ME =
-  `${process.env.NEXT_PUBLIC_BACKEND_URL_API}/user/me` || "";
 
 export async function GET(req: NextRequest) {
   try {
@@ -14,13 +13,11 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const response = await axios.get(REAL_BACKEND_URL_API_ME, {
-      withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    return NextResponse.json(response.data, { status: 200 });
+    const repo = new UserRepositoryImpl();
+    const usecase = new GetMeUsecase(repo);
+    const currentUser = await usecase.execute(accessToken);
+
+    return NextResponse.json(currentUser, { status: 200 });
   } catch (err) {
     console.error(err);
     return NextResponse.json(

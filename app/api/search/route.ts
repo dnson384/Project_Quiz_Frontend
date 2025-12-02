@@ -1,28 +1,35 @@
-import axios, { AxiosError } from "axios";
+import { SearchByKeywordUsecase } from "@/application/usecases/search/searchByKeyword";
+import { SearchRepositoryImpl } from "@/infrastructure/repositories/SearchRepositoryImpl";
+import { isAxiosError } from "axios";
 import { NextRequest, NextResponse } from "next/server";
-
-const REAL_BACKEND_URL_API_SEARCH =
-  `${process.env.NEXT_PUBLIC_BACKEND_URL_API}/search` || "";
 
 export async function GET(req: NextRequest) {
   try {
     const params = req.nextUrl.searchParams;
+    const keyword = params.get("keyword");
+    const type = params.get("type");
+    const cursorId = params.get("cursor_id") || undefined;
 
-    const response = await axios.get(REAL_BACKEND_URL_API_SEARCH, {
-      params: {
-        keyword: params.get("keyword"),
-        type: params.get("type"),
-        cursor_id: params.get("cursor_id"),
-      },
-    });
-    return NextResponse.json(response.data, { status: 200 });
+    if (!keyword || !type) return;
+
+    const repo = new SearchRepositoryImpl();
+    const usecase = new SearchByKeywordUsecase(repo);
+
+    const searchResult = await usecase.execute(keyword, type, cursorId);
+
+    return NextResponse.json(searchResult, { status: 200 });
   } catch (err: unknown) {
-    const axiosErr = err as AxiosError<{ detail: string }>;
-    const stateCode = axiosErr.response?.status || 500;
-    const errorMessage =
-      axiosErr.response?.data?.detail || "Đã có lỗi xảy ra từ máy chủ";
+    console.error("Lỗi API:", err);
 
-    console.error("Lỗi khi gọi API tìm kiếm:", errorMessage);
-    return NextResponse.json({ detail: errorMessage }, { status: stateCode });
+    if (isAxiosError(err) && err.response)
+      return NextResponse.json(
+        { detail: err.response.data.detail || "Lỗi từ Backend" },
+        { status: err.response.status }
+      );
+
+    return NextResponse.json(
+      { detail: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

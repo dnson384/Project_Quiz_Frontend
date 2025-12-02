@@ -1,19 +1,24 @@
+import { LoginRequest } from "@/application/dtos/auth/loginRequest";
+import { LoginUserEmailUsecase } from "@/application/usecases/auth/loginUserEmail";
+import { AuthRepositoryImpl } from "@/infrastructure/repositories/AuthRepositoryImpl";
 import { AxiosError } from "axios";
-import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
-
-const REAL_BACKEND_URL_API_LOGIN =
-  `${process.env.NEXT_PUBLIC_BACKEND_URL_API}/auth/login` || "";
 
 export async function POST(req: NextRequest) {
   try {
-    const payload = await req.json();
+    const payload: LoginRequest = await req.json();
 
-    const response = await axios.post(REAL_BACKEND_URL_API_LOGIN, payload);
+    const repo = new AuthRepositoryImpl();
+    const usecase = new LoginUserEmailUsecase(repo);
 
-    const { access_token, refresh_token, user } = response.data;
+    const data = await usecase.execute({
+      email: payload.email,
+      plainPassword: payload.plainPassword,
+    });
 
-    if (!access_token || !refresh_token) {
+    const { accessToken, refreshToken, user } = data;
+
+    if (!accessToken || !refreshToken) {
       return NextResponse.json(
         { detail: "Không nhận được token từ máy chủ backend" },
         { status: 500 }
@@ -22,14 +27,14 @@ export async function POST(req: NextRequest) {
 
     const nextResponse = NextResponse.json({ user: user });
 
-    nextResponse.cookies.set("access_token", access_token, {
+    nextResponse.cookies.set("access_token", accessToken, {
       httpOnly: true,
       path: "/",
       sameSite: "strict",
       maxAge: 15 * 60,
     });
 
-    nextResponse.cookies.set("refresh_token", refresh_token, {
+    nextResponse.cookies.set("refresh_token", refreshToken, {
       httpOnly: true,
       path: "/",
       sameSite: "strict",
