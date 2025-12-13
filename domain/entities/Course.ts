@@ -38,3 +38,18 @@ export interface CourseTest {
   baseInfo: Course;
   questions: TestQuestion[];
 }
+
+// New
+export interface NewTerm {
+  term: string | null;
+  definition: string | null;
+}
+
+export interface NewBaseInfo {
+  name: string;
+}
+
+export interface NewCourse {
+  baseInfo: NewBaseInfo;
+  terms: NewTerm[];
+}

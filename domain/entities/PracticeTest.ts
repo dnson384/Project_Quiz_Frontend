@@ -26,3 +26,28 @@ export interface PracticeTestDetail {
   baseInfo: PracticeTest;
   questions: PracticeTestQuestions[];
 }
+
+// New
+export interface NewBaseInfo {
+  name: string;
+}
+
+export interface QuestionBase {
+  text: string;
+  type: string;
+}
+
+export interface Option {
+  text: string;
+  isCorrect: boolean;
+}
+
+export interface NewQuestion {
+  questionBase: QuestionBase;
+  options: Option[];
+}
+
+export interface NewPracticeTest {
+  baseInfo: NewBaseInfo;
+  questions: NewQuestion[];
+}

@@ -23,7 +23,7 @@ export default function useNavigationBar() {
   };
 
   useEffect(() => {
-    if (pathname === "/dashboard") {
+    if (["/dashboard", "/my-lib"].includes(pathname)) {
       setShowFullMenu(true);
     } else {
       setShowFullMenu(false);
@@ -62,7 +62,6 @@ export default function useNavigationBar() {
   const handleUserAvatarClick = () => {
     setShowUserMenu((prev) => !prev);
   };
-
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

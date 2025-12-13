@@ -1,5 +1,6 @@
 import { RefreshAccessTokenUsecase } from "@/application/usecases/auth/refreshAccessToken";
 import { AuthRepositoryImpl } from "@/infrastructure/repositories/AuthRepositoryImpl";
+import { isAxiosError } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -25,11 +26,22 @@ export async function POST(req: NextRequest) {
       httpOnly: true,
       path: "/",
       sameSite: "strict",
-      maxAge: 0.5 * 60,
+      maxAge: 15 * 60,
     });
 
     return nextResponse;
   } catch (err) {
+    if (isAxiosError(err) && err.status === 401) {
+      const res = NextResponse.json(
+        { detail: err.response?.data.detail },
+        { status: 401 }
+      );
+
+      res.cookies.delete("access_token");
+      res.cookies.delete("refresh_token");
+      return res;
+    }
+
     return NextResponse.json(
       { detail: "Lỗi server khi re-generate access token" },
       { status: 500 }

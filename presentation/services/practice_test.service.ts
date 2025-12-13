@@ -1,6 +1,12 @@
+import { PracticeTest } from "@/domain/entities/PracticeTest";
 import axios from "axios";
 
 const base_url = "/api/practice-test";
+
+export async function getUserPracticeTest(): Promise<PracticeTest[]> {
+  const response = await axios.get(`${base_url}/user`);
+  return response.data;
+}
 
 export async function getRandomPracticeTest() {
   const response = await axios.get(`${base_url}/random`);
