@@ -52,11 +52,12 @@ export default function useCreateCoures() {
     });
   };
 
-  const handleCreateClick = (missing: boolean) => {
+  const handleCreateClick = (valid: boolean) => {
     setIsSubmitted(true);
-    console.log(missing);
-    console.log(baseInfo);
-    console.log(termData);
+    if (valid) {
+      const newCourse: NewCourse = { baseInfo: baseInfo, terms: termData };
+      console.log(newCourse)
+    }
   };
 
   return {

@@ -15,7 +15,20 @@ export default function CreateCourse() {
     handleCreateClick,
   } = useCreateCoures();
   const terms = Array.from({ length: termCount }, (_, i) => i);
-  let missing = baseInfo?.name.length === 0 || termData.length < 2;
+  const titleMissing = baseInfo?.name.length === 0;
+  const anyMissing =
+    termData.length === 0
+      ? true
+      : termData.some((curTerm) => {
+          const termValue = curTerm.term;
+          const definitionValue = curTerm.definition;
+          if (!termValue || !definitionValue) return true;
+
+          if (definitionValue.length > 0 && termValue.length === 0) return true;
+
+          if (definitionValue.length === 0 && termValue.length > 0) return true;
+        });
+  const isFormValid = !titleMissing && !anyMissing;
 
   return (
     <>
@@ -33,7 +46,7 @@ export default function CreateCourse() {
                     ? "cursor-pointer hover:bg-indigo-700"
                     : "pointer-events-none"
                 }`}
-                onClick={() => handleCreateClick(missing)}
+                onClick={() => handleCreateClick(isFormValid)}
               >
                 Tạo
               </button>
@@ -75,10 +88,6 @@ export default function CreateCourse() {
                 const isMissingDefinition =
                   (definitionValue.length === 0 && termValue.length > 0) ||
                   termData.length === 0;
-
-                if (isMissingDefinition || isMissingDefinition) {
-                  missing = true;
-                }
                 return (
                   <div
                     key={index}
