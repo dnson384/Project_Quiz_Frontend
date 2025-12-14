@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 
 import {
   Course,
@@ -49,6 +49,36 @@ export class CourseRepositoryImpl implements ICourseRepository {
   constructor(
     private readonly baseUrl: string = process.env.BACKEND_URL || ""
   ) {}
+
+  async getUserCourses(accessToken: string): Promise<Course[]> {
+    try {
+      const { data } = await axios.get<RawCourseResponse[]>(
+        `${this.baseUrl}/course/my-course`,
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      return data.map((raw) => ({
+        id: raw.course_id,
+        name: raw.course_name,
+        authorAvatar: raw.author_avatar_url,
+        authorName: raw.author_username,
+        authorRole: raw.author_role,
+        termCount: raw.num_of_terms,
+      }));
+    } catch (err) {
+      if (isAxiosError(err)) {
+        console.error(err.response?.data.detail);
+        return [];
+      }
+      console.error("Lỗi khi gọi backend từ repo: ", err);
+      return [];
+    }
+  }
 
   async getRandomCourses(): Promise<Course[]> {
     try {

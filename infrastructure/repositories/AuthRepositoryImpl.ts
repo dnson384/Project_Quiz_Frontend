@@ -17,10 +17,6 @@ interface RawUserResponse {
   refresh_token: string | null;
 }
 
-interface RawRefreshAccessToken {
-  access_token: string;
-}
-
 export class AuthRepositoryImpl implements IAuthRepository {
   constructor(
     private readonly baseUrl: string = process.env.BACKEND_URL || ""
@@ -81,7 +77,7 @@ export class AuthRepositoryImpl implements IAuthRepository {
   }
 
   async refreshAccessToken(refreshToken: string): Promise<string> {
-    const { data } = await axios.post<RawRefreshAccessToken>(
+    const { data } = await axios.post<string>(
       `${this.baseUrl}/auth/refresh`,
       {},
       {
@@ -89,6 +85,6 @@ export class AuthRepositoryImpl implements IAuthRepository {
         headers: { Authorization: `Bearer ${refreshToken}` },
       }
     );
-    return data.access_token;
+    return data;
   }
 }

@@ -1,7 +1,12 @@
-import { CourseLearn, CourseTest } from "@/domain/entities/Course";
+import { Course, CourseLearn, CourseTest } from "@/domain/entities/Course";
 import axios from "axios";
 
 const base_url = "/api/course";
+
+export async function getUserCoures(): Promise<Course[]> {
+  const response = await axios.get(`${base_url}/user`)
+  return response.data
+}
 
 export async function getRandomCourse() {
   const response = await axios.get(`${base_url}/random`);

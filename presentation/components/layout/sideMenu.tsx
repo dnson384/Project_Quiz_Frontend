@@ -1,10 +1,13 @@
 "use client";
+import { useAuthContext } from "@/presentation/context/authContext";
 import useSideMenu from "@/presentation/hooks/layout/useSideMenu";
 import { useShowFullMenu } from "@/presentation/store/dashboard";
 
 export default function SideMenu() {
   const { selectedPage, handleMenuItem } = useSideMenu();
   const showFullMenu = useShowFullMenu((state) => state.showFullMenu);
+  const { user } = useAuthContext();
+  const role = user?.role;
 
   return (
     <div
@@ -53,7 +56,7 @@ export default function SideMenu() {
 
           {/* Lib */}
           <div
-            id="my_lib"
+            id="my-lib"
             className={`px-3 py-2 rounded-md flex items-center ${
               showFullMenu ? "gap-2" : "justify-center"
             } ${
@@ -95,58 +98,6 @@ export default function SideMenu() {
         </div>
         <hr className="border-gray-300" />
 
-        {/* Thư mục của bạn */}
-        <div className={`mt-3 flex flex-col ${showFullMenu && "gap-3"} mb-3`}>
-          <h2
-            className={`font-bold px-3 transition-opacity duration-1000 ease-in-out ${
-              showFullMenu ? "opacity-100" : "opacity-0 w-0 h-0 overflow-hidden"
-            }`}
-          >
-            Thư muc của bạn
-          </h2>
-          <div
-            id="create_folder"
-            className={`px-3 py-2 rounded-md flex items-center ${
-              showFullMenu ? "gap-2" : "justify-center"
-            } ${
-              selectedPage === "create_folder"
-                ? "bg-indigo-100"
-                : "bg-transparent hover:bg-gray-100"
-            } select-none cursor-pointer`}
-            onClick={handleMenuItem}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 32 32"
-            >
-              <path
-                fill="none"
-                stroke={`${
-                  selectedPage === "create_folder" ? "#6366F1" : "#374151"
-                }`}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="3"
-                d="M16 2v28M2 16h28"
-              />
-            </svg>
-            <h3
-              className={`${
-                selectedPage === "create_folder"
-                  ? "text-indigo-500"
-                  : "text-gray-700"
-              } text-sm font-bold transition-opacity duration-1000 whitespace-nowrap ${
-                showFullMenu ? "opacity-100" : "opacity-0 w-0 overflow-hidden"
-              }`}
-            >
-              Tạo thư mục
-            </h3>
-          </div>
-        </div>
-        <hr className="border-gray-300" />
-
         {/* Bắt đầu */}
         <div className={`mt-3 flex flex-col ${showFullMenu && "gap-3"} mb-3`}>
           <h2
@@ -157,7 +108,7 @@ export default function SideMenu() {
             Bắt đầu từ đây
           </h2>
           <div
-            id="create_flashcard"
+            id="create-course"
             className={`px-3 py-2 rounded-md flex items-center ${
               showFullMenu ? "gap-2" : "justify-center"
             } ${
@@ -171,19 +122,18 @@ export default function SideMenu() {
               xmlns="http://www.w3.org/2000/svg"
               width="18"
               height="18"
-              viewBox="0 0 24 24"
+              viewBox="0 0 16 16"
             >
               <path
-                fill="none"
-                stroke={`${
+                fill={`${
                   selectedPage === "create_flashcard" ? "#6366F1" : "#374151"
                 }`}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="m18.942 15.05l.626 2.44a2 2 0 0 1-1.44 2.434L7.433 22.67a2 2 0 0 1-2.435-1.44L1.22 6.51a2 2 0 0 1 1.44-2.434L13.354 1.33a2 2 0 0 1 2.215.912m3.371 9.11V3.543m-3.905 3.904h7.81"
+                fillRule="evenodd"
+                d="M3 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3.25a.75.75 0 0 0 0-1.5H3a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 .5.5v5.25a.75.75 0 0 0 1.5 0V4.364l2.19 1.14a.25.25 0 0 1 .107.338l-1.072 2.062a.75.75 0 0 0 1.33.692l1.073-2.062a1.75 1.75 0 0 0-.745-2.36l-2.912-1.516A2 2 0 0 0 9 1zm6 12a.75.75 0 0 1 .75-.75h1.5v-1.5a.75.75 0 0 1 1.5 0v1.5h1.5a.75.75 0 0 1 0 1.5h-1.5v1.5a.75.75 0 0 1-1.5 0v-1.5h-1.5A.75.75 0 0 1 9 13"
+                clipRule="evenodd"
               />
             </svg>
+
             <h3
               className={`${
                 selectedPage === "create_flashcard"
@@ -196,6 +146,51 @@ export default function SideMenu() {
               Tạo thẻ ghi nhớ
             </h3>
           </div>
+          {role === "TEACHER" && (
+            <div
+              id="create_practice_test"
+              className={`px-3 py-2 rounded-md flex items-center ${
+                showFullMenu ? "gap-2" : "justify-center"
+              } ${
+                selectedPage === "create_practice_test"
+                  ? "bg-indigo-100"
+                  : "bg-transparent hover:bg-gray-100"
+              } select-none cursor-pointer`}
+              onClick={handleMenuItem}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="none"
+                  stroke={`${
+                    selectedPage === "create_practice_test"
+                      ? "#6366F1"
+                      : "#374151"
+                  }`}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m18.942 15.05l.626 2.44a2 2 0 0 1-1.44 2.434L7.433 22.67a2 2 0 0 1-2.435-1.44L1.22 6.51a2 2 0 0 1 1.44-2.434L13.354 1.33a2 2 0 0 1 2.215.912m3.371 9.11V3.543m-3.905 3.904h7.81"
+                />
+              </svg>
+
+              <h3
+                className={`${
+                  selectedPage === "create_practice_test"
+                    ? "text-indigo-500"
+                    : "text-gray-700"
+                } text-sm font-bold transition-opacity duration-1000 whitespace-nowrap ${
+                  showFullMenu ? "opacity-100" : "opacity-0 w-0 overflow-hidden"
+                }`}
+              >
+                Tạo bài kiểm tra
+              </h3>
+            </div>
+          )}
         </div>
       </div>
     </div>

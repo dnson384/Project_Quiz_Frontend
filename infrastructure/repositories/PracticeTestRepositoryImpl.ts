@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 
 import {
   PracticeTest,
@@ -42,7 +42,33 @@ export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
   constructor(
     private readonly baseUrl: string = process.env.BACKEND_URL || ""
   ) {}
+  async getUserPracticeTests(accessToken: string): Promise<PracticeTest[]> {
+    try {
+      const { data } = await axios.get<RawPracticeTestResponse[]>(
+        `${this.baseUrl}/practice-test/my-practice-tests`,
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
+      return data.map((raw) => ({
+        id: raw.practice_test_id,
+        name: raw.practice_test_name,
+        authorAvatar: raw.author_avatar_url,
+        authorName: raw.author_username,
+      }));
+    } catch (err) {
+      if (isAxiosError(err)) {
+        console.error(err.response?.data.detail);
+        return [];
+      }
+      console.error("Lỗi khi gọi backend từ repo: ", err);
+      return [];
+    }
+  }
   async getRandomPracticeTests(): Promise<PracticeTest[]> {
     try {
       const { data } = await axios.get<RawPracticeTestResponse[]>(

@@ -6,4 +6,5 @@ export interface IPracticeTestRepository {
     id: string,
     count?: number
   ) => Promise<PracticeTestDetail | null>;
+  getUserPracticeTests: (accessToken: string) => Promise<PracticeTest[]>;
 }
