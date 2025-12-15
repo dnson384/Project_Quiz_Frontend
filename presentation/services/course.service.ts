@@ -4,8 +4,8 @@ import axios from "axios";
 const base_url = "/api/course";
 
 export async function getUserCoures(): Promise<Course[]> {
-  const response = await axios.get(`${base_url}/user`)
-  return response.data
+  const response = await axios.get(`${base_url}/user`);
+  return response.data;
 }
 
 export async function getRandomCourse() {

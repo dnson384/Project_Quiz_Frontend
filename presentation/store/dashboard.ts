@@ -6,6 +6,6 @@ interface showFullMenuState {
 }
 
 export const useShowFullMenu = create<showFullMenuState>((set) => ({
-  showFullMenu: true,
+  showFullMenu: false,
   setShowFullMenu: (showFull: boolean) => set({ showFullMenu: showFull }),
 }));

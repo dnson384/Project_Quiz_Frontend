@@ -3,11 +3,12 @@ import { PracticeTest } from "@/domain/entities/PracticeTest";
 import { useAuthContext } from "@/presentation/context/authContext";
 import { getUserCoures } from "@/presentation/services/course.service";
 import { getUserPracticeTest } from "@/presentation/services/practice_test.service";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function useMyLib() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const { user } = useAuthContext();
   const role = user?.role;
@@ -27,6 +28,10 @@ export default function useMyLib() {
 
   const handleSearchClick = () => {
     document.getElementById("search-bar")?.focus();
+  };
+
+  const handleCardClick = (type: string, id: string) => {
+    router.push(`${pathname}/${type}?${type}-id=${id}`);
   };
 
   useEffect(() => {
@@ -50,5 +55,6 @@ export default function useMyLib() {
     handleChangeType,
     handleCreateCourseClick,
     handleSearchClick,
+    handleCardClick,
   };
 }

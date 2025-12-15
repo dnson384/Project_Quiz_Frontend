@@ -51,3 +51,32 @@ export interface NewPracticeTest {
   baseInfo: NewBaseInfo;
   questions: NewQuestion[];
 }
+
+// Update
+export interface UpdateBaseInfo {
+  name: string;
+}
+
+export interface UpdateQuestionBase {
+  text: string;
+  type: string;
+}
+
+export interface UpdateOption {
+  id: string | null;
+  tempId?: string;
+  text: string;
+  isCorrect: boolean;
+}
+
+export interface UpdateQuestion {
+  id: string | null;
+  tempId?: string;
+  question: UpdateQuestionBase;
+  options: UpdateOption[];
+}
+
+export interface UpdatePracticeTest {
+  baseInfo?: UpdateBaseInfo;
+  questions: UpdateQuestion[];
+}

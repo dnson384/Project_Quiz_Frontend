@@ -12,7 +12,8 @@ export default function MyPracticeTest() {
     role,
     handleChangeType,
     handleCreateCourseClick,
-    handleSearchClick
+    handleSearchClick,
+    handleCardClick,
   } = useMyLib();
   return (
     <>
@@ -70,6 +71,7 @@ export default function MyPracticeTest() {
                       courseId={course.id}
                       courseName={course.name}
                       termCount={course.termCount}
+                      handleCardClick={handleCardClick}
                     />
                   ))}
                 </section>
@@ -98,6 +100,7 @@ export default function MyPracticeTest() {
                       key={practiceTest.id}
                       practiceTestId={practiceTest.id}
                       practiceTestName={practiceTest.name}
+                      handleCardClick={handleCardClick}
                     />
                   ))}
                 </section>
@@ -117,7 +120,10 @@ export default function MyPracticeTest() {
                       <h1 className="font-semibold text-3xl">
                         Tìm và làm các bài kiểm tra thử
                       </h1>
-                      <button className="bg-indigo-500 text-white font-semibold px-5 py-3 rounded-full cursor-pointer hover:bg-indigo-700" onClick={handleSearchClick}>
+                      <button
+                        className="bg-indigo-500 text-white font-semibold px-5 py-3 rounded-full cursor-pointer hover:bg-indigo-700"
+                        onClick={handleSearchClick}
+                      >
                         Tìm kiếm bài kiểm tra thử
                       </button>
                     </section>

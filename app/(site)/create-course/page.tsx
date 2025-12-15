@@ -36,7 +36,7 @@ export default function CreateCourse() {
 
       <main className="flex">
         <SideMenu />
-        <section className="w-6xl mx-auto ">
+        <section className="w-6xl mx-auto">
           <div className="sticky top-0 py-4 bg-[#F8F8FF]">
             <div className="w-6xl class flex justify-between items-center">
               <h1 className="font-bold text-2xl">Tạo một học phần mới </h1>

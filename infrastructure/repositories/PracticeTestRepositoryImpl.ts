@@ -87,13 +87,68 @@ export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
     }
   }
 
-  async getPracticeTestDetail(
+  async getPracticeTestDetail(id: string): Promise<PracticeTestDetail | null> {
+    try {
+      const { data } = await axios.get<RawPracticeTestDetailResponse>(
+        `${this.baseUrl}/practice-test`,
+        {
+          params: {
+            practice_test_id: id,
+          },
+        }
+      );
+
+      const rawBaseInfo = data.practice_test;
+      const rawQuestions = data.questions;
+
+      const baseInfoDomain: PracticeTest = {
+        id: rawBaseInfo.practice_test_id,
+        name: rawBaseInfo.practice_test_name,
+        authorAvatar: rawBaseInfo.author_avatar_url,
+        authorName: rawBaseInfo.author_username,
+      };
+
+      const questionsDomain: PracticeTestQuestions[] = [];
+      rawQuestions.forEach((raw) => {
+        const rawQuestion = raw.question;
+        const questionDomain: Question = {
+          id: rawQuestion.question_id,
+          text: rawQuestion.question_text,
+          type: rawQuestion.question_type,
+        };
+
+        const optionsDomain: QuestionOption[] = [];
+        raw.options.forEach((option) => {
+          optionsDomain.push({
+            id: option.option_id,
+            text: option.option_text,
+            isCorrect: option.is_correct,
+          });
+        });
+
+        questionsDomain.push({
+          question: questionDomain,
+          options: optionsDomain,
+        });
+      });
+
+      return {
+        baseInfo: baseInfoDomain,
+        questions: questionsDomain,
+      };
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  }
+
+  async getPracticeTestRandomDetail(
     id: string,
     count?: number
   ): Promise<PracticeTestDetail | null> {
     try {
       const { data } = await axios.get<RawPracticeTestDetailResponse>(
-        `${this.baseUrl}/practice-test`,
+        `${this.baseUrl}/practice-test/random-question`,
         {
           params: {
             practice_test_id: id,

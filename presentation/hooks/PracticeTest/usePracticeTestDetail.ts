@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { getPracticeTestDetail } from "@/presentation/services/practice_test.service";
+import { getPracticeTestRandomDetail } from "@/presentation/services/practice_test.service";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   PracticeTest,
@@ -39,7 +39,7 @@ export default function usePracticeTestDetail() {
       const practiceTestId = searchParams.get("uuid");
       if (!practiceTestId) return;
 
-      const data: PracticeTestDetail = await getPracticeTestDetail(
+      const data: PracticeTestDetail = await getPracticeTestRandomDetail(
         practiceTestId
       );
 
