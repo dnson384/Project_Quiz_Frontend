@@ -8,7 +8,7 @@ export interface Course {
 }
 
 export interface Term {
-  readonly id: string;
+  readonly id: string | null;
   term: string;
   definition: string;
 }
@@ -52,4 +52,21 @@ export interface NewBaseInfo {
 export interface NewCourse {
   baseInfo: NewBaseInfo;
   terms: NewTerm[];
+}
+
+// Update
+export interface UpdateBaseInfo {
+  name: string;
+}
+
+export interface UpdateTerm {
+  id: string;
+  tempId?: string;
+  term: string;
+  definition: string;
+}
+
+export interface UpdateCourse {
+  course?: UpdateBaseInfo;
+  details?: UpdateTerm[];
 }

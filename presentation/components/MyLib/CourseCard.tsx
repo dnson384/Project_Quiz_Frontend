@@ -1,22 +1,21 @@
 "use client";
-import Image from "next/image";
-import okAvatar from "../../../public/avatar_icon/ok.jpg";
-
 interface CourseData {
   courseId: string;
   courseName: string;
   termCount: number;
+  handleCardClick: (type: string, courseId: string) => void;
 }
 
 export default function CourseCard({
   courseId,
   courseName,
   termCount,
+  handleCardClick,
 }: CourseData) {
   return (
     <main
       className="border border-gray-300 px-5 py-3 rounded-md w-full cursor-pointer hover:shadow-md shadow-indigo-300"
-      // onClick={() => handleCardClick(courseId, courseName)}
+      onClick={() => handleCardClick("course", courseId)}
     >
       {/* Thông tin học phân */}
       <div className="flex flex-col gap-1">

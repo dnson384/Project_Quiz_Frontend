@@ -21,3 +21,14 @@ export async function getPracticeTestDetail(practiceTestId: string) {
   });
   return response.data;
 }
+
+
+export async function getPracticeTestRandomDetail(practiceTestId: string) {
+  const response = await axios.get(`${base_url}/random-question`, {
+    params: {
+      practice_test_id: practiceTestId,
+    },
+  });
+  return response.data;
+}
+
