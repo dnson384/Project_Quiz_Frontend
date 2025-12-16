@@ -63,7 +63,7 @@ export default function useNavigationBar() {
     setShowUserMenu((prev) => !prev);
   };
 
-  const handlePersonalInafomationClic = () => {
+  const handlePersonalInformationClick = () => {
     router.push("/personal");
   };
 
@@ -102,6 +102,6 @@ export default function useNavigationBar() {
     handleSubmitSearchForm,
     handleLogoClick,
     handleUserAvatarClick,
-    handlePersonalInafomationClic
+    handlePersonalInformationClick
   };
 }
