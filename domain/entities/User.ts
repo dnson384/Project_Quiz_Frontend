@@ -4,10 +4,20 @@ export interface User {
   email: string;
   role: string;
   avatarUrl: string;
+  loginMethod: string;
 }
 
 export interface UserResponse {
   user: User;
   accessToken: string | null;
   refreshToken: string | null;
+}
+
+// Update
+export interface UpdateUser {
+  id: string;
+  name: string | null;
+  email: string | null;
+  role: string | null;
+  avatarUrl: string | null;
 }
