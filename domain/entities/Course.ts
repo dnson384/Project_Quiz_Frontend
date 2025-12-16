@@ -60,7 +60,7 @@ export interface UpdateBaseInfo {
 }
 
 export interface UpdateTerm {
-  id: string;
+  id: string | null;
   tempId?: string;
   term: string;
   definition: string;

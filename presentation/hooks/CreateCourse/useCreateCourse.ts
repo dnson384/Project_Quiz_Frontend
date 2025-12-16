@@ -1,8 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { NewTerm, NewBaseInfo, NewCourse } from "@/domain/entities/Course";
+import { createNewCoures } from "@/presentation/services/course.service";
+import { useRouter } from "next/navigation";
 
 export default function useCreateCoures() {
+  const router = useRouter();
+
   const [termCount, setTermCount] = useState<number>(2);
   const [baseInfo, setBaseInfo] = useState<NewBaseInfo>({ name: "" });
   const [termData, setTermData] = useState<NewTerm[]>([]);
@@ -52,11 +56,15 @@ export default function useCreateCoures() {
     });
   };
 
-  const handleCreateClick = (valid: boolean) => {
+  const handleCreateClick = async (valid: boolean) => {
     setIsSubmitted(true);
     if (valid) {
       const newCourse: NewCourse = { baseInfo: baseInfo, terms: termData };
-      console.log(newCourse)
+      if (await createNewCoures(newCourse)) {
+        router.push("/my-lib");
+      } else {
+        alert("Lỗi gì đó");
+      }
     }
   };
 
