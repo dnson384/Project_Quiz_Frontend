@@ -1,8 +1,8 @@
 "use client";
+import { nanoid } from "nanoid";
 import {
   Course,
   CourseDetail,
-  Term,
   UpdateBaseInfo,
   UpdateCourse,
   UpdateTerm,
@@ -11,6 +11,7 @@ import { useAuthContext } from "@/presentation/context/authContext";
 import {
   getUserCoures,
   getCourseDetail,
+  updateCourse,
 } from "@/presentation/services/course.service";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -23,31 +24,37 @@ export default function useMyCourse() {
 
   // Raw data
   const [baseInfo, setBaseInfo] = useState<Course>();
-  const [terms, setTerms] = useState<Term[]>([]);
+  const [terms, setTerms] = useState<UpdateTerm[]>([]);
 
   // Changed data
   const [changedName, setChangedName] = useState<UpdateBaseInfo>();
   const [changedTerms, setChangedTerms] = useState<UpdateTerm[]>([]);
+
+  // Delete Data
+  const [deletedTerms, setDeletedTerms] = useState<string[]>([]);
 
   // UI
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Card Behavior
-  const handleDeleteCard = (index: number, id: string | null) => {
+  const handleDeleteCard = (index: number) => {
     setTerms((prev) => {
       const newTerms = [...prev];
-      if (id === null || newTerms[index].id === id) {
-        newTerms.splice(index, 1);
-      }
+      newTerms.splice(index, 1);
       return newTerms;
     });
+
+    const id = terms[index].id;
+    if (id !== null) {
+      setDeletedTerms((prev) => [...prev, id]);
+    }
   };
 
   const handleAddCard = () => {
     setTerms((prev) => {
       const newTerms = [...prev];
-      newTerms.push({ id: null, term: "", definition: "" });
+      newTerms.push({ id: null, tempId: nanoid(), term: "", definition: "" });
       return newTerms;
     });
   };
@@ -63,7 +70,6 @@ export default function useMyCourse() {
 
   const handleTermChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    id: string | null,
     index: number
   ) => {
     setIsSubmitted(false);
@@ -73,15 +79,21 @@ export default function useMyCourse() {
 
     setChangedTerms((prev) => {
       const newChangedTerms = [...prev];
-      if (terms[index].id !== id) return prev;
+      const currentTerm = terms[index];
+      if (!currentTerm) return prev;
 
-      let currentIndex = newChangedTerms.findIndex(
-        (changedTerm) => changedTerm.id === id
-      );
+      let currentIndex = newChangedTerms.findIndex((changedTerm) => {
+        if (currentTerm.id) {
+          return changedTerm.id === currentTerm.id;
+        } else {
+          return changedTerm.tempId === currentTerm.tempId;
+        }
+      });
 
       if (currentIndex < 0) {
         newChangedTerms.push({
-          id: id,
+          id: currentTerm.id,
+          tempId: currentTerm.id ? undefined : currentTerm.tempId,
           term: terms[index].term,
           definition: terms[index].definition,
         });
@@ -97,14 +109,16 @@ export default function useMyCourse() {
   };
 
   // Save
-  const handleSaveChange = (valid: boolean) => {
+  const handleSaveChange = async (valid: boolean) => {
     setIsSubmitted(true);
-    if (valid) {
+    if (valid && baseInfo?.id) {
       const updateCourseData: UpdateCourse = {
         ...(changedName && { course: changedName }),
         details: changedTerms,
       };
-      console.log(updateCourseData);
+      if (await updateCourse(baseInfo.id, updateCourseData, deletedTerms)) {
+        window.location.reload()
+      }
     }
   };
 

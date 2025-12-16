@@ -95,7 +95,7 @@ export default function MyCourse() {
 
                   return (
                     <div
-                      key={term.id}
+                      key={term.id !== null ? term.id : term.tempId}
                       className="px-6 py-4 bg-white rounded-2xl shadow-sm"
                     >
                       <div className="flex justify-between items-center mb-2">
@@ -108,7 +108,7 @@ export default function MyCourse() {
                               ? "hover:bg-gray-300 cursor-pointer"
                               : "pointer-events-none"
                           }`}
-                          onClick={() => handleDeleteCard(index, term.id)}
+                          onClick={() => handleDeleteCard(index)}
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +138,7 @@ export default function MyCourse() {
                                 : "border-gray-200"
                             } focus:outline-1 focus:outline-indigo-500 rounded-md`}
                             defaultValue={term.term}
-                            onBlur={(e) => handleTermChange(e, term.id, index)}
+                            onBlur={(e) => handleTermChange(e, index)}
                           />
                           <div className="flex items-center justify-between">
                             <p className="font-semibold text-gray-500">
@@ -161,7 +161,7 @@ export default function MyCourse() {
                                 : "border-gray-200"
                             } focus:outline-1 focus:outline-indigo-500 rounded-md`}
                             defaultValue={term.definition}
-                            onBlur={(e) => handleTermChange(e, term.id, index)}
+                            onBlur={(e) => handleTermChange(e, index)}
                           />
                           <div className="flex items-center justify-between">
                             <p className="font-semibold text-gray-500">

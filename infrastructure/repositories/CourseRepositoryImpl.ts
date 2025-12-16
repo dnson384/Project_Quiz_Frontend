@@ -6,9 +6,12 @@ import {
   CourseLearn,
   CourseTest,
   LearnQuestion,
+  NewCourse,
   Term,
+  UpdateCourse,
 } from "@/domain/entities/Course";
 import { ICourseRepository } from "@/domain/repositories/ICourseRepository";
+import { details } from "framer-motion/client";
 
 interface RawCourseResponse {
   course_id: string;
@@ -235,5 +238,79 @@ export class CourseRepositoryImpl implements ICourseRepository {
       console.error(err);
       return null;
     }
+  }
+
+  async createNewCourse(
+    accessToken: string,
+    payload: NewCourse
+  ): Promise<boolean> {
+    const course_in = {
+      course_name: payload.baseInfo.name,
+    };
+    const detail_in = payload.terms.map((term) => ({
+      term: term.term,
+      definition: term.definition,
+    }));
+
+    const { data } = await axios.post(
+      `${this.baseUrl}/course`,
+      {
+        course_in: course_in,
+        detail_in: detail_in,
+      },
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return data;
+  }
+
+  async updateCourse(
+    courseId: string,
+    accessToken: string,
+    updateCourse: UpdateCourse
+  ): Promise<boolean> {
+    const course = updateCourse.course
+      ? { course_name: updateCourse.course.name }
+      : undefined;
+    const details = updateCourse.details?.map((detail) => ({
+      course_detail_id: detail.id,
+      term: detail.term,
+      definition: detail.definition,
+    }));
+    const payload = {
+      ...(course && { course: course }),
+      details: details,
+    };
+    const { data } = await axios.put(
+      `${this.baseUrl}/course/${courseId}`,
+      payload,
+      {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return data;
+  }
+
+  async deleteTerms(
+    courseId: string,
+    accessToken: string,
+    deletedTerms: string[]
+  ): Promise<boolean> {
+    console.log(deletedTerms)
+    const { data } = await axios.delete(
+      `${this.baseUrl}/course/${courseId}/detail`,
+      {
+        data: { course_detail_id: deletedTerms },
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return data;
   }
 }
