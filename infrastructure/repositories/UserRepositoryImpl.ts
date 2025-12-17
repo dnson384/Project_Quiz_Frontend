@@ -1,4 +1,4 @@
-import { User } from "@/domain/entities/User";
+import { UpdateUser, User } from "@/domain/entities/User";
 import { IUserRepository } from "@/domain/repositories/IUserRepository";
 import axios from "axios";
 
@@ -8,6 +8,7 @@ interface RawUserResponse {
   email: string;
   role: "STUDENT" | "TEACHER" | "ADMIN";
   avatar_url: string;
+  login_method: "EMAIL" | "GOOGLE";
 }
 
 export class UserRepositoryImpl implements IUserRepository {
@@ -30,6 +31,33 @@ export class UserRepositoryImpl implements IUserRepository {
       email: data.email,
       role: data.role,
       avatarUrl: data.avatar_url,
+      loginMethod: data.login_method,
     };
+  }
+
+  async uploadTempAvatar(formData: FormData): Promise<string> {
+    const { data } = await axios.post<string>(
+      `${this.baseUrl}/user/upload-avatar`,
+      formData
+    );
+    return data;
+  }
+
+  async updateMe(accessToken: string, payload: UpdateUser): Promise<boolean> {
+    const { data } = await axios.put<boolean>(
+      `${this.baseUrl}/user/update-me`,
+      {
+        user_id: payload.id,
+        username: payload.name,
+        email: payload.email,
+        role: payload.role,
+        avatar_url: payload.avatarUrl,
+      },
+      {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return data;
   }
 }

@@ -9,10 +9,8 @@ interface Data {
     event:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>,
-    questionId: string | null,
-    index: number,
-    type: string,
-    optionId: string | null,
+    questionIndex: number,
+    questionType: string,
     optionIndex: number | null
   ) => void;
   handleDeleteOption: (
@@ -37,9 +35,7 @@ export default function SingleChoice({
       {/* Question options */}
       <div className="mt-3 flex flex-col gap-2">
         {question.options.map((option, optionIndex) => {
-          const isMissingOptionText =
-            option && option.text.trim().length > 0 ? false : true;
-
+          const isMissingOptionText = option.text.trim().length === 0;
           return (
             <div key={option.id ? option.id : option.tempId}>
               <div className="flex items-center gap-2">
@@ -54,10 +50,8 @@ export default function SingleChoice({
                     onChange={(e) =>
                       handleQuestionChange(
                         e,
-                        question.id,
                         questionIndex,
                         "SINGLE_CHOICE",
-                        option.id,
                         optionIndex
                       )
                     }
@@ -77,10 +71,8 @@ export default function SingleChoice({
                   onBlur={(e) => {
                     handleQuestionChange(
                       e,
-                      question.id,
                       questionIndex,
                       "SINGLE_CHOICE",
-                      option.id,
                       optionIndex
                     );
                   }}

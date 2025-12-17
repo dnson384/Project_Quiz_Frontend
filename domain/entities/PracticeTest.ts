@@ -33,11 +33,13 @@ export interface NewBaseInfo {
 }
 
 export interface QuestionBase {
+  tempId: string
   text: string;
   type: string;
 }
 
 export interface Option {
+  tempId: string
   text: string;
   isCorrect: boolean;
 }

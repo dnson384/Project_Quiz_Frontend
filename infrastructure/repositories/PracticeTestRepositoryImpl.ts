@@ -1,6 +1,7 @@
 import axios, { isAxiosError } from "axios";
 
 import {
+  NewPracticeTest,
   PracticeTest,
   PracticeTestDetail,
   PracticeTestQuestions,
@@ -42,6 +43,7 @@ export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
   constructor(
     private readonly baseUrl: string = process.env.BACKEND_URL || ""
   ) {}
+
   async getUserPracticeTests(accessToken: string): Promise<PracticeTest[]> {
     try {
       const { data } = await axios.get<RawPracticeTestResponse[]>(
@@ -69,6 +71,7 @@ export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
       return [];
     }
   }
+
   async getRandomPracticeTests(): Promise<PracticeTest[]> {
     try {
       const { data } = await axios.get<RawPracticeTestResponse[]>(
@@ -199,5 +202,43 @@ export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
       console.error(err);
       return null;
     }
+  }
+
+  async createNewPracticeTest(
+    accessToken: string,
+    newPracticeTest: NewPracticeTest
+  ): Promise<boolean> {
+    const base_info = {
+      practice_test_name: newPracticeTest.baseInfo.name,
+    };
+    const questions = newPracticeTest.questions.map((question) => {
+      const questionBase = {
+        question_text: question.questionBase.text,
+        question_type: question.questionBase.type,
+      };
+      const options = question.options.map((option) => ({
+        option_text: option.text,
+        is_correct: option.isCorrect,
+      }));
+
+      return {
+        question: questionBase,
+        options: options,
+      };
+    });
+
+    const { data } = await axios.post(
+      `${this.baseUrl}/practice-test`,
+      {
+        base_info: base_info,
+        questions: questions,
+      },
+      {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+
+    return data;
   }
 }

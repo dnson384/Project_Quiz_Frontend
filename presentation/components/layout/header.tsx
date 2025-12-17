@@ -20,6 +20,7 @@ export default function Header() {
     handleSubmitSearchForm,
     handleLogoClick,
     handleUserAvatarClick,
+    handlePersonalInformationClick,
   } = useNavigationBar();
 
   const { user } = useAuthContext();
@@ -130,7 +131,10 @@ export default function Header() {
           ref={userMenuRef}
           className="absolute right-6 rounded-xl shadow-[0_0_10px_rgba(0,0,0,0.3)]"
         >
-          <div className="px-5 py-3 flex items-center gap-2 select-none cursor-pointer hover:bg-gray-200">
+          <div
+            className="px-5 py-3 flex items-center gap-2 select-none cursor-pointer hover:bg-gray-200"
+            onClick={handlePersonalInformationClick}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"

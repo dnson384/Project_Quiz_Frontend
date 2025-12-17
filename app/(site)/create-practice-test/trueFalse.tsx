@@ -22,14 +22,15 @@ export default function TrueFalse({
       {/* Question options */}
       <div className="mt-3 flex flex-col gap-2">
         {question.options.map((option, optionIndex) => {
+          console.log(optionIndex);
           return (
-            <div key={optionIndex} className="flex items-center gap-3">
+            <div key={option.tempId} className="flex items-center gap-3">
               <label className="w-8 h-8 flex items-center justify-center rounded-full cursor-pointer">
                 <input
                   type="radio"
                   data-section="options"
                   tabIndex={-1}
-                  id={`isCorrect-${optionIndex}`}
+                  id={`isCorrect-${option.tempId}-${optionIndex}`}
                   name={`isCorrect-${questionIndex}`}
                   className="w-4 h-4 accent-indigo-500 cursor-pointer"
                   checked={option.isCorrect}
@@ -44,7 +45,10 @@ export default function TrueFalse({
                 />
               </label>
 
-              <label className="w-full" htmlFor={`isCorrect-${optionIndex}`}>
+              <label
+                className="w-full"
+                htmlFor={`isCorrect-${option.tempId}-${optionIndex}`}
+              >
                 {option.text}
               </label>
             </div>

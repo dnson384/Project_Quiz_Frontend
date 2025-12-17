@@ -63,6 +63,10 @@ export default function useNavigationBar() {
     setShowUserMenu((prev) => !prev);
   };
 
+  const handlePersonalInformationClick = () => {
+    router.push("/personal");
+  };
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (!showUserMenu) return;
@@ -98,5 +102,6 @@ export default function useNavigationBar() {
     handleSubmitSearchForm,
     handleLogoClick,
     handleUserAvatarClick,
+    handlePersonalInformationClick
   };
 }

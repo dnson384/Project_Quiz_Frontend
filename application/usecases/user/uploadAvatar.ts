@@ -1,4 +1,3 @@
-import { User } from "@/domain/entities/User";
 import { IUserRepository } from "@/domain/repositories/IUserRepository";
 
 export class UploadAvatarUsecase {

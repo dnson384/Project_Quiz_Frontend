@@ -1,4 +1,4 @@
-import { PracticeTest } from "@/domain/entities/PracticeTest";
+import { NewPracticeTest, PracticeTest } from "@/domain/entities/PracticeTest";
 import axios from "axios";
 
 const base_url = "/api/practice-test";
@@ -22,7 +22,6 @@ export async function getPracticeTestDetail(practiceTestId: string) {
   return response.data;
 }
 
-
 export async function getPracticeTestRandomDetail(practiceTestId: string) {
   const response = await axios.get(`${base_url}/random-question`, {
     params: {
@@ -32,3 +31,6 @@ export async function getPracticeTestRandomDetail(practiceTestId: string) {
   return response.data;
 }
 
+export async function createNewPracticeTest(newPracticeTest: NewPracticeTest) {
+  return await axios.post(`${base_url}/create`, newPracticeTest);
+}

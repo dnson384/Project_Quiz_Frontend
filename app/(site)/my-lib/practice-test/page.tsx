@@ -100,7 +100,12 @@ export default function MyPracticeTest() {
             <div className="flex flex-col gap-3">
               {questions.map((question, questionIndex) => {
                 const changeQuestionType = changedQuestions.find(
-                  (changedQuestion) => changedQuestion.id === question.id
+                  (changedQuestion) => {
+                    if (changedQuestion.id) {
+                      return changedQuestion.id === question.id;
+                    }
+                    return changedQuestion.tempId === question.tempId;
+                  }
                 )?.question.type;
                 const questionType =
                   changeQuestionType || question.question.type;
@@ -111,7 +116,12 @@ export default function MyPracticeTest() {
                 let hasCorrectAnswer = true;
 
                 const changedQuestion = changedQuestions.find(
-                  (changeQuestion) => changeQuestion.id === question.id
+                  (changeQuestion) => {
+                    if (changeQuestion.id) {
+                      return changeQuestion.id === question.id;
+                    }
+                    return changeQuestion.tempId === question.tempId;
+                  }
                 );
 
                 if (changedQuestion) {
@@ -119,7 +129,7 @@ export default function MyPracticeTest() {
                   isMissingQuestionBase = questionText.trim().length === 0;
                   showError = isMissingQuestionBase && isSubmitted;
                   isMissingOptionText = changedQuestion.options.some(
-                    (option) => (option?.text || "").trim() === ""
+                    (option) => option.text.trim() === ""
                   );
                   hasCorrectAnswer = changedQuestion.options.some(
                     (option) => option.isCorrect === true
@@ -148,10 +158,8 @@ export default function MyPracticeTest() {
                           onBlur={(e) =>
                             handleQuestionChange(
                               e,
-                              question.id,
                               questionIndex,
                               question.question.type,
-                              null,
                               null
                             )
                           }
@@ -198,10 +206,8 @@ export default function MyPracticeTest() {
                           onChange={(e) =>
                             handleQuestionChange(
                               e,
-                              question.id,
                               questionIndex,
                               question.question.type,
-                              null,
                               null
                             )
                           }
@@ -270,7 +276,7 @@ export default function MyPracticeTest() {
 
                     {questionType === "SINGLE_CHOICE" && (
                       <SingleChoice
-                        question={question}
+                        question={changedQuestion ? changedQuestion : question}
                         isSubmitted={isSubmitted}
                         questionIndex={questionIndex}
                         handleQuestionChange={handleQuestionChange}
@@ -279,7 +285,7 @@ export default function MyPracticeTest() {
                     )}
                     {questionType === "MULTIPLE_CHOICE" && (
                       <MultipleChoice
-                        question={question}
+                        question={changedQuestion ? changedQuestion : question}
                         isSubmitted={isSubmitted}
                         questionIndex={questionIndex}
                         handleQuestionChange={handleQuestionChange}
@@ -288,7 +294,7 @@ export default function MyPracticeTest() {
                     )}
                     {questionType === "TRUE_FALSE" && (
                       <TrueFalse
-                        question={question}
+                        question={changedQuestion ? changedQuestion : question}
                         questionIndex={questionIndex}
                         handleQuestionChange={handleQuestionChange}
                       />
