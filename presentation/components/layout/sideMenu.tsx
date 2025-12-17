@@ -148,7 +148,7 @@ export default function SideMenu() {
           </div>
           {role === "TEACHER" && (
             <div
-              id="create_practice_test"
+              id="create-practice-test"
               className={`px-3 py-2 rounded-md flex items-center ${
                 showFullMenu ? "gap-2" : "justify-center"
               } ${

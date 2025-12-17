@@ -1,4 +1,5 @@
 "use client";
+import { nanoid } from "nanoid";
 import React, { useState, useEffect } from "react";
 import {
   NewBaseInfo,
@@ -6,11 +7,20 @@ import {
   Option,
   NewPracticeTest,
 } from "@/domain/entities/PracticeTest";
+import { createNewPracticeTest } from "@/presentation/services/practice_test.service";
+import { useRouter } from "next/navigation";
 
 export default function useCreatePracticeTest() {
-  const getNewOption = (): Option => ({ text: "", isCorrect: false });
+  const router = useRouter();
+
+  const getNewOption = (): Option => ({
+    tempId: nanoid(),
+    text: "",
+    isCorrect: false,
+  });
   const getNewQuestion = (): NewQuestion => ({
     questionBase: {
+      tempId: nanoid(),
       text: "",
       type: "SINGLE_CHOICE",
     },
@@ -49,10 +59,7 @@ export default function useCreatePracticeTest() {
       const newQuestions = [...prev];
       newQuestions[questionIndex] = {
         ...newQuestions[questionIndex],
-        options: [
-          ...newQuestions[questionIndex].options,
-          { text: "", isCorrect: false },
-        ],
+        options: [...newQuestions[questionIndex].options, getNewOption()],
       };
       return newQuestions;
     });
@@ -91,6 +98,7 @@ export default function useCreatePracticeTest() {
     const section = event.target.dataset.section;
 
     const { name, value } = target;
+    console.log(name, value)
     setQuestions((prev) => {
       const newQuestions = [...prev];
       while (questionIndex >= newQuestions.length) {
@@ -106,8 +114,8 @@ export default function useCreatePracticeTest() {
             ["SINGLE_CHOICE", "MULTIPLE_CHOICE"].includes(currentType)
           ) {
             newQuestions[questionIndex].options = [
-              { text: "Đúng", isCorrect: false },
-              { text: "Sai", isCorrect: false },
+              { tempId: nanoid(), text: "Đúng", isCorrect: false },
+              { tempId: nanoid(), text: "Sai", isCorrect: false },
             ];
           } else if (
             currentType === "TRUE_FALSE" &&
@@ -127,10 +135,7 @@ export default function useCreatePracticeTest() {
       // Thay doi options
       else if (section === "options" && optionIndex !== null) {
         while (optionIndex >= newQuestions[questionIndex].options.length) {
-          newQuestions[questionIndex].options.push({
-            text: "",
-            isCorrect: false,
-          });
+          newQuestions[questionIndex].options.push(getNewOption());
         }
 
         const nameOption = name.split("-")[0];
@@ -159,14 +164,19 @@ export default function useCreatePracticeTest() {
   };
 
   // Submit
-  const handleCreateClick = (valid: boolean) => {
+  const handleCreateClick = async (valid: boolean) => {
     setIsSubmitted(true);
     if (valid) {
       const newPracticeTest = {
         baseInfo: baseInfo,
         questions: questions,
       };
-      console.log(newPracticeTest);
+
+      console.log(newPracticeTest)
+
+      if (await createNewPracticeTest(newPracticeTest)) {
+        router.push("/my-lib");
+      }
     }
   };
 

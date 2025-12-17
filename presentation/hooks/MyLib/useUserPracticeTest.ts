@@ -47,6 +47,8 @@ export default function useMyPractice() {
   const [changedQuestions, setChangedQuestions] = useState<UpdateQuestion[]>(
     []
   );
+  const [deleteOptions, setDeleteOptions] = useState<string[]>([])
+  const [deleteQuestions, setDeleteQuestions] = useState<string[]>([])
 
   // UI
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -81,10 +83,8 @@ export default function useMyPractice() {
     event:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLSelectElement>,
-    questionId: string | null,
     questionIndex: number,
     questionType: string,
-    optionId: string | null,
     optionIndex: number | null
   ) => {
     setIsSubmitted(false);
@@ -94,20 +94,23 @@ export default function useMyPractice() {
     const { name, value } = target;
     setChangedQuestions((prev) => {
       const newChangedQuestion = [...prev];
-      if (!questions[questionIndex]) return prev;
+      const currentQuestion = questions[questionIndex];
+      if (!currentQuestion) return prev;
 
-      let currentIndex = newChangedQuestion.findIndex((changedQuestion) => {
-        if (questionId !== null) {
-          return changedQuestion.id === questionId;
-        } else {
-          return changedQuestion.tempId === questions[questionIndex].tempId;
+      let curChangeQuestionIndex = newChangedQuestion.findIndex(
+        (changedQuestion) => {
+          if (currentQuestion.id !== null) {
+            return changedQuestion.id === currentQuestion.id;
+          } else {
+            return changedQuestion.tempId === currentQuestion.tempId;
+          }
         }
-      });
+      );
 
-      if (currentIndex < 0) {
+      if (curChangeQuestionIndex < 0) {
         const currentQuestion = questions[questionIndex];
         newChangedQuestion.push({
-          id: questionId,
+          id: currentQuestion.id,
           tempId: currentQuestion.tempId ? currentQuestion.tempId : undefined,
           question: {
             text: questions[questionIndex].question.text,
@@ -115,7 +118,7 @@ export default function useMyPractice() {
           },
           options: questions[questionIndex].options,
         });
-        currentIndex = newChangedQuestion.length - 1;
+        curChangeQuestionIndex = newChangedQuestion.length - 1;
       }
 
       // Update questionBase
@@ -124,21 +127,21 @@ export default function useMyPractice() {
           // MULTIPLE <-> SINGLE
           if (
             ["SINGLE_CHOICE", "MULTIPLE_CHOICE"].includes(
-              newChangedQuestion[currentIndex].question.type
+              newChangedQuestion[curChangeQuestionIndex].question.type
             ) &&
             ["SINGLE_CHOICE", "MULTIPLE_CHOICE"].includes(value)
           ) {
             questions[questionIndex].options.forEach(
               (option) => (option.isCorrect = false)
             );
-            newChangedQuestion[currentIndex].options.forEach(
+            newChangedQuestion[curChangeQuestionIndex].options.forEach(
               (option) => (option.isCorrect = false)
             );
           }
           // SINGLE / MULTIPLE -> TRUE_FALSE
           else if (
             ["SINGLE_CHOICE", "MULTIPLE_CHOICE"].includes(
-              newChangedQuestion[currentIndex].question.type
+              newChangedQuestion[curChangeQuestionIndex].question.type
             ) &&
             value === "TRUE_FALSE"
           ) {
@@ -146,7 +149,7 @@ export default function useMyPractice() {
               { id: null, tempId: nanoid(), text: "Đúng", isCorrect: false },
               { id: null, tempId: nanoid(), text: "Sai", isCorrect: false },
             ];
-            newChangedQuestion[currentIndex].options = [
+            newChangedQuestion[curChangeQuestionIndex].options = [
               { id: null, tempId: nanoid(), text: "Đúng", isCorrect: false },
               { id: null, tempId: nanoid(), text: "Sai", isCorrect: false },
             ];
@@ -154,82 +157,87 @@ export default function useMyPractice() {
           // TRUE_FALSE -> SINGLE / MULTIPLE
           else if (
             ["SINGLE_CHOICE", "MULTIPLE_CHOICE"].includes(value) &&
-            newChangedQuestion[currentIndex].question.type === "TRUE_FALSE"
+            newChangedQuestion[curChangeQuestionIndex].question.type ===
+              "TRUE_FALSE"
           ) {
             questions[questionIndex].options = Array.from({ length: 4 }, () =>
               getNewOption()
             );
-            newChangedQuestion[currentIndex].options = Array.from(
+            newChangedQuestion[curChangeQuestionIndex].options = Array.from(
               { length: 4 },
               () => getNewOption()
             );
           }
         }
-
-        newChangedQuestion[currentIndex].question = {
-          ...newChangedQuestion[currentIndex].question,
+        newChangedQuestion[curChangeQuestionIndex].question = {
+          ...newChangedQuestion[curChangeQuestionIndex].question,
           [name]: value,
         };
       }
-      // MULTIPLE <-> SINGLE
-      else if (section === "options" && optionId && optionIndex !== null) {
-        // Update option
-        if (!questions[questionIndex].options[optionIndex].id) return prev;
-
-        let currentOptionIndex = newChangedQuestion[
-          currentIndex
-        ].options.findIndex((option) => option.id === optionId);
-
-        const currentOption =
-          newChangedQuestion[currentIndex].options[currentOptionIndex];
-
-        if (currentOptionIndex < 0) {
-          newChangedQuestion[currentIndex].options.push({
-            id: currentOption.id,
-            tempId: currentOption.tempId ? currentOption.tempId : undefined,
-            text: currentOption.text,
-            isCorrect: currentOption.isCorrect,
-          });
-
-          currentOptionIndex =
-            newChangedQuestion[currentIndex].options.length - 1;
-        }
+      // Update options
+      else if (section === "options" && optionIndex !== null) {
+        const currentOption = currentQuestion.options[optionIndex];
 
         const nameOption = name.split("-")[0];
         const isChecked = (target as HTMLInputElement).checked;
 
-        if (questionType === "MULTIPLE_CHOICE") {
-          newChangedQuestion[currentIndex].options[currentOptionIndex] = {
-            ...newChangedQuestion[currentIndex].options[currentOptionIndex],
-            [nameOption]: nameOption === "isCorrect" ? isChecked : value,
-          };
+        if (currentOption.id) {
+          let currentOptionIndex = newChangedQuestion[
+            curChangeQuestionIndex
+          ].options.findIndex((option) => option.id === currentOption.id);
+
+          if (currentOptionIndex < 0) {
+            newChangedQuestion[curChangeQuestionIndex].options.push({
+              id: currentOption.id,
+              text: currentOption.text,
+              isCorrect: currentOption.isCorrect,
+            });
+
+            currentOptionIndex =
+              newChangedQuestion[curChangeQuestionIndex].options.length - 1;
+          }
+
+          if (questionType === "MULTIPLE_CHOICE") {
+            newChangedQuestion[curChangeQuestionIndex].options[
+              currentOptionIndex
+            ] = {
+              ...newChangedQuestion[curChangeQuestionIndex].options[
+                currentOptionIndex
+              ],
+              [nameOption]: nameOption === "isCorrect" ? isChecked : value,
+            };
+          } else {
+            if (nameOption === "isCorrect") {
+              newChangedQuestion[curChangeQuestionIndex].options.forEach(
+                (option) => {
+                  option.isCorrect = false;
+                }
+              );
+            }
+
+            newChangedQuestion[curChangeQuestionIndex].options[
+              currentOptionIndex
+            ] = {
+              ...newChangedQuestion[curChangeQuestionIndex].options[
+                currentOptionIndex
+              ],
+              [nameOption]: nameOption === "isCorrect" ? isChecked : value,
+            };
+          }
         } else {
           if (nameOption === "isCorrect") {
-            newChangedQuestion[currentIndex].options.forEach((option) => {
-              option.isCorrect = false;
-            });
+            newChangedQuestion[curChangeQuestionIndex].options.forEach(
+              (option) => {
+                option.isCorrect = false;
+              }
+            );
           }
-          newChangedQuestion[currentIndex].options[currentOptionIndex] = {
-            ...newChangedQuestion[currentIndex].options[currentOptionIndex],
+
+          newChangedQuestion[curChangeQuestionIndex].options[optionIndex] = {
+            ...newChangedQuestion[curChangeQuestionIndex].options[optionIndex],
             [nameOption]: nameOption === "isCorrect" ? isChecked : value,
           };
         }
-      }
-      // Câu hỏi mới hoặc chuyển sang true false
-      else if (section === "options" && !optionId && optionIndex !== null) {
-        const nameOption = name.split("-")[0];
-        const isChecked = (target as HTMLInputElement).checked;
-
-        if (nameOption === "isCorrect") {
-          newChangedQuestion[currentIndex].options.forEach((option) => {
-            option.isCorrect = false;
-          });
-        }
-
-        newChangedQuestion[currentIndex].options[optionIndex] = {
-          ...newChangedQuestion[currentIndex].options[optionIndex],
-          [nameOption]: nameOption === "isCorrect" ? isChecked : value,
-        };
       }
       return newChangedQuestion;
     });
@@ -339,7 +347,6 @@ export default function useMyPractice() {
   // Save
   const handleSaveChange = (valid: boolean) => {
     setIsSubmitted(true);
-    console.log(valid);
     if (valid) {
       const updatePracticeTest: UpdatePracticeTest = {
         ...(changedName && { baseInfo: changedName }),

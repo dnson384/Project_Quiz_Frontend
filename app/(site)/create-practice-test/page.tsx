@@ -45,7 +45,6 @@ export default function CreateCourse() {
     else return true;
   });
   const isFormvalid = !titleMissing && !anyMissing;
-  console.log(isFormvalid)
 
   return (
     <>
@@ -110,7 +109,7 @@ export default function CreateCourse() {
                 );
 
                 return (
-                  <div key={questionIndex}>
+                  <div key={question.questionBase.tempId}>
                     {/* Quesiton Base */}
                     <div className="flex items-center gap-2 mb-2">
                       <p className="font-semibold text-gray-500">
@@ -266,7 +265,7 @@ export default function CreateCourse() {
                 className="my-5 w-fit mx-auto px-5 py-3 bg-gray-200 font-semibold rounded-full cursor-pointer hover:bg-gray-300"
                 onClick={(e) => handleAddCartClick(e)}
               >
-                Thêm thẻ
+                Thêm câu hỏi
               </button>
             </div>
           </form>
