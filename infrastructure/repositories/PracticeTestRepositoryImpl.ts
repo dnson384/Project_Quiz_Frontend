@@ -1,6 +1,7 @@
 import axios, { isAxiosError } from "axios";
 
 import {
+  AnswerQuestionData,
   DeleteOptionData,
   NewPracticeTest,
   PracticeTest,
@@ -9,6 +10,7 @@ import {
   Question,
   QuestionOption,
   UpdatePracticeTest,
+  OptionSelectedData,
 } from "@/domain/entities/PracticeTest";
 import { IPracticeTestRepository } from "@/domain/repositories/IPracticeTestRepository";
 
@@ -147,13 +149,32 @@ export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
     }
   }
 
+  async getAllHistories(accessToken: string): Promise<PracticeTest[]> {
+    const { data } = await axios.get<RawPracticeTestResponse[]>(
+      `${this.baseUrl}/practice-test/history`,
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return data.map((raw) => ({
+      id: raw.practice_test_id,
+      name: raw.practice_test_name,
+      authorAvatar: raw.author_avatar_url,
+      authorName: raw.author_username,
+    }));
+  }
+
   async getPracticeTestRandomDetail(
     id: string,
     count?: number
   ): Promise<PracticeTestDetail | null> {
     try {
       const { data } = await axios.get<RawPracticeTestDetailResponse>(
-        `${this.baseUrl}/practice-test/random-question`,
+        `${this.baseUrl}/practice-test/random-questions`,
         {
           params: {
             practice_test_id: id,
@@ -244,6 +265,34 @@ export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
     return data;
   }
 
+  async submitTest(
+    practiceTestId: string,
+    accessToken: string,
+    answerQuestions: AnswerQuestionData,
+    questionsCount: number,
+    score: number
+  ): Promise<boolean> {
+    const { data } = await axios.post(
+      `${this.baseUrl}/practice-test/submit-test`,
+      {
+        practice_test_id: practiceTestId,
+        answer_questions: Object.values(answerQuestions).map(
+          (answer: OptionSelectedData) => ({
+            question_id: answer.questionId,
+            option_id: answer.optionId.length === 0 ? null : answer.optionId,
+          })
+        ),
+        num_of_questions: questionsCount,
+        score: score,
+      },
+      {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    return data;
+  }
+
   async updatePracticeTest(
     practiceTestId: string,
     accessToken: string,
@@ -321,6 +370,6 @@ export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
         headers: { Authorization: `Bearer ${accessToken}` },
       }
     );
-    return data; 
+    return data;
   }
 }

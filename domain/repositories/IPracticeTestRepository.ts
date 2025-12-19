@@ -4,20 +4,29 @@ import {
   PracticeTest,
   PracticeTestDetail,
   UpdatePracticeTest,
+  AnswerQuestionData,
 } from "../entities/PracticeTest";
 
 export interface IPracticeTestRepository {
   getRandomPracticeTests: () => Promise<PracticeTest[]>;
   getPracticeTestDetail: (id: string) => Promise<PracticeTestDetail | null>;
-  getPracticeTestRandomDetail: (
+  getPracticeTestRandomDetail(
     id: string,
     count?: number
-  ) => Promise<PracticeTestDetail | null>;
-  getUserPracticeTests: (accessToken: string) => Promise<PracticeTest[]>;
-  createNewPracticeTest: (
+  ): Promise<PracticeTestDetail | null>;
+  getAllHistories(accessToken: string): Promise<PracticeTest[]>;
+  getUserPracticeTests(accessToken: string): Promise<PracticeTest[]>;
+  createNewPracticeTest(
     accessToken: string,
     newPracticeTest: NewPracticeTest
-  ) => Promise<boolean>;
+  ): Promise<boolean>;
+  submitTest(
+    practiceTestId: string,
+    accessToken: string,
+    answerQuestions: AnswerQuestionData,
+    questionsCount: number,
+    score: number
+  ): Promise<boolean>;
   updatePracticeTest(
     practiceTestId: string,
     accessToken: string,

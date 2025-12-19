@@ -3,17 +3,16 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import {
   PracticeTestQuestions,
-  QuestionOption,
+  AnswerQuestionData,
 } from "@/domain/entities/PracticeTest";
 
 import usePracticeTestDetail from "./usePracticeTestDetail";
 import { shuffleArray } from "@/presentation/utils/arrayHelpers";
 import { usePracticeTestResult } from "@/presentation/store/practiceTestStore";
 import { generateSlug } from "@/presentation/utils/textFormatter";
+import { submitPracticeTest } from "@/presentation/services/practice_test.service";
 
-interface QuestionSelectedData {
-  [key: number]: QuestionOption;
-}
+
 
 export default function useTakePracticeTest() {
   const router = useRouter();
@@ -26,8 +25,8 @@ export default function useTakePracticeTest() {
 
   const [timer, setTimer] = useState<number>(0);
   const [isTimeOut, setIsTimeOut] = useState<boolean>(false);
-  const [selectedOptionId, setSelectedOptionId] =
-    useState<QuestionSelectedData>({});
+  const [answeredQuestions, setAnsweredQuestions] =
+    useState<AnswerQuestionData>({});
 
   const setPracticeTestResult = usePracticeTestResult(
     (state) => state.setPracticeTestResult
@@ -49,33 +48,50 @@ export default function useTakePracticeTest() {
 
   const handleOptionSelected = (
     questionIndex: number,
-    option: QuestionOption
+    optionId: string,
+    isCorrect: boolean
   ) => {
-    if (
-      selectedOptionId[questionIndex] &&
-      selectedOptionId[questionIndex].id === option.id
-    ) {
-      const newSelectedOptionId = { ...selectedOptionId };
-      delete newSelectedOptionId[questionIndex];
-      setSelectedOptionId(newSelectedOptionId);
-    } else {
-      setSelectedOptionId((prev) => ({
-        ...prev,
-        [questionIndex]: option,
-      }));
-    }
+    setAnsweredQuestions((prev) => {
+      const newAnsweredOptions = { ...prev };
+      if (newAnsweredOptions[questionIndex]) {
+        newAnsweredOptions[questionIndex] = {
+          ...newAnsweredOptions[questionIndex],
+          optionId: optionId,
+          isCorrect: isCorrect,
+        };
+      }
+      return newAnsweredOptions;
+    });
   };
 
-  const handleSubmitTestClick = () => {
-    if (!baseInfo || !shuffledQuestions) return;
-    const courseId = searchParams.get("uuid");
+  const handleSubmitTestClick = async () => {
+    const practiceTestId = searchParams.get("uuid");
+    const questionsCount = questions.length;
+    const score = Object.values(answeredQuestions).reduce(
+      (total, opt) => (total += opt.isCorrect ? 1 : 0),
+      0
+    );
+    if (!practiceTestId || !questionsCount) return;
 
-    let score = 0;
-    Object.values(selectedOptionId).forEach((value) => {
-      value.isCorrect && score++;
-    });
-    setPracticeTestResult(score, baseInfo, shuffledQuestions, selectedOptionId);
-    router.push(`/practice-test/result?uuid=${courseId}`);
+    const summitStatus = await submitPracticeTest(
+      practiceTestId,
+      answeredQuestions,
+      questionsCount,
+      score
+    );
+    if (summitStatus) {
+      console.log("done");
+    }
+
+    // if (!baseInfo || !shuffledQuestions) return;
+    // const courseId = searchParams.get("uuid");
+
+    // let score = 0;
+    // Object.values(selectedOptionId).forEach((value) => {
+    //   value.isCorrect && score++;
+    // });
+    // setPracticeTestResult(score, baseInfo, shuffledQuestions, selectedOptionId);
+    // router.push(`/practice-test/result?uuid=${courseId}`);
   };
 
   const handleSidebarClick = (index: number) => {
@@ -95,6 +111,21 @@ export default function useTakePracticeTest() {
     router.push(`/practice-test/${slug}?uuid=${practiceTestId}`);
   };
 
+  useEffect(() => {
+    setAnsweredQuestions((prev) => {
+      const newAnsweredOptions = { ...prev };
+      questions.forEach((question, index) => {
+        answeredQuestions[index] = {
+          questionId: question.question.id,
+          optionId: "",
+          isCorrect: false,
+        };
+      });
+      return newAnsweredOptions;
+    });
+  }, [questions]);
+
+  // Timer
   useEffect(() => {
     const timer = searchParams.get("timer");
     if (timer) {
@@ -126,7 +157,7 @@ export default function useTakePracticeTest() {
     shuffledQuestions,
     timer,
     isTimeOut,
-    selectedOptionId,
+    answeredQuestions,
     handleClose,
     handleOptionSelected,
     handleSidebarClick,

@@ -7,7 +7,7 @@ export default function TakePracticeTest() {
     baseInfo,
     shuffledQuestions,
     timer,
-    selectedOptionId,
+    answeredQuestions,
     handleClose,
     handleOptionSelected,
     handleSidebarClick,
@@ -72,7 +72,7 @@ export default function TakePracticeTest() {
                   <div
                     key={question.question.id}
                     className={`w-8 h-8 text-sm p-2 ${
-                      selectedOptionId[index]
+                      answeredQuestions[index].optionId.length > 0
                         ? "bg-indigo-500 text-white"
                         : "bg-gray-200"
                     } rounded-full flex justify-center items-center`}
