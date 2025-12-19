@@ -15,6 +15,8 @@ export default function MyPracticeTest() {
     questions,
     changedName,
     changedQuestions,
+    deleteOptions,
+    deleteQuestions,
     // UI
     isSubmitted,
     // Card Behavior
@@ -31,10 +33,10 @@ export default function MyPracticeTest() {
 
   const titleMissing = changedName?.name.length === 0;
   const anyMissing = changedQuestions.some((changeQuestion) => {
-    if (changeQuestion.question.text.length === 0) return true;
-    const isOptionTextMissing = changeQuestion.options.some((changeOption) => {
-      if (changeOption.text.length === 0) return true;
-    });
+    if (changeQuestion.question?.text.length === 0) return true;
+    const isOptionTextMissing = changeQuestion.options.some(
+      (changeOption) => changeOption.text.length === 0
+    );
     if (isOptionTextMissing) return true;
 
     const hasAnswerOption = changeQuestion.options.some(
@@ -57,6 +59,8 @@ export default function MyPracticeTest() {
               <button
                 className={`bg-indigo-500 text-white font-semibold w-20 py-2 rounded-full ${
                   changedQuestions.length > 0 ||
+                  deleteOptions.length > 0 ||
+                  deleteQuestions.length > 0 ||
                   (changedName &&
                     changedName?.name.length > 0 &&
                     changedName.name !== baseInfo?.name)
@@ -101,14 +105,13 @@ export default function MyPracticeTest() {
               {questions.map((question, questionIndex) => {
                 const changeQuestionType = changedQuestions.find(
                   (changedQuestion) => {
-                    if (changedQuestion.id) {
+                    if (changedQuestion.id)
                       return changedQuestion.id === question.id;
-                    }
                     return changedQuestion.tempId === question.tempId;
                   }
-                )?.question.type;
+                )?.question?.type;
                 const questionType =
-                  changeQuestionType || question.question.type;
+                  changeQuestionType || question.question?.type;
 
                 let isMissingQuestionBase: boolean = false;
                 let showError = false;
@@ -125,7 +128,7 @@ export default function MyPracticeTest() {
                 );
 
                 if (changedQuestion) {
-                  const questionText = changedQuestion.question.text || "";
+                  const questionText = changedQuestion.question?.text || "";
                   isMissingQuestionBase = questionText.trim().length === 0;
                   showError = isMissingQuestionBase && isSubmitted;
                   isMissingOptionText = changedQuestion.options.some(
@@ -148,21 +151,23 @@ export default function MyPracticeTest() {
                           type="text"
                           data-section="questionBase"
                           name="text"
-                          defaultValue={question.question.text}
+                          defaultValue={question.question?.text}
                           className={`w-full px-3 py-1 border-b-2 ${
                             showError
                               ? "border-red-500 bg-red-50 focus:outline-1 focus:outline-red-500"
                               : "border-gray-200  focus:outline-0"
                           }`}
                           placeholder="Câu hỏi"
-                          onBlur={(e) =>
-                            handleQuestionChange(
-                              e,
-                              questionIndex,
-                              question.question.type,
-                              null
-                            )
-                          }
+                          onBlur={(e) => {
+                            if (question.question?.type) {
+                              handleQuestionChange(
+                                e,
+                                questionIndex,
+                                question.question.type,
+                                null
+                              );
+                            }
+                          }}
                         />
                       </div>
                       <div
@@ -201,16 +206,18 @@ export default function MyPracticeTest() {
                           tabIndex={-1}
                           data-section="questionBase"
                           name="type"
-                          defaultValue={question.question.type}
+                          defaultValue={question.question?.type}
                           className="appearance-none w-55 bg-indigo-50 border border-gray-200 text-gray-700 py-2 px-3 rounded-lg focus:outline-none  cursor-pointer"
-                          onChange={(e) =>
-                            handleQuestionChange(
-                              e,
-                              questionIndex,
-                              question.question.type,
-                              null
-                            )
-                          }
+                          onChange={(e) => {
+                            if (question.question?.type) {
+                              handleQuestionChange(
+                                e,
+                                questionIndex,
+                                question.question.type,
+                                null
+                              );
+                            }
+                          }}
                         >
                           <option value="SINGLE_CHOICE">Đáp án duy nhất</option>
                           <option value="MULTIPLE_CHOICE">Nhiều đáp án</option>
