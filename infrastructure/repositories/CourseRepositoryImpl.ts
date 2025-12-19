@@ -302,6 +302,7 @@ export class CourseRepositoryImpl implements ICourseRepository {
     accessToken: string,
     deletedTerms: string[]
   ): Promise<boolean> {
+    console.log(deletedTerms)
     const { data } = await axios.delete(
       `${this.baseUrl}/course/${courseId}/detail`,
       {

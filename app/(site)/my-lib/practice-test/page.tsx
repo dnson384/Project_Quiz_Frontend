@@ -15,8 +15,6 @@ export default function MyPracticeTest() {
     questions,
     changedName,
     changedQuestions,
-    deleteOptions,
-    deleteQuestions,
     // UI
     isSubmitted,
     // Card Behavior
@@ -61,9 +59,7 @@ export default function MyPracticeTest() {
                   changedQuestions.length > 0 ||
                   (changedName &&
                     changedName?.name.length > 0 &&
-                    changedName.name !== baseInfo?.name) ||
-                  deleteOptions.length > 0 ||
-                  deleteQuestions.length > 0
+                    changedName.name !== baseInfo?.name)
                     ? "cursor-pointer hover:bg-indigo-700"
                     : "pointer-events-none"
                 }`}

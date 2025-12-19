@@ -1,14 +1,12 @@
 import axios, { isAxiosError } from "axios";
 
 import {
-  DeleteOptionData,
   NewPracticeTest,
   PracticeTest,
   PracticeTestDetail,
   PracticeTestQuestions,
   Question,
   QuestionOption,
-  UpdatePracticeTest,
 } from "@/domain/entities/PracticeTest";
 import { IPracticeTestRepository } from "@/domain/repositories/IPracticeTestRepository";
 
@@ -242,85 +240,5 @@ export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
     );
 
     return data;
-  }
-
-  async updatePracticeTest(
-    practiceTestId: string,
-    accessToken: string,
-    updatePracticeTest: UpdatePracticeTest
-  ): Promise<boolean> {
-    const baseInfo = updatePracticeTest.baseInfo
-      ? updatePracticeTest.baseInfo
-      : null;
-    const questions = updatePracticeTest.questions.map((question) => {
-      const questionId = question.id;
-      const questionBase = question.question
-        ? {
-            question_text: question.question.text,
-            question_type: question.question.type,
-          }
-        : null;
-      const options = question.options.map((option) => ({
-        option_id: option.id,
-        option_text: option.text,
-        is_correct: option.isCorrect,
-      }));
-      return {
-        question_id: questionId,
-        question: questionBase,
-        options: options,
-      };
-    });
-    const { data } = await axios.put(
-      `${this.baseUrl}/practice-test/${practiceTestId}`,
-      {
-        base_info: baseInfo,
-        questions: questions,
-      },
-      {
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${accessToken}` },
-      }
-    );
-    return data;
-  }
-
-  async deleteOptions(
-    practiceTestId: string,
-    accessToken: string,
-    deleteOptions: DeleteOptionData[]
-  ): Promise<boolean> {
-    const deleteOptionsPayload = deleteOptions.map((delOpt) => ({
-      question_id: delOpt.questionId,
-      option_id: delOpt.optionId,
-    }));
-    const { data } = await axios.delete(
-      `${this.baseUrl}/practice-test/${practiceTestId}/options`,
-      {
-        data: deleteOptionsPayload,
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-
-    return data;
-  }
-
-  async deleteQuestions(
-    practiceTestId: string,
-    accessToken: string,
-    deleteQuestions: string[]
-  ): Promise<boolean> {
-    const { data } = await axios.delete(
-      `${this.baseUrl}/practice-test/${practiceTestId}/questions`,
-      {
-        data: { question_id: deleteQuestions },
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${accessToken}` },
-      }
-    );
-    return data; 
   }
 }
