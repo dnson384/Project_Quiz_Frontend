@@ -33,13 +33,13 @@ export interface NewBaseInfo {
 }
 
 export interface QuestionBase {
-  tempId: string
+  tempId: string;
   text: string;
   type: string;
 }
 
 export interface Option {
-  tempId: string
+  tempId: string;
   text: string;
   isCorrect: boolean;
 }
@@ -74,11 +74,17 @@ export interface UpdateOption {
 export interface UpdateQuestion {
   id: string | null;
   tempId?: string;
-  question: UpdateQuestionBase;
+  question: UpdateQuestionBase | null;
   options: UpdateOption[];
 }
 
 export interface UpdatePracticeTest {
   baseInfo?: UpdateBaseInfo;
   questions: UpdateQuestion[];
+}
+
+// Xoá
+export interface DeleteOptionData {
+  questionId: string;
+  optionId: string;
 }
