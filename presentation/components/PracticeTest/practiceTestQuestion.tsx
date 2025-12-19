@@ -5,7 +5,11 @@ interface PracticeTestQuestionData {
   questionIndex: number;
   questionText: string;
   answerOptions: QuestionOption[];
-  handleOptionSelected: (questionIndex: number, option: QuestionOption) => void;
+  handleOptionSelected: (
+    questionIndex: number,
+    optionId: string,
+    isCorrect: boolean
+  ) => void;
 }
 
 export default function PracticeTestQuestion({
@@ -27,7 +31,13 @@ export default function PracticeTestQuestion({
                 name={`question-${questionIndex + 1}`}
                 id={`option-${questionIndex + 1}-${index}`}
                 className="accent-indigo-700 w-4 h-4"
-                onChange={() => handleOptionSelected(questionIndex, option)}
+                onChange={() =>
+                  handleOptionSelected(
+                    questionIndex,
+                    option.id,
+                    option.isCorrect
+                  )
+                }
               />
               <label
                 htmlFor={`option-${questionIndex + 1}-${index}`}

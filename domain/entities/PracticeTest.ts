@@ -54,6 +54,17 @@ export interface NewPracticeTest {
   questions: NewQuestion[];
 }
 
+// Submit test
+export interface OptionSelectedData {
+  questionId: string;
+  optionId: string;
+  isCorrect: boolean;
+}
+
+export interface AnswerQuestionData {
+  [index: number]: OptionSelectedData;
+}
+
 // Update
 export interface UpdateBaseInfo {
   name: string;

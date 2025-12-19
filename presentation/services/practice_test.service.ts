@@ -2,6 +2,7 @@ import {
   NewPracticeTest,
   PracticeTest,
   UpdatePracticeTest,
+  AnswerQuestionData,
 } from "@/domain/entities/PracticeTest";
 import axios from "axios";
 
@@ -40,10 +41,31 @@ export async function getPracticeTestRandomDetail(practiceTestId: string) {
   return response.data;
 }
 
+// Lịch sử
+export async function getAllHistories() {
+  return await axios.get(`${base_url}/all-histories`);
+}
+
+// Thêm
 export async function createNewPracticeTest(newPracticeTest: NewPracticeTest) {
   return await axios.post(`${base_url}/create`, newPracticeTest);
 }
 
+export async function submitPracticeTest(
+  practiceTestId: string,
+  answerQuestions: AnswerQuestionData,
+  questionsCount: number,
+  score: number
+) {
+  return await axios.post(`${base_url}/submit-test`, {
+    practiceTestId: practiceTestId,
+    answerQuestions: answerQuestions,
+    questionsCount: questionsCount,
+    score: score,
+  });
+}
+
+// Sửa
 export async function updatePracticetestService(
   practiceTestId: string,
   updatePracticeTest: UpdatePracticeTest
@@ -54,6 +76,7 @@ export async function updatePracticetestService(
   });
 }
 
+// Xoá
 export async function deleteOptionsService(
   practiceTestId: string,
   deleteOptions: DeleteOptionData[]
@@ -66,7 +89,10 @@ export async function deleteOptionsService(
   });
 }
 
-export async function deleteQuestionsService(practiceTestId: string, deleteQuestions: string[]) {
+export async function deleteQuestionsService(
+  practiceTestId: string,
+  deleteQuestions: string[]
+) {
   return await axios.delete(`${base_url}/delete-questions`, {
     data: {
       practiceTestId: practiceTestId,
