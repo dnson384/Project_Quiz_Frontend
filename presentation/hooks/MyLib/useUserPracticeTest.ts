@@ -6,7 +6,7 @@ import {
   UpdateBaseInfo,
   UpdateQuestion,
   UpdateOption,
-  UpdatePracticeTest,
+  PracticeTestQuestions,
 } from "@/domain/entities/PracticeTest";
 import { useAuthContext } from "@/presentation/context/authContext";
 import React, { useEffect, useState } from "react";
@@ -16,6 +16,16 @@ import {
   getPracticeTestDetail,
   getUserPracticeTest,
 } from "@/presentation/services/practice_test.service";
+import {
+  updatePracticetestService,
+  deleteOptionsService,
+  deleteQuestionsService,
+} from "@/presentation/services/practice_test.service";
+
+interface DeleteOptionData {
+  questionId: string;
+  optionId: string;
+}
 
 export default function useMyPractice() {
   const { user } = useAuthContext();
@@ -39,6 +49,10 @@ export default function useMyPractice() {
   });
 
   // Raw data
+  const [practiceTestId, setPracticeTestId] = useState<string>();
+  const [rawQuestions, setRawQuestions] = useState<PracticeTestQuestions[]>([]);
+
+  // Show data
   const [baseInfo, setBaseInfo] = useState<UpdateBaseInfo>();
   const [questions, setQuestions] = useState<UpdateQuestion[]>([]);
 
@@ -47,21 +61,35 @@ export default function useMyPractice() {
   const [changedQuestions, setChangedQuestions] = useState<UpdateQuestion[]>(
     []
   );
-  const [deleteOptions, setDeleteOptions] = useState<string[]>([])
-  const [deleteQuestions, setDeleteQuestions] = useState<string[]>([])
+  const [deleteOptions, setDeleteOptions] = useState<DeleteOptionData[]>([]);
+  const [deleteQuestions, setDeleteQuestions] = useState<string[]>([]);
 
   // UI
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Card Behavior
-  const handleDeleteCard = (index: number, id: string | null) => {
+  const handleDeleteCard = (
+    questionIndex: number,
+    questionId: string | null
+  ) => {
     setQuestions((prev) => {
       const newQuestions = [...prev];
-      if (id === null || newQuestions[index].id === id) {
-        newQuestions.splice(index, 1);
+      if (
+        questionId === null ||
+        newQuestions[questionIndex].id === questionId
+      ) {
+        newQuestions.splice(questionIndex, 1);
       }
       return newQuestions;
+    });
+
+    setDeleteQuestions((prev) => {
+      const newDeleteQuestions = [...prev];
+      if (questionId && questions[questionIndex].id === questionId) {
+        newDeleteQuestions.push(questionId);
+      }
+      return newDeleteQuestions;
     });
   };
 
@@ -109,26 +137,38 @@ export default function useMyPractice() {
 
       if (curChangeQuestionIndex < 0) {
         const currentQuestion = questions[questionIndex];
+        if (!currentQuestion.question) return prev;
+
         newChangedQuestion.push({
           id: currentQuestion.id,
           tempId: currentQuestion.tempId ? currentQuestion.tempId : undefined,
           question: {
-            text: questions[questionIndex].question.text,
-            type: questions[questionIndex].question.type,
+            text: currentQuestion.question.text,
+            type: currentQuestion.question.type,
           },
-          options: questions[questionIndex].options,
+          options: currentQuestion.options.map((option) => ({
+            id: option.id,
+            tempId: option.tempId ? option.tempId : undefined,
+            text: option.text,
+            isCorrect: option.isCorrect,
+          })),
         });
         curChangeQuestionIndex = newChangedQuestion.length - 1;
       }
 
       // Update questionBase
       if (section === "questionBase") {
+        const curChangeQuestion =
+          newChangedQuestion[curChangeQuestionIndex].question;
+        if (!curChangeQuestion) return prev;
+
         if (name === "type") {
+          const curType = curChangeQuestion.type;
+          if (!curType) return prev;
+
           // MULTIPLE <-> SINGLE
           if (
-            ["SINGLE_CHOICE", "MULTIPLE_CHOICE"].includes(
-              newChangedQuestion[curChangeQuestionIndex].question.type
-            ) &&
+            ["SINGLE_CHOICE", "MULTIPLE_CHOICE"].includes(curType) &&
             ["SINGLE_CHOICE", "MULTIPLE_CHOICE"].includes(value)
           ) {
             questions[questionIndex].options.forEach(
@@ -140,37 +180,90 @@ export default function useMyPractice() {
           }
           // SINGLE / MULTIPLE -> TRUE_FALSE
           else if (
-            ["SINGLE_CHOICE", "MULTIPLE_CHOICE"].includes(
-              newChangedQuestion[curChangeQuestionIndex].question.type
-            ) &&
+            ["SINGLE_CHOICE", "MULTIPLE_CHOICE"].includes(curType) &&
             value === "TRUE_FALSE"
           ) {
-            questions[questionIndex].options = [
+            // Xoá option cũ
+            setDeleteOptions((prev) => {
+              const newDeleteOptions = [...prev];
+              if (!currentQuestion.id) return prev;
+
+              const currentRawQuestion = rawQuestions.find(
+                (question) => question.question.id === currentQuestion.id
+              );
+
+              currentRawQuestion?.options.forEach((option) => {
+                newDeleteOptions.push({
+                  questionId: currentRawQuestion.question.id,
+                  optionId: option.id,
+                });
+              });
+              return newDeleteOptions;
+            });
+
+            // Cập nhật option mới
+            const newOptions = [
               { id: null, tempId: nanoid(), text: "Đúng", isCorrect: false },
               { id: null, tempId: nanoid(), text: "Sai", isCorrect: false },
             ];
-            newChangedQuestion[curChangeQuestionIndex].options = [
-              { id: null, tempId: nanoid(), text: "Đúng", isCorrect: false },
-              { id: null, tempId: nanoid(), text: "Sai", isCorrect: false },
-            ];
+            questions[questionIndex].options = newOptions.map((option) => ({
+              id: option.id,
+              tempId: option.tempId,
+              text: option.text,
+              isCorrect: option.isCorrect,
+            }));
+            newChangedQuestion[curChangeQuestionIndex].options = newOptions.map(
+              (option) => ({
+                id: option.id,
+                tempId: option.tempId,
+                text: option.text,
+                isCorrect: option.isCorrect,
+              })
+            );
           }
           // TRUE_FALSE -> SINGLE / MULTIPLE
           else if (
             ["SINGLE_CHOICE", "MULTIPLE_CHOICE"].includes(value) &&
-            newChangedQuestion[curChangeQuestionIndex].question.type ===
-              "TRUE_FALSE"
+            curType === "TRUE_FALSE"
           ) {
-            questions[questionIndex].options = Array.from({ length: 4 }, () =>
-              getNewOption()
-            );
-            newChangedQuestion[curChangeQuestionIndex].options = Array.from(
-              { length: 4 },
-              () => getNewOption()
+            // Xoá option cũ
+            setDeleteOptions((prev) => {
+              const newDeleteOptions = [...prev];
+              if (!currentQuestion.id) return prev;
+
+              const currentRawQuestion = rawQuestions.find(
+                (question) => question.question.id === currentQuestion.id
+              );
+
+              currentRawQuestion?.options.forEach((option) => {
+                newDeleteOptions.push({
+                  questionId: currentRawQuestion.question.id,
+                  optionId: option.id,
+                });
+              });
+              return newDeleteOptions;
+            });
+
+            const newOptions = Array.from({ length: 4 }, () => getNewOption());
+            questions[questionIndex].options = newOptions.map((option) => ({
+              id: option.id,
+              tempId: option.tempId,
+              text: option.text,
+              isCorrect: option.isCorrect,
+            }));
+            newChangedQuestion[curChangeQuestionIndex].options = newOptions.map(
+              (option) => ({
+                id: option.id,
+                tempId: option.tempId,
+                text: option.text,
+                isCorrect: option.isCorrect,
+              })
             );
           }
         }
+
         newChangedQuestion[curChangeQuestionIndex].question = {
-          ...newChangedQuestion[curChangeQuestionIndex].question,
+          ...curChangeQuestion,
           [name]: value,
         };
       }
@@ -181,49 +274,36 @@ export default function useMyPractice() {
         const nameOption = name.split("-")[0];
         const isChecked = (target as HTMLInputElement).checked;
 
-        if (currentOption.id) {
-          let currentOptionIndex = newChangedQuestion[
-            curChangeQuestionIndex
-          ].options.findIndex((option) => option.id === currentOption.id);
-
-          if (currentOptionIndex < 0) {
-            newChangedQuestion[curChangeQuestionIndex].options.push({
-              id: currentOption.id,
-              text: currentOption.text,
-              isCorrect: currentOption.isCorrect,
-            });
-
-            currentOptionIndex =
-              newChangedQuestion[curChangeQuestionIndex].options.length - 1;
+        let currentOptionIndex = newChangedQuestion[
+          curChangeQuestionIndex
+        ].options.findIndex((option) => {
+          if (option.id) {
+            return option.id === currentOption.id;
           }
+          return option.tempId === currentOption.tempId;
+        });
 
-          if (questionType === "MULTIPLE_CHOICE") {
-            newChangedQuestion[curChangeQuestionIndex].options[
-              currentOptionIndex
-            ] = {
-              ...newChangedQuestion[curChangeQuestionIndex].options[
-                currentOptionIndex
-              ],
-              [nameOption]: nameOption === "isCorrect" ? isChecked : value,
-            };
-          } else {
-            if (nameOption === "isCorrect") {
-              newChangedQuestion[curChangeQuestionIndex].options.forEach(
-                (option) => {
-                  option.isCorrect = false;
-                }
-              );
-            }
+        if (currentOptionIndex < 0) {
+          newChangedQuestion[curChangeQuestionIndex].options.push({
+            id: currentOption.id,
+            tempId: currentOption.tempId ? currentOption.tempId : undefined,
+            text: currentOption.text,
+            isCorrect: false,
+          });
 
-            newChangedQuestion[curChangeQuestionIndex].options[
+          currentOptionIndex =
+            newChangedQuestion[curChangeQuestionIndex].options.length - 1;
+        }
+
+        if (questionType === "MULTIPLE_CHOICE") {
+          newChangedQuestion[curChangeQuestionIndex].options[
+            currentOptionIndex
+          ] = {
+            ...newChangedQuestion[curChangeQuestionIndex].options[
               currentOptionIndex
-            ] = {
-              ...newChangedQuestion[curChangeQuestionIndex].options[
-                currentOptionIndex
-              ],
-              [nameOption]: nameOption === "isCorrect" ? isChecked : value,
-            };
-          }
+            ],
+            [nameOption]: nameOption === "isCorrect" ? isChecked : value,
+          };
         } else {
           if (nameOption === "isCorrect") {
             newChangedQuestion[curChangeQuestionIndex].options.forEach(
@@ -233,8 +313,12 @@ export default function useMyPractice() {
             );
           }
 
-          newChangedQuestion[curChangeQuestionIndex].options[optionIndex] = {
-            ...newChangedQuestion[curChangeQuestionIndex].options[optionIndex],
+          newChangedQuestion[curChangeQuestionIndex].options[
+            currentOptionIndex
+          ] = {
+            ...newChangedQuestion[curChangeQuestionIndex].options[
+              currentOptionIndex
+            ],
             [nameOption]: nameOption === "isCorrect" ? isChecked : value,
           };
         }
@@ -244,14 +328,28 @@ export default function useMyPractice() {
   };
 
   const handleAddOption = (questionIndex: number) => {
+    const newOption = getNewOption();
     setQuestions((prev) => {
       const newQuestions = [...prev];
       if (!newQuestions[questionIndex]) return prev;
+
       newQuestions[questionIndex] = {
         ...newQuestions[questionIndex],
-        options: [...newQuestions[questionIndex].options, getNewOption()],
+        options: [...newQuestions[questionIndex].options, newOption],
       };
+      console.log(newQuestions[questionIndex]);
       return newQuestions;
+    });
+
+    setChangedQuestions((prev) => {
+      const newChangedQuestions = [...prev];
+      if (!newChangedQuestions[questionIndex]) return prev;
+
+      newChangedQuestions[questionIndex] = {
+        ...newChangedQuestions[questionIndex],
+        options: [...newChangedQuestions[questionIndex].options, newOption],
+      };
+      return newChangedQuestions;
     });
   };
 
@@ -263,6 +361,7 @@ export default function useMyPractice() {
     optionTempId?: string,
     newOptionIndex?: number
   ) => {
+    // Phương án mới
     if (
       questionTempId !== undefined &&
       optionTempId !== undefined &&
@@ -297,7 +396,9 @@ export default function useMyPractice() {
         };
         return newQuestions;
       });
-    } else {
+    }
+    // Phương án cũ
+    else {
       setQuestions((prev) => {
         const newQuestions = [...prev];
 
@@ -341,18 +442,93 @@ export default function useMyPractice() {
         };
         return newChangedQuestions;
       });
+
+      setDeleteOptions((prev) => {
+        const newDeleteOptions = [...prev];
+        if (questionId && optionId) {
+          newDeleteOptions.push({
+            questionId: questionId,
+            optionId: optionId,
+          });
+        }
+        return newDeleteOptions;
+      });
     }
   };
 
   // Save
-  const handleSaveChange = (valid: boolean) => {
+  const handleSaveChange = async (valid: boolean) => {
     setIsSubmitted(true);
-    if (valid) {
-      const updatePracticeTest: UpdatePracticeTest = {
-        ...(changedName && { baseInfo: changedName }),
-        questions: changedQuestions,
-      };
-      console.log(updatePracticeTest);
+
+    if (!valid || !practiceTestId) return;
+
+    // Duyệt qua từng câu hỏi hiện tại để tìm sự thay đổi
+    const questionsPayload: UpdateQuestion[] = changedQuestions.map(
+      (changedQuestion) => {
+        const rawQuestion = rawQuestions.find(
+          (raw) => raw.question.id === changedQuestion.id
+        );
+
+        // check question base
+        // nếu không có rawQuestion -> câu hỏi mới
+        const isQuestionBaseChange =
+          rawQuestion && changedQuestion.question
+            ? rawQuestion.question.text !== changedQuestion.question.text ||
+              rawQuestion.question.type !== changedQuestion.question.type
+            : true;
+
+        // check question option
+        const changedOptions = changedQuestion.options.filter(
+          (changeOption) => {
+            // Option mới
+            if (!changeOption.id) {
+              return true;
+            }
+
+            // TRƯỜNG HỢP B: Option cũ (có ID) -> So sánh với bản gốc
+            const rawOption = rawQuestion?.options.find(
+              (option) => option.id === changeOption.id
+            );
+
+            if (!rawOption) return true;
+
+            // So sánh giá trị text và isCorrect
+            const isTextChanged = changeOption.text !== rawOption.text;
+            const isCorrectChanged =
+              changeOption.isCorrect !== rawOption.isCorrect;
+
+            return isTextChanged || isCorrectChanged;
+          }
+        );
+
+        // Trả về cấu trúc chứa các options đã thay đổi
+        return {
+          id: changedQuestion.id,
+          question: isQuestionBaseChange ? changedQuestion.question : null,
+          options: changedOptions,
+        };
+      }
+    );
+
+    const updateStatus = await updatePracticetestService(practiceTestId, {
+      ...(changedName && {
+        baseInfo: changedName,
+      }),
+      questions: questionsPayload,
+    });
+
+    const deleteOptionsStatus = await deleteOptionsService(
+      practiceTestId,
+      deleteOptions
+    );
+
+    const deleteQuestionsStatus = await deleteQuestionsService(
+      practiceTestId,
+      deleteQuestions
+    );
+
+    if (updateStatus && deleteOptionsStatus && deleteQuestionsStatus) {
+      window.location.reload()
     }
   };
 
@@ -376,6 +552,11 @@ export default function useMyPractice() {
         practiceTestId
       );
       if (response) {
+        // set raw data
+        setPracticeTestId(response.baseInfo.id);
+        setRawQuestions(response.questions);
+
+        // set show data
         setBaseInfo(response.baseInfo);
         setQuestions(
           response.questions.map((question) => ({
@@ -391,6 +572,7 @@ export default function useMyPractice() {
             })),
           }))
         );
+
         setIsLoading(false);
       }
     };
@@ -404,6 +586,8 @@ export default function useMyPractice() {
     questions,
     changedName,
     changedQuestions,
+    deleteOptions,
+    deleteQuestions,
     // UI
     isLoading,
     isSubmitted,
