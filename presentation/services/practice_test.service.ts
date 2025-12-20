@@ -4,6 +4,7 @@ import {
   UpdatePracticeTest,
   AnswerQuestionData,
 } from "@/domain/entities/PracticeTest";
+import { ResultWithHistories } from "@/domain/entities/Result";
 import axios from "axios";
 
 const base_url = "/api/practice-test";
@@ -43,7 +44,15 @@ export async function getPracticeTestRandomDetail(practiceTestId: string) {
 
 // Lịch sử
 export async function getAllHistories() {
-  return await axios.get(`${base_url}/all-histories`);
+  return await axios.get(`${base_url}/history`);
+}
+
+export async function getResultHistory(
+  resultId: string,
+  practiceTestId: string
+) {
+  const response = await axios.get(`${base_url}/history/${practiceTestId}?rid=${resultId}`);
+  return response.data;
 }
 
 // Thêm

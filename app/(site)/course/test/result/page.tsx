@@ -4,7 +4,7 @@ import useCourseTest from "@/presentation/hooks/Course/useCourseTest";
 
 import TestQuestionResult from "@/presentation/components/Course/testQuestionResult";
 import LearnMethodDropdown from "@/presentation/components/layout/learn_method_dropdown";
-import TestScoreChart from "@/presentation/components/Course/testScoreChart";
+import TestScoreChart from "@/presentation/components/common/testScoreChart";
 
 export default function TestResult() {
   const testResult = useTestResult((state) => state.testResult);

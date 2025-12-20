@@ -1,11 +1,15 @@
 "use client";
 import PracticeTestQuestion from "@/presentation/components/PracticeTest/practiceTestQuestion";
+import SingleChoice from "@/presentation/components/PracticeTest/SingleChoice";
+import MultipleChoice from "@/presentation/components/PracticeTest/MultipleChoice";
+import TrueFalse from "@/presentation/components/PracticeTest/TrueFalse";
+
 import useTakePracticeTest from "@/presentation/hooks/PracticeTest/useTakePracticeTest";
 
 export default function TakePracticeTest() {
   const {
     baseInfo,
-    shuffledQuestions,
+    questions,
     timer,
     answeredQuestions,
     handleClose,
@@ -18,7 +22,7 @@ export default function TakePracticeTest() {
   const seconds = String(timer % 60).padStart(2, "0");
   return (
     <main>
-      {baseInfo && shuffledQuestions.length > 0 && (
+      {baseInfo && questions && (
         <>
           <header className="fixed z-50 top-0 w-screen py-2 px-5 grid grid-cols-3 bg-white/70 backdrop-blur-md shadow-xs">
             <div className="flex justify-start items-center p-2">
@@ -51,15 +55,37 @@ export default function TakePracticeTest() {
           </header>
 
           <section className="mt-15 py-10 w-4xl mx-auto flex flex-col gap-4">
-            {shuffledQuestions.map((question, index) => {
+            {questions.map((question, questionIndex) => {
+              const questionType = question.question.type;
               return (
-                <div key={question.question.id} id={`question-${index}`}>
-                  <PracticeTestQuestion
-                    questionIndex={index}
-                    questionText={question.question.text}
-                    answerOptions={question.options}
-                    handleOptionSelected={handleOptionSelected}
-                  />
+                <div key={question.question.id}>
+                  <p className="font-medium text-lg">
+                    {questionIndex + 1}. {question.question.text}
+                  </p>
+                  {questionType === "SINGLE_CHOICE" && (
+                    <SingleChoice
+                      options={question.options}
+                      questionIndex={questionIndex}
+                      answeredQuestions={answeredQuestions}
+                      handleOptionSelected={handleOptionSelected}
+                    />
+                  )}
+                  {questionType === "MULTIPLE_CHOICE" && (
+                    <MultipleChoice
+                      options={question.options}
+                      questionIndex={questionIndex}
+                      answeredQuestions={answeredQuestions}
+                      handleOptionSelected={handleOptionSelected}
+                    />
+                  )}
+                  {questionType === "TRUE_FALSE" && (
+                    <TrueFalse
+                      options={question.options}
+                      questionIndex={questionIndex}
+                      answeredQuestions={answeredQuestions}
+                      handleOptionSelected={handleOptionSelected}
+                    />
+                  )}
                 </div>
               );
             })}
@@ -67,12 +93,13 @@ export default function TakePracticeTest() {
 
           <aside className="fixed inset-0 top-20 left-5 w-fit h-fit">
             <div className="grid grid-cols-4 gap-2 select-none cursor-pointer">
-              {shuffledQuestions.map((question, index) => {
+              {questions.map((question, index) => {
+                const currentQuestion = answeredQuestions[index];
                 return (
                   <div
                     key={question.question.id}
                     className={`w-8 h-8 text-sm p-2 ${
-                      answeredQuestions[index].optionId.length > 0
+                      currentQuestion && currentQuestion.optionId.length > 0
                         ? "bg-indigo-500 text-white"
                         : "bg-gray-200"
                     } rounded-full flex justify-center items-center`}

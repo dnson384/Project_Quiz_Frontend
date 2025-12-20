@@ -76,7 +76,9 @@ export default function PracticeTestDetail() {
                       name="num_of_ques"
                       type="number"
                       className="text-sm w-55 border border-gray-400 rounded-md px-2 py-1 focus:outline-indigo-400"
-                      defaultValue="20"
+                      defaultValue={
+                        questions.length > 20 ? "20" : questions.length
+                      }
                       onChange={(e) => handleFormInputChange(e)}
                     />
                   </div>

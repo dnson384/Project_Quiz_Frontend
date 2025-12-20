@@ -4,60 +4,82 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   PracticeTestQuestions,
   AnswerQuestionData,
+  PracticeTestDetail,
+  PracticeTest,
 } from "@/domain/entities/PracticeTest";
 
 import usePracticeTestDetail from "./usePracticeTestDetail";
 import { shuffleArray } from "@/presentation/utils/arrayHelpers";
 import { usePracticeTestResult } from "@/presentation/store/practiceTestStore";
 import { generateSlug } from "@/presentation/utils/textFormatter";
-import { submitPracticeTest } from "@/presentation/services/practice_test.service";
-
-
+import {
+  getPracticeTestRandomDetail,
+  submitPracticeTest,
+} from "@/presentation/services/practice_test.service";
 
 export default function useTakePracticeTest() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const { baseInfo, questions } = usePracticeTestDetail();
-  const [shuffledQuestions, setShuffledQuestions] = useState<
-    PracticeTestQuestions[]
-  >([]);
+  // Data
+  const [baseInfo, setBaseInfo] = useState<PracticeTest>();
+  const [questions, setQuestions] = useState<PracticeTestQuestions[]>();
 
   const [timer, setTimer] = useState<number>(0);
   const [isTimeOut, setIsTimeOut] = useState<boolean>(false);
   const [answeredQuestions, setAnsweredQuestions] =
     useState<AnswerQuestionData>({});
 
-  const setPracticeTestResult = usePracticeTestResult(
-    (state) => state.setPracticeTestResult
-  );
-
-  useEffect(() => {
-    const shuffleQuestionOptions: PracticeTestQuestions[] = questions.map(
-      (ques) => {
-        const question = ques.question;
-        const options = shuffleArray(ques.options);
-        return {
-          question: question,
-          options: options,
-        };
-      }
-    );
-    setShuffledQuestions(shuffleArray(shuffleQuestionOptions));
-  }, [questions]);
-
   const handleOptionSelected = (
     questionIndex: number,
+    questionType: string,
     optionId: string,
     isCorrect: boolean
   ) => {
     setAnsweredQuestions((prev) => {
       const newAnsweredOptions = { ...prev };
       if (newAnsweredOptions[questionIndex]) {
+        let newOptions = [...newAnsweredOptions[questionIndex].optionId];
+
+        let newIsCorrect = newAnsweredOptions[questionIndex].isCorrect;
+        const curRawQuestion = questions?.find(
+          (question) =>
+            question.question.id ===
+            newAnsweredOptions[questionIndex].questionId
+        );
+        if (!curRawQuestion) return prev;
+        const correctAnswersId = curRawQuestion.options
+          .filter((option) => option.isCorrect === true)
+          .map((option) => option.id);
+
+        if (questionType === "MULTIPLE_CHOICE") {
+          const curOptIndex = newAnsweredOptions[
+            questionIndex
+          ].optionId.findIndex((id) => id === optionId);
+
+          // optionid
+          if (curOptIndex < 0) {
+            newOptions.push(optionId);
+          } else {
+            newOptions.splice(curOptIndex, 1);
+          }
+
+          // iscorrect
+          if (correctAnswersId.length !== newOptions.length) {
+            newIsCorrect = false;
+          } else {
+            newIsCorrect = !newOptions.some(
+              (id) => !correctAnswersId.includes(id)
+            );
+          }
+        } else {
+          newOptions = [optionId];
+          newIsCorrect = correctAnswersId.includes(optionId);
+        }
         newAnsweredOptions[questionIndex] = {
           ...newAnsweredOptions[questionIndex],
-          optionId: optionId,
-          isCorrect: isCorrect,
+          optionId: newOptions,
+          isCorrect: newIsCorrect,
         };
       }
       return newAnsweredOptions;
@@ -66,7 +88,7 @@ export default function useTakePracticeTest() {
 
   const handleSubmitTestClick = async () => {
     const practiceTestId = searchParams.get("uuid");
-    const questionsCount = questions.length;
+    const questionsCount = questions?.length;
     const score = Object.values(answeredQuestions).reduce(
       (total, opt) => (total += opt.isCorrect ? 1 : 0),
       0
@@ -80,18 +102,8 @@ export default function useTakePracticeTest() {
       score
     );
     if (summitStatus) {
-      console.log("done");
+      router.push(`/history/${practiceTestId}`);
     }
-
-    // if (!baseInfo || !shuffledQuestions) return;
-    // const courseId = searchParams.get("uuid");
-
-    // let score = 0;
-    // Object.values(selectedOptionId).forEach((value) => {
-    //   value.isCorrect && score++;
-    // });
-    // setPracticeTestResult(score, baseInfo, shuffledQuestions, selectedOptionId);
-    // router.push(`/practice-test/result?uuid=${courseId}`);
   };
 
   const handleSidebarClick = (index: number) => {
@@ -111,13 +123,33 @@ export default function useTakePracticeTest() {
     router.push(`/practice-test/${slug}?uuid=${practiceTestId}`);
   };
 
+  // Fetch Data
+  useEffect(() => {
+    const fetchData = async () => {
+      const practiceTestId = searchParams.get("uuid");
+      if (!practiceTestId) return;
+
+      const data: PracticeTestDetail = await getPracticeTestRandomDetail(
+        practiceTestId
+      );
+
+      if (data) {
+        setBaseInfo(data.baseInfo);
+        setQuestions(data.questions);
+      }
+    };
+    fetchData();
+  }, []);
+
   useEffect(() => {
     setAnsweredQuestions((prev) => {
+      if (!questions) return prev;
+
       const newAnsweredOptions = { ...prev };
       questions.forEach((question, index) => {
         answeredQuestions[index] = {
           questionId: question.question.id,
-          optionId: "",
+          optionId: [],
           isCorrect: false,
         };
       });
@@ -154,7 +186,6 @@ export default function useTakePracticeTest() {
   return {
     baseInfo,
     questions,
-    shuffledQuestions,
     timer,
     isTimeOut,
     answeredQuestions,

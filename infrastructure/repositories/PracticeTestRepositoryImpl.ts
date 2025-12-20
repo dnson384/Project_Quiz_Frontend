@@ -12,7 +12,10 @@ import {
   UpdatePracticeTest,
   OptionSelectedData,
 } from "@/domain/entities/PracticeTest";
-import { ResultWithPracticeTest } from "@/domain/entities/Result";
+import {
+  ResultWithHistories,
+  ResultWithPracticeTest,
+} from "@/domain/entities/Result";
 import { IPracticeTestRepository } from "@/domain/repositories/IPracticeTestRepository";
 
 interface RawPracticeTestResponse {
@@ -49,9 +52,22 @@ interface RawResult {
   num_of_questions: number;
   score: number;
 }
+
 interface RawAllHistoryResponse {
   result: RawResult;
   base_info: RawPracticeTestResponse;
+}
+
+interface RawHistory {
+  history_id: string;
+  option_id: string[];
+  question_detail: RawQuestions;
+}
+
+interface RawResultWithHistory {
+  result: RawResult;
+  base_info: RawPracticeTestResponse;
+  histories: RawHistory[];
 }
 
 export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
@@ -160,7 +176,9 @@ export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
     }
   }
 
-  async getAllHistories(accessToken: string): Promise<ResultWithPracticeTest[]> {
+  async getAllHistories(
+    accessToken: string
+  ): Promise<ResultWithPracticeTest[]> {
     const { data } = await axios.get<RawAllHistoryResponse[]>(
       `${this.baseUrl}/practice-test/history`,
       {
@@ -187,6 +205,57 @@ export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
         },
       };
     });
+  }
+
+  async getResultHistory(
+    accessToken: string,
+    resultId: string,
+    practiceTestId: string
+  ): Promise<ResultWithHistories> {
+    const { data } = await axios.get<RawResultWithHistory>(
+      `${this.baseUrl}/practice-test/history/${practiceTestId}?result_id=${resultId}`,
+      {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    const result = data.result;
+    const baseInfo = data.base_info;
+    const histories = data.histories;
+    return {
+      result: {
+        id: result.result_id,
+        questionsCount: result.num_of_questions,
+        score: result.score,
+      },
+      baseInfo: {
+        id: baseInfo.practice_test_id,
+        name: baseInfo.practice_test_name,
+        authorAvatar: baseInfo.author_avatar_url,
+        authorName: baseInfo.author_username,
+      },
+      histories: histories.map((history: RawHistory) => {
+        const rawDetail = history.question_detail;
+        const detail: PracticeTestQuestions = {
+          question: {
+            id: rawDetail.question.question_id,
+            text: rawDetail.question.question_text,
+            type: rawDetail.question.question_type,
+          },
+          options: rawDetail.options.map((rawOption) => ({
+            id: rawOption.option_id,
+            text: rawOption.option_text,
+            isCorrect: rawOption.is_correct,
+          })),
+        };
+
+        return {
+          id: history.history_id,
+          optionId: history.option_id,
+          detail: detail,
+        };
+      }),
+    };
   }
 
   async getPracticeTestRandomDetail(

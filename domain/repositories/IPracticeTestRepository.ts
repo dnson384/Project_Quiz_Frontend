@@ -6,7 +6,10 @@ import {
   UpdatePracticeTest,
   AnswerQuestionData,
 } from "../entities/PracticeTest";
-import { ResultWithPracticeTest } from "../entities/Result";
+import {
+  ResultWithHistories,
+  ResultWithPracticeTest,
+} from "../entities/Result";
 
 export interface IPracticeTestRepository {
   getRandomPracticeTests: () => Promise<PracticeTest[]>;
@@ -16,6 +19,11 @@ export interface IPracticeTestRepository {
     count?: number
   ): Promise<PracticeTestDetail | null>;
   getAllHistories(accessToken: string): Promise<ResultWithPracticeTest[]>;
+  getResultHistory(
+    accessToken: string,
+    resultId: string,
+    practiceTestId: string
+  ): Promise<ResultWithHistories>;
   getUserPracticeTests(accessToken: string): Promise<PracticeTest[]>;
   createNewPracticeTest(
     accessToken: string,

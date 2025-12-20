@@ -2,10 +2,10 @@
 import Header from "@/presentation/components/layout/header";
 import SideMenu from "@/presentation/components/layout/sideMenu";
 import ResultCard from "@/presentation/components/History/resultCard";
-import useAllHistory from "@/presentation/hooks/History/useAllHistory";
+import useAllHistories from "@/presentation/hooks/History/useAllHistories";
 
 export default function AllHistories() {
-  const { user, histories } = useAllHistory();
+  const { user, histories, handleResultCardClick } = useAllHistories();
   return (
     <>
       {user && (
@@ -23,6 +23,7 @@ export default function AllHistories() {
                       key={history.result.id}
                       result={history.result}
                       baseInfo={history.baseInfo}
+                      handleResultCardClick={handleResultCardClick}
                     />
                   ))}
                 </div>

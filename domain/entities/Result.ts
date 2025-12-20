@@ -1,4 +1,4 @@
-import { PracticeTest } from "./PracticeTest";
+import { PracticeTest, PracticeTestQuestions } from "./PracticeTest";
 
 export interface Result {
   readonly id: string;
@@ -6,7 +6,19 @@ export interface Result {
   score: number;
 }
 
+export interface History {
+  id: string;
+  optionId: string[];
+  detail: PracticeTestQuestions;
+}
+
 export interface ResultWithPracticeTest {
-  result: Result
-  baseInfo: PracticeTest
+  result: Result;
+  baseInfo: PracticeTest;
+}
+
+export interface ResultWithHistories {
+  result: Result;
+  baseInfo: PracticeTest;
+  histories: History[];
 }

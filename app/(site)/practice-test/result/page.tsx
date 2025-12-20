@@ -3,7 +3,7 @@ import { usePracticeTestResult } from "@/presentation/store/practiceTestStore";
 
 import useTakePracticeTest from "@/presentation/hooks/PracticeTest/useTakePracticeTest";
 
-import TestScoreChart from "@/presentation/components/Course/testScoreChart";
+import TestScoreChart from "@/presentation/components/common/testScoreChart";
 import PracticeTestAnswerResult from "@/presentation/components/PracticeTest/practiceTestResult";
 
 export default function PracticeTestResult() {

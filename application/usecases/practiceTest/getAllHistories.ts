@@ -1,4 +1,4 @@
-import { PracticeTest } from "@/domain/entities/PracticeTest";
+import { ResultWithPracticeTest } from '@/domain/entities/Result';
 import { PracticeTestRepositoryImpl } from "@/infrastructure/repositories/PracticeTestRepositoryImpl";
 
 export class GetAllHistoriesUsecase {
@@ -6,7 +6,7 @@ export class GetAllHistoriesUsecase {
     private readonly practiceTestRepository: PracticeTestRepositoryImpl
   ) {}
 
-  async execute(accessToken: string): Promise<PracticeTest[]> {
+  async execute(accessToken: string): Promise<ResultWithPracticeTest[]> {
     return await this.practiceTestRepository.getAllHistories(accessToken);
   }
 }

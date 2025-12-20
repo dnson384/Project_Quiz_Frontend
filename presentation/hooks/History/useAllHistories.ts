@@ -2,11 +2,18 @@
 import { ResultWithPracticeTest } from "@/domain/entities/Result";
 import { useAuthContext } from "@/presentation/context/authContext";
 import { getAllHistories } from "@/presentation/services/practice_test.service";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function useAllHistory() {
+export default function useAllHistories() {
   const { user } = useAuthContext();
+  const router = useRouter();
+  const pathname = usePathname();
   const [histories, setHistories] = useState<ResultWithPracticeTest[]>([]);
+
+  const handleResultCardClick = (resultId: string, practiceTestId: string) => {
+    router.push(`${pathname}/${practiceTestId}?rid=${resultId}`);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,5 +24,5 @@ export default function useAllHistory() {
     };
     fetchData();
   }, [user]);
-  return { user, histories };
+  return { user, histories, handleResultCardClick };
 }

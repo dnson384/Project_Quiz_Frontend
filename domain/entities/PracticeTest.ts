@@ -57,7 +57,7 @@ export interface NewPracticeTest {
 // Submit test
 export interface OptionSelectedData {
   questionId: string;
-  optionId: string;
+  optionId: string[];
   isCorrect: boolean;
 }
 
