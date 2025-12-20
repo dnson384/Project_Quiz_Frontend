@@ -12,6 +12,7 @@ import {
   UpdatePracticeTest,
   OptionSelectedData,
 } from "@/domain/entities/PracticeTest";
+import { ResultWithPracticeTest } from "@/domain/entities/Result";
 import { IPracticeTestRepository } from "@/domain/repositories/IPracticeTestRepository";
 
 interface RawPracticeTestResponse {
@@ -41,6 +42,16 @@ interface RawQuestions {
 interface RawPracticeTestDetailResponse {
   practice_test: RawPracticeTestResponse;
   questions: RawQuestions[];
+}
+
+interface RawResult {
+  result_id: string;
+  num_of_questions: number;
+  score: number;
+}
+interface RawAllHistoryResponse {
+  result: RawResult;
+  base_info: RawPracticeTestResponse;
 }
 
 export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
@@ -149,8 +160,8 @@ export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
     }
   }
 
-  async getAllHistories(accessToken: string): Promise<PracticeTest[]> {
-    const { data } = await axios.get<RawPracticeTestResponse[]>(
+  async getAllHistories(accessToken: string): Promise<ResultWithPracticeTest[]> {
+    const { data } = await axios.get<RawAllHistoryResponse[]>(
       `${this.baseUrl}/practice-test/history`,
       {
         withCredentials: true,
@@ -159,13 +170,23 @@ export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
         },
       }
     );
-
-    return data.map((raw) => ({
-      id: raw.practice_test_id,
-      name: raw.practice_test_name,
-      authorAvatar: raw.author_avatar_url,
-      authorName: raw.author_username,
-    }));
+    return data.map((raw) => {
+      const result = raw.result;
+      const baseInfo = raw.base_info;
+      return {
+        result: {
+          id: result.result_id,
+          questionsCount: result.num_of_questions,
+          score: result.score,
+        },
+        baseInfo: {
+          id: baseInfo.practice_test_id,
+          name: baseInfo.practice_test_name,
+          authorAvatar: baseInfo.author_avatar_url,
+          authorName: baseInfo.author_username,
+        },
+      };
+    });
   }
 
   async getPracticeTestRandomDetail(

@@ -1,12 +1,12 @@
-"use client"
-import { PracticeTest } from "@/domain/entities/PracticeTest";
+"use client";
+import { ResultWithPracticeTest } from "@/domain/entities/Result";
 import { useAuthContext } from "@/presentation/context/authContext";
 import { getAllHistories } from "@/presentation/services/practice_test.service";
 import { useEffect, useState } from "react";
 
 export default function useAllHistory() {
   const { user } = useAuthContext();
-  const [histories, setHistories] = useState<PracticeTest[]>([]);
+  const [histories, setHistories] = useState<ResultWithPracticeTest[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,5 +17,5 @@ export default function useAllHistory() {
     };
     fetchData();
   }, [user]);
-  return {histories};
+  return { user, histories };
 }
