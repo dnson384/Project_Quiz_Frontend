@@ -1,16 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
 
 const PUBLIC_PATHS = ["/auth", "/search", "/"];
+
+function getRoleFromToken(token?: string) {
+  if (!token) return null;
+  try {
+    const decoded = jwt.decode(token) as { role?: string };
+    return decoded?.role ?? null;
+  } catch {
+    return null;
+  }
+}
 
 export function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
   const accessToken = req.cookies.get("access_token");
   const refreshToken = req.cookies.get("refresh_token");
+  const role = getRoleFromToken(accessToken?.value);
 
   if (
     (accessToken || refreshToken) &&
     (pathname === "/" || pathname.startsWith("/auth"))
   ) {
+    if (role === "ADMIN") {
+      return NextResponse.redirect(new URL("/admin", req.url));
+    }
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 

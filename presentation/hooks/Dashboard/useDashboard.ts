@@ -2,8 +2,21 @@ import { useEffect, useState } from "react";
 
 import { getRandomCourse } from "@/presentation/services/course.service";
 import { getRandomPracticeTest } from "@/presentation/services/practice_test.service";
+import { useAuthContext } from "@/presentation/context/authContext";
+import { useRouter } from "next/navigation";
 
 export default function useDashboard() {
+  const router = useRouter();
+
+  const { user } = useAuthContext();
+  const role = user?.role;
+
+  // useEffect(() => {
+  //   if (user?.role === "ADMIN") {
+  //     router.replace("/admin");
+  //   }
+  // }, [user, router]);
+
   const [courseSample, setCourseSample] = useState<Array<any>>([]);
   const [practiceTestSample, setPracticeTestSample] = useState<Array<any>>([]);
 
@@ -25,5 +38,5 @@ export default function useDashboard() {
     getPracticeTest();
   }, []);
 
-  return { courseSample, practiceTestSample };
+  return { courseSample, practiceTestSample, role };
 }

@@ -1,0 +1,37 @@
+import { UpdateUser, User } from "@/domain/entities/User";
+import { IAdminRepository } from "@/domain/repositories/IAdminRepository";
+import axios from "axios";
+
+interface RawUserResponse {
+  user_id: string;
+  username: string;
+  email: string;
+  role: "STUDENT" | "TEACHER" | "ADMIN";
+  avatar_url: string;
+  login_method: "EMAIL" | "GOOGLE";
+}
+
+export class AdminRepositoryImpl implements IAdminRepository {
+  constructor(
+    private readonly baseUrl: string = process.env.BACKEND_URL || ""
+  ) {}
+
+  async getAllUsers(accessToken: string): Promise<User[]> {
+    const { data } = await axios.get<RawUserResponse[]>(
+      `${this.baseUrl}/admin/all-users`,
+      {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+
+    return data.map((raw) => ({
+      id: raw.user_id,
+      name: raw.username,
+      email: raw.email,
+      role: raw.role,
+      avatarUrl: raw.avatar_url,
+      loginMethod: raw.login_method,
+    }));
+  }
+}
