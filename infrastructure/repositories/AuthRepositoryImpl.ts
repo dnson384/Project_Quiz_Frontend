@@ -9,6 +9,7 @@ interface RawUser {
   email: string;
   role: "STUDENT" | "TEACHER" | "ADMIN";
   avatar_url: string;
+  login_method: "EMAIL" | "GOOGLE";
 }
 
 interface RawUserResponse {
@@ -39,6 +40,7 @@ export class AuthRepositoryImpl implements IAuthRepository {
       email: data.user.email,
       role: data.user.role,
       avatarUrl: data.user.avatar_url,
+      loginMethod: data.user.login_method,
     };
   }
 
@@ -58,6 +60,7 @@ export class AuthRepositoryImpl implements IAuthRepository {
         email: data.user.email,
         role: data.user.role,
         avatarUrl: data.user.avatar_url,
+        loginMethod: data.user.login_method,
       },
       accessToken: data.access_token,
       refreshToken: data.refresh_token,

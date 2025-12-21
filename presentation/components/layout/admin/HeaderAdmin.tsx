@@ -1,10 +1,10 @@
 "use client";
 import Image from "next/image";
 
-import useNavigationBar from "../../hooks/layout/useHeader";
+import useNavigationBarAdmin from "@/presentation/hooks/layout/admin/useHeaderAdmin";
 import useAuth from "@/presentation/hooks/Auth/useAuth";
 
-export default function Header() {
+export default function HeaderAdmin() {
   const {
     user,
     isFocused,
@@ -21,7 +21,7 @@ export default function Header() {
     handleLogoClick,
     handleUserAvatarClick,
     handlePersonalInformationClick,
-  } = useNavigationBar();
+  } = useNavigationBarAdmin();
 
   const { logoutUser } = useAuth();
 
@@ -85,11 +85,7 @@ export default function Header() {
                 className="w-full focus:outline-0"
                 ref={inputRef}
                 type="text"
-                placeholder={
-                  user.role === "ADMIN"
-                    ? "Tìm tài khoản người dùng"
-                    : "Tìm thẻ ghi nhớ"
-                }
+                placeholder="Tìm tài khoản người dùng"
                 value={keyword || ""}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}

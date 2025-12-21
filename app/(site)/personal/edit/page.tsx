@@ -3,6 +3,7 @@ import Image from "next/image";
 import Header from "@/presentation/components/layout/header";
 import SideMenu from "@/presentation/components/layout/sideMenu";
 import usePersonal from "@/presentation/hooks/Personal/usePersonal";
+import HeaderAdmin from "@/presentation/components/layout/admin/HeaderAdmin";
 
 export default function Personal() {
   const {
@@ -15,7 +16,7 @@ export default function Personal() {
     handleButtonClick,
     handleFieldChange,
     handeSaveChangeClick,
-    handleCancelChange
+    handleCancelChange,
   } = usePersonal();
 
   const currentName = updateData?.name !== null ? updateData?.name : user?.name;
@@ -34,65 +35,65 @@ export default function Personal() {
 
   return (
     <>
-      <Header />
-      <div className="flex">
-        <SideMenu />
-        {user ? (
-          <section className="w-6xl mx-auto flex flex-col gap-2">
-            <div className="mb-5 flex items-center justify-between">
-              <h3 className="text-2xl font-bold">Thông tin cá nhân</h3>
-              <div className="flex gap-3">
-                <button
-                  className="bg-gray-100 text-gray-500 font-bold py-2 px-5 rounded-full cursor-pointer hover:bg-gray-300"
-                  onClick={handleCancelChange}
-                >
-                  Huỷ
-                </button>
-                <button
-                  className="bg-indigo-500 text-white font-bold py-2 px-5 rounded-full cursor-pointer hover:bg-indigo-700"
-                  onClick={() => handeSaveChangeClick(isValidForm)}
-                >
-                  Lưu
-                </button>
-              </div>
-            </div>
-
-            {/* Ảnh đại diện */}
-            <div className="px-6 py-4 border border-gray-300 rounded-xl">
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                className="hidden"
-                accept="image/*"
-              />
-              <div className="flex gap-10 items-center justify-between">
-                <div>
-                  <h4 className="text-lg font-semibold mb-2">Ảnh hồ sơ</h4>
-                  <Image
-                    src={
-                      newAvatar
-                        ? `/api/images${newAvatar}`
-                        : `/api/images${user.avatarUrl}`
-                    }
-                    alt={`avatar-${user.name}`}
-                    width={100}
-                    height={100}
-                    className="w-[100px] h-[100px] rounded-full object-cover"
-                  ></Image>
+      {user && (
+        <>
+          {user.role === "ADMIN" ? <HeaderAdmin /> : <Header />}
+          <div className="flex">
+            <SideMenu />
+            <section className="w-6xl mx-auto flex flex-col gap-2">
+              <div className="mb-5 flex items-center justify-between">
+                <h3 className="text-2xl font-bold">Thông tin cá nhân</h3>
+                <div className="flex gap-3">
+                  <button
+                    className="bg-gray-100 text-gray-500 font-bold py-2 px-5 rounded-full cursor-pointer hover:bg-gray-300"
+                    onClick={handleCancelChange}
+                  >
+                    Huỷ
+                  </button>
+                  <button
+                    className="bg-indigo-500 text-white font-bold py-2 px-5 rounded-full cursor-pointer hover:bg-indigo-700"
+                    onClick={() => handeSaveChangeClick(isValidForm)}
+                  >
+                    Lưu
+                  </button>
                 </div>
-
-                <button
-                  className="px-4 py-2 bg-indigo-100 font-semibold rounded-xl shadow-md cursor-pointer hover:bg-indigo-500 hover:text-white"
-                  onClick={handleButtonClick}
-                  disabled={uploading}
-                >
-                  Thay đổi ảnh hồ sơ
-                </button>
               </div>
-            </div>
 
-            <form>
+              {/* Ảnh đại diện */}
+              <div className="px-6 py-4 border border-gray-300 rounded-xl">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept="image/*"
+                />
+                <div className="flex gap-10 items-center justify-between">
+                  <div>
+                    <h4 className="text-lg font-semibold mb-2">Ảnh hồ sơ</h4>
+                    <Image
+                      src={
+                        newAvatar
+                          ? `/api/images${newAvatar}`
+                          : `/api/images${user.avatarUrl}`
+                      }
+                      alt={`avatar-${user.name}`}
+                      width={100}
+                      height={100}
+                      className="w-[100px] h-[100px] rounded-full object-cover"
+                    ></Image>
+                  </div>
+
+                  <button
+                    className="px-4 py-2 bg-indigo-100 font-semibold rounded-xl shadow-md cursor-pointer hover:bg-indigo-500 hover:text-white"
+                    onClick={handleButtonClick}
+                    disabled={uploading}
+                  >
+                    Thay đổi ảnh hồ sơ
+                  </button>
+                </div>
+              </div>
+
               {/* Tên người dùng */}
               <div className="px-6 py-4 border border-gray-300 rounded-xl">
                 <div className="flex items-center justify-between">
@@ -139,54 +140,56 @@ export default function Personal() {
                   </div>
                 </div>
               </div>
-            </form>
 
-            {/* Vai trò */}
-            <div className="flex justify-between items-center px-6 py-4 border border-gray-300 rounded-xl">
-              <h4 className="text-lg font-semibold">Loại tài khoản</h4>
-              <div className="relative">
-                <select
-                  name="role"
-                  defaultValue={user.role}
-                  className="appearance-none w-30 bg-indigo-50 border border-gray-200 px-4 py-2 rounded-md cursor-pointer focus:outline-none"
-                  onBlur={(e) => handleFieldChange(e)}
-                >
-                  <option value="STUDENT">Học sinh</option>
-                  <option value="TEACHER">Giáo viên</option>
-                </select>
-                <div className="absolute top-3 right-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
+              {/* Vai trò */}
+              <div className="flex justify-between items-center px-6 py-4 border border-gray-300 rounded-xl">
+                <h4 className="text-lg font-semibold">Loại tài khoản</h4>
+
+                <div className="relative">
+                  <select
+                    name="role"
+                    defaultValue={user.role}
+                    className="appearance-none w-30 bg-indigo-50 border border-gray-200 px-4 py-2 rounded-md cursor-pointer focus:outline-none"
+                    onBlur={(e) => handleFieldChange(e)}
                   >
-                    <path
-                      fill="none"
-                      stroke="#374151"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="m6 9l6 6l6-6"
-                    />
-                  </svg>
+                    {user.role === "ADMIN" && (
+                      <option value="ADMIN">Admin</option>
+                    )}
+                    <option value="STUDENT">Học sinh</option>
+                    <option value="TEACHER">Giáo viên</option>
+                  </select>
+                  <div className="absolute top-3 right-3">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="none"
+                        stroke="#374151"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
+                        d="m6 9l6 6l6-6"
+                      />
+                    </svg>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Đổi mật khẩu */}
-            {user.loginMethod === "EMAIL" ? (
-              <button className="flex justify-between items-center px-6 py-4 border border-gray-300 rounded-xl cursor-pointer">
-                <h4 className="text-lg font-semibold">Đổi mật khẩu</h4>
-              </button>
-            ) : (
-              <></>
-            )}
-          </section>
-        ) : (
-          <></>
-        )}
-      </div>
+              {/* Đổi mật khẩu */}
+              {user.loginMethod === "EMAIL" ? (
+                <button className="flex justify-between items-center px-6 py-4 border border-gray-300 rounded-xl cursor-pointer">
+                  <h4 className="text-lg font-semibold">Đổi mật khẩu</h4>
+                </button>
+              ) : (
+                <></>
+              )}
+            </section>
+          </div>
+        </>
+      )}
     </>
   );
 }

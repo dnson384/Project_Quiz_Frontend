@@ -48,11 +48,17 @@ export default function useAuth() {
     }
 
     try {
-      await login({
+      const cur_user = await login({
         email: fieldData.email,
         plainPassword: fieldData.plainPassword,
       });
-      router.push("/dashboard");
+      if (!cur_user) throw Error;
+
+      if (cur_user.user.role !== "ADMIN") {
+        router.replace("/dashboard");
+      } else {
+        router.replace("/admin");
+      }
     } catch (err) {
       const axiosErr = err as AxiosError<{ detail: string }>;
       setError(axiosErr.response?.data?.detail || "Đăng nhập thất bại");
@@ -96,7 +102,7 @@ export default function useAuth() {
   const logoutUser = async () => {
     const logoutSucess = await logout();
     if (logoutSucess) {
-      router.push("/");
+      window.location.replace("/");
     }
   };
 

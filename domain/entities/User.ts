@@ -4,7 +4,8 @@ export interface User {
   email: string;
   role: string;
   avatarUrl: string;
-  loginMethod: string;
+  loginMethod?: string;
+  isActived?: boolean;
 }
 
 export interface UserResponse {

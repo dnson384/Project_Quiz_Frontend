@@ -9,5 +9,5 @@ export async function uploadTempAvatar(formData: FormData): Promise<string> {
 }
 
 export async function updateMe(payload: UpdateUser) {
-  return await axios.put(`${base_url}/update-me`, payload)
+  return await axios.put(`${base_url}/update-me`, payload);
 }

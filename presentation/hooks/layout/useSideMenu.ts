@@ -5,7 +5,9 @@ export default function useSideMenu() {
   const pathname = usePathname();
   const router = useRouter();
   const [selectedPage, setSelectedPage] = useState<string>(
-    pathname.toString().split("/")[1]
+    pathname.toString().split("/")[1] === "ADMIN"
+      ? pathname.toString().split("/")[2]
+      : pathname.toString().split("/")[1]
   );
 
   useEffect(() => {
@@ -14,7 +16,9 @@ export default function useSideMenu() {
 
   const handleMenuItem = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.currentTarget as HTMLDivElement;
-    router.push(`/${target.id}`);
+    if (selectedPage !== "admin") {
+      router.push(`/${target.id}`);
+    }
   };
 
   return {

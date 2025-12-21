@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useShowFullMenu } from "@/presentation/store/dashboard";
 import { useAuthContext } from "@/presentation/context/authContext";
 
-export default function useNavigationBar() {
+export default function useNavigationBarAdmin() {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -26,7 +26,7 @@ export default function useNavigationBar() {
   };
 
   useEffect(() => {
-    if (["/dashboard", "/my-lib", "/admin"].includes(pathname)) {
+    if (["/admin"].includes(pathname)) {
       setShowFullMenu(true);
     } else {
       setShowFullMenu(false);
@@ -47,7 +47,7 @@ export default function useNavigationBar() {
     event.preventDefault();
 
     if (keyword) {
-      router.push(`/search?keyword=${keyword}&type=all`);
+      router.push(`/admin/search?email=${keyword}`);
     } else {
       console.log("blank");
     }
@@ -58,8 +58,8 @@ export default function useNavigationBar() {
   };
 
   const handleLogoClick = () => {
-    if (pathname.toString().includes("dashboard")) return;
-    router.push("/dashboard");
+    if (pathname.toString().includes("admin")) return;
+    router.push("/admin");
   };
 
   const handleUserAvatarClick = () => {
