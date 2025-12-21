@@ -4,7 +4,7 @@ import SideMenu from "@/presentation/components/layout/sideMenu";
 import useDashboardAdmin from "@/presentation/hooks/Dashboard/useDashboardAdmin";
 
 export default function DashboardAdmin() {
-  const { user, users, handleRoleChagne } = useDashboardAdmin();
+  const { user, users, grantAdminRole } = useDashboardAdmin();
   return (
     <>
       {user?.role === "ADMIN" && (
@@ -27,34 +27,15 @@ export default function DashboardAdmin() {
                               <h4 className="text-lg font-semibold">
                                 {user.email}
                               </h4>
-                              <div className="relative">
-                                <select
-                                  name="role"
-                                  value={user.role}
-                                  className="appearance-none w-30 bg-indigo-50 border border-gray-200 px-4 py-2 rounded-md cursor-pointer focus:outline-none"
-                                  onChange={(e) => handleRoleChagne(e, user.id)}
-                                >
-                                  <option value="STUDENT">Học sinh</option>
-                                  <option value="TEACHER">Giáo viên</option>
-                                  <option value="ADMIN">Admin</option>
-                                </select>
-                                <div className="absolute top-3 right-3">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="18"
-                                    height="18"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path
-                                      fill="none"
-                                      stroke="#374151"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth="1.5"
-                                      d="m6 9l6 6l6-6"
-                                    />
-                                  </svg>
-                                </div>
+                              <div className="flex gap-2">
+                                <button className="font-semibold bg-indigo-100 px-4 py-2 rounded-md cursor-pointer hover:bg-indigo-500 hover:text-white">
+                                  {user.isActived
+                                    ? "Khoá tài khoản"
+                                    : "Mở khoá tài khoản"}
+                                </button>
+                                <button className="font-semibold bg-indigo-100 px-4 py-2 rounded-md cursor-pointer hover:bg-indigo-500 hover:text-white" onClick={() => grantAdminRole(user.id)}>
+                                  Cấp quyền Admin
+                                </button>
                               </div>
                             </div>
                           </div>

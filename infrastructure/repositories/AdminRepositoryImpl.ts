@@ -6,9 +6,10 @@ interface RawUserResponse {
   user_id: string;
   username: string;
   email: string;
-  role: "STUDENT" | "TEACHER" | "ADMIN";
+  role: string;
   avatar_url: string;
-  login_method: "EMAIL" | "GOOGLE";
+  login_method: string;
+  is_actived: boolean;
 }
 
 export class AdminRepositoryImpl implements IAdminRepository {
@@ -32,6 +33,20 @@ export class AdminRepositoryImpl implements IAdminRepository {
       role: raw.role,
       avatarUrl: raw.avatar_url,
       loginMethod: raw.login_method,
+      isActived: raw.is_actived,
     }));
+  }
+
+  async grantAdmin(accessToken: string, id: string): Promise<boolean> {
+    const { data } = await axios.put(
+      `${this.baseUrl}/admin/grant-admin`,
+      {},
+      {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${accessToken}` },
+        params: { user_id: id },
+      }
+    );
+    return data;
   }
 }
