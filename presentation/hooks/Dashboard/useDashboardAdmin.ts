@@ -1,7 +1,12 @@
 "use client";
 import { User } from "@/domain/entities/User";
 import { useAuthContext } from "@/presentation/context/authContext";
-import { getAllUsers, grantAdmin } from "@/presentation/services/admin.service";
+import {
+  getAllUsers,
+  grantAdmin,
+  lockUser,
+  unLockUser,
+} from "@/presentation/services/admin.service";
 import { useEffect, useState } from "react";
 
 export default function useDashboardAdmin() {
@@ -14,6 +19,38 @@ export default function useDashboardAdmin() {
         setUsers((prev) => {
           if (!prev) return;
           return prev.filter((user) => user.id !== id);
+        });
+      }
+    }
+  };
+
+  const lockOrUnlockUser = async (id: string, isActived: boolean) => {
+    if (isActived) {
+      if (await lockUser(id)) {
+        setUsers((prev) => {
+          if (!prev) return;
+
+          const newUsers = [...prev];
+          const index = newUsers.findIndex((user) => user.id === id);
+          newUsers[index] = {
+            ...newUsers[index],
+            isActived: false,
+          };
+          return newUsers;
+        });
+      }
+    } else {
+      if (await unLockUser(id)) {
+        setUsers((prev) => {
+          if (!prev) return;
+
+          const newUsers = [...prev];
+          const index = newUsers.findIndex((user) => user.id === id);
+          newUsers[index] = {
+            ...newUsers[index],
+            isActived: true,
+          };
+          return newUsers;
         });
       }
     }
@@ -38,5 +75,5 @@ export default function useDashboardAdmin() {
     fetchData();
   }, [user]);
 
-  return { user, users, grantAdminRole };
+  return { user, users, grantAdminRole, lockOrUnlockUser };
 }

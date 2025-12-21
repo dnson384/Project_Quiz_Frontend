@@ -11,11 +11,11 @@ export default function useDashboard() {
   const { user } = useAuthContext();
   const role = user?.role;
 
-  // useEffect(() => {
-  //   if (user?.role === "ADMIN") {
-  //     router.replace("/admin");
-  //   }
-  // }, [user, router]);
+  useEffect(() => {
+    if (user?.role === "ADMIN") {
+      router.replace("/admin");
+    }
+  }, [user, router]);
 
   const [courseSample, setCourseSample] = useState<Array<any>>([]);
   const [practiceTestSample, setPracticeTestSample] = useState<Array<any>>([]);

@@ -49,4 +49,30 @@ export class AdminRepositoryImpl implements IAdminRepository {
     );
     return data;
   }
+
+  async lockUser(accessToken: string, id: string): Promise<boolean> {
+    const { data } = await axios.put(
+      `${this.baseUrl}/admin/lock-user`,
+      {},
+      {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${accessToken}` },
+        params: { user_id: id },
+      }
+    );
+    return data;
+  }
+
+  async unLockUser(accessToken: string, id: string): Promise<boolean> {
+    const { data } = await axios.put(
+      `${this.baseUrl}/admin/unlock-user`,
+      {},
+      {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${accessToken}` },
+        params: { user_id: id },
+      }
+    );
+    return data;
+  }
 }

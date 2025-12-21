@@ -8,9 +8,35 @@ export async function getAllUsers(): Promise<User[]> {
   return response.data;
 }
 
-export async function grantAdmin(id: string) {
+export async function grantAdmin(id: string): Promise<boolean> {
   const response = await axios.put(
     `${base_url}/grant-admin`,
+    {},
+    {
+      params: {
+        id: id,
+      },
+    }
+  );
+  return response.data;
+}
+
+export async function lockUser(id: string): Promise<boolean> {
+  const response = await axios.put(
+    `${base_url}/lock-user`,
+    {},
+    {
+      params: {
+        id: id,
+      },
+    }
+  );
+  return response.data;
+}
+
+export async function unLockUser(id: string): Promise<boolean> {
+  const response = await axios.put(
+    `${base_url}/unlock-user`,
     {},
     {
       params: {
