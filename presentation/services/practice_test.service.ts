@@ -51,7 +51,10 @@ export async function getResultHistory(
   resultId: string,
   practiceTestId: string
 ) {
-  const response = await axios.get(`${base_url}/history/${practiceTestId}?rid=${resultId}`);
+  console.log("run");
+  const response = await axios.get(
+    `${base_url}/history/${practiceTestId}?rid=${resultId}`
+  );
   return response.data;
 }
 
@@ -66,12 +69,13 @@ export async function submitPracticeTest(
   questionsCount: number,
   score: number
 ) {
-  return await axios.post(`${base_url}/submit-test`, {
+  const response = await axios.post(`${base_url}/submit-test`, {
     practiceTestId: practiceTestId,
     answerQuestions: answerQuestions,
     questionsCount: questionsCount,
     score: score,
   });
+  return response.data;
 }
 
 // Sửa

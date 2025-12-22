@@ -361,7 +361,7 @@ export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
     answerQuestions: AnswerQuestionData,
     questionsCount: number,
     score: number
-  ): Promise<boolean> {
+  ): Promise<string> {
     const { data } = await axios.post(
       `${this.baseUrl}/practice-test/submit-test`,
       {

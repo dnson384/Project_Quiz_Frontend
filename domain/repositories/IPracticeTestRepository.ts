@@ -35,7 +35,7 @@ export interface IPracticeTestRepository {
     answerQuestions: AnswerQuestionData,
     questionsCount: number,
     score: number
-  ): Promise<boolean>;
+  ): Promise<string>;
   updatePracticeTest(
     practiceTestId: string,
     accessToken: string,

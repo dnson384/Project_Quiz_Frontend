@@ -12,7 +12,7 @@ export class SubmitTestUsecase {
     answerQuestions: AnswerQuestionData,
     questionsCount: number,
     score: number
-  ): Promise<boolean> {
+  ): Promise<string> {
     return await this.practiceTestRepository.submitTest(
       practiceTestId,
       accessToken,

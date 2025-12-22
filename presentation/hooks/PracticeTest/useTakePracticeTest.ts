@@ -95,14 +95,15 @@ export default function useTakePracticeTest() {
     );
     if (!practiceTestId || !questionsCount) return;
 
-    const summitStatus = await submitPracticeTest(
+    const resultId = await submitPracticeTest(
       practiceTestId,
       answeredQuestions,
       questionsCount,
       score
     );
-    if (summitStatus) {
-      router.push(`/history/${practiceTestId}`);
+    if (resultId) {
+      console.log(resultId)
+      router.replace(`/history/${practiceTestId}?rid=${resultId}`);
     }
   };
 
