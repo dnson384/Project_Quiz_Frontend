@@ -1,4 +1,4 @@
-import { UnLockUserUsecase } from "@/application/usecases/admin/unlockUser";
+import { UnLockUserUsecase } from "@/application/usecases/admin/unLockUser";
 import { AdminRepositoryImpl } from "@/infrastructure/repositories/AdminRepositoryImpl";
 import { NextRequest, NextResponse } from "next/server";
 

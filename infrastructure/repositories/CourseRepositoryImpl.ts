@@ -11,7 +11,6 @@ import {
   UpdateCourse,
 } from "@/domain/entities/Course";
 import { ICourseRepository } from "@/domain/repositories/ICourseRepository";
-import { details } from "framer-motion/client";
 
 interface RawCourseResponse {
   course_id: string;

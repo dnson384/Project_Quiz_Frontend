@@ -61,7 +61,7 @@ export default function useCreateCoures() {
     if (valid) {
       const newCourse: NewCourse = { baseInfo: baseInfo, terms: termData };
       if (await createNewCoures(newCourse)) {
-        router.push("/my-lib");
+        router.replace("/my-lib");
       } else {
         alert("Lỗi gì đó");
       }

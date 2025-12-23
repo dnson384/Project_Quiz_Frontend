@@ -24,7 +24,7 @@ export class AuthRepositoryImpl implements IAuthRepository {
   ) {}
 
   async registerEmail(payload: UserCreationParams): Promise<User> {
-    const { data } = await axios.post<RawUserResponse>(
+    const { data } = await axios.post<RawUser>(
       `${this.baseUrl}/auth/register`,
       {
         username: payload.username,
@@ -35,12 +35,12 @@ export class AuthRepositoryImpl implements IAuthRepository {
     );
 
     return {
-      id: data.user.user_id,
-      name: data.user.username,
-      email: data.user.email,
-      role: data.user.role,
-      avatarUrl: data.user.avatar_url,
-      loginMethod: data.user.login_method,
+      id: data.user_id,
+      name: data.username,
+      email: data.email,
+      role: data.role,
+      avatarUrl: data.avatar_url,
+      loginMethod: data.login_method,
     };
   }
 
