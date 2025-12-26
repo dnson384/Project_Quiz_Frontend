@@ -1,4 +1,4 @@
-import { UpdateUser, User } from "@/domain/entities/User";
+import { UpdateUser } from "@/domain/entities/User";
 import { IUserRepository } from "@/domain/repositories/IUserRepository";
 
 export class UpdateMeUsecase {

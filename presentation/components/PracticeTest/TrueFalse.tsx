@@ -11,7 +11,6 @@ interface Data {
     questionIndex: number,
     questionType: string,
     optionId: string,
-    isCorrect: boolean
   ) => void;
 }
 
@@ -42,7 +41,6 @@ export default function TrueFalse({
                     questionIndex,
                     "TRUE_FALSE",
                     option.id,
-                    option.isCorrect
                   )
                 }
               />

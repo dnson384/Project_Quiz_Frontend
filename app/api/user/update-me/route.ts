@@ -1,6 +1,7 @@
 import { UpdateMeUsecase } from "@/application/usecases/user/updateMe";
 import { UserRepositoryImpl } from "@/infrastructure/repositories/UserRepositoryImpl";
 import { NextRequest, NextResponse } from "next/server";
+import { isAxiosError } from "axios";
 
 export async function PUT(req: NextRequest) {
   try {
@@ -19,9 +20,14 @@ export async function PUT(req: NextRequest) {
     const updatedUser = await usecase.execute(accessToken, body);
     return NextResponse.json(updatedUser, { status: 200 });
   } catch (err) {
-    console.error(err);
+    if (isAxiosError(err)) {
+      return NextResponse.json(
+        { detail: err.response?.data.detail },
+        { status: err.status }
+      );
+    }
     return NextResponse.json(
-      { detail: "An error occurred while fetching token" },
+      { detail: "An error occurred while update" },
       { status: 500 }
     );
   }

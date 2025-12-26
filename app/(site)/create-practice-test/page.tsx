@@ -136,7 +136,7 @@ export default function CreateCourse() {
                         className={`p-1.5 bg-gray-50 rounded-full ${
                           questionCount > 2
                             ? "hover:bg-gray-300 cursor-pointer"
-                            : ""
+                            : "pointer-events-none"
                         }`}
                         onClick={() => handleDeleteCard(questionIndex)}
                       >

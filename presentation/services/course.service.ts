@@ -63,8 +63,15 @@ export async function updateCourse(
     id: courseId,
     updateCourse: updateCourse,
   });
-  const deleteStatus = await axios.delete(`${base_url}/delete`, {
+  const deleteStatus = await axios.delete(`${base_url}/delete/details`, {
     data: { id: courseId, deletedTerms: deletedTerms },
   });
   return updateStatus && deleteStatus;
+}
+
+export async function deleteCourse(courseId: string) {
+  const resposne = await axios.delete(`${base_url}/delete`, {
+    data: { id: courseId },
+  });
+  return resposne.data;
 }

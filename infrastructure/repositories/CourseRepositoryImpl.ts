@@ -102,7 +102,7 @@ export class CourseRepositoryImpl implements ICourseRepository {
     }
   }
 
-  async getCourseDetail(id: string): Promise<CourseDetail | null> {
+  async getCourseDetail(id: string): Promise<CourseDetail> {
     try {
       const { data } = await axios.get<RawCourseDetailReponse>(
         `${this.baseUrl}/course`,
@@ -134,8 +134,7 @@ export class CourseRepositoryImpl implements ICourseRepository {
         terms: termsDomain,
       };
     } catch (err) {
-      console.error(err);
-      return null;
+      throw err;
     }
   }
 
@@ -309,6 +308,14 @@ export class CourseRepositoryImpl implements ICourseRepository {
         headers: { Authorization: `Bearer ${accessToken}` },
       }
     );
+    return data;
+  }
+
+  async deleteCourse(courseId: string, accessToken: string): Promise<boolean> {
+    const { data } = await axios.delete(`${this.baseUrl}/course/${courseId}`, {
+      withCredentials: true,
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
     return data;
   }
 }

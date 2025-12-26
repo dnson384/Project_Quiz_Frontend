@@ -8,22 +8,26 @@ export async function GET(req: NextRequest) {
   try {
     const params = req.nextUrl.searchParams;
     const practiceTestId = params.get("practice_test_id");
-    const count = Number(params.get("count")) || undefined;
     if (!practiceTestId) return;
 
     const repo = new PracticeTestRepositoryImpl();
     const usecase = new GetPracticeTestDetailUsecase(repo);
-    const practiceTestDetail = await usecase.execute(practiceTestId, count);
+    const practiceTestDetail = await usecase.execute(practiceTestId);
 
     return NextResponse.json(practiceTestDetail, { status: 200 });
   } catch (err: unknown) {
-    console.error("Lỗi API:", err);
-
-    if (isAxiosError(err) && err.response)
+    if (isAxiosError(err) && err.response) {
+      if (err.status === 422) {
+        return NextResponse.json(
+          { detail: "course_id không hợp lệ" },
+          { status: err.response.status }
+        );
+      }
       return NextResponse.json(
         { detail: err.response.data.detail || "Lỗi từ Backend" },
         { status: err.response.status }
       );
+    }
 
     return NextResponse.json(
       { detail: "Internal Server Error" },

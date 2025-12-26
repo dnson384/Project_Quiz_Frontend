@@ -12,7 +12,7 @@ import useFlashcard from "@/presentation/hooks/Course/useCourseFlashcard";
 import { isLatinText } from "@/presentation/utils/textFormatter";
 
 export default function CourseDetail() {
-  const { courseDetail, handleLearnOptionClick } = useCourseDetail();
+  const { error, courseDetail, handleLearnOptionClick } = useCourseDetail();
   const baseInfo = courseDetail?.baseInfo;
   const terms = courseDetail?.terms;
 
@@ -35,7 +35,27 @@ export default function CourseDetail() {
 
       <div className="flex mb-5">
         <SideMenu />
-
+        {error && (
+          <div className="fixed inset-0 h-fit flex justify-center top-20">
+            <div className="fixed z-10 h-fit inset-0 flex justify-center top-15">
+              <div className="flex items-center gap-2 bg-red-100 w-fit h-fit p-2 rounded-lg">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 512 512"
+                >
+                  <path
+                    fill="#f67c6f"
+                    fillRule="evenodd"
+                    d="M256 42.667c117.803 0 213.334 95.53 213.334 213.333S373.803 469.334 256 469.334S42.667 373.803 42.667 256S138.197 42.667 256 42.667m48.918 134.25L256 225.836l-48.917-48.917l-30.165 30.165L225.835 256l-48.917 48.918l30.165 30.165L256 286.166l48.918 48.917l30.165-30.165L286.166 256l48.917-48.917z"
+                  />
+                </svg>
+                <p className=" text-red-400 select-none">{error}</p>
+              </div>
+            </div>
+          </div>
+        )}
         {baseInfo && (
           <main className="mx-auto my-3 w-3xl">
             {/* Thông tin chung */}

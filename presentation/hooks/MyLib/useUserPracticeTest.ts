@@ -13,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import {
+  deletePracticeTestService,
   getPracticeTestDetail,
   getUserPracticeTest,
 } from "@/presentation/services/practice_test.service";
@@ -528,7 +529,17 @@ export default function useMyPractice() {
     );
 
     if (updateStatus && deleteOptionsStatus && deleteQuestionsStatus) {
-      window.location.reload()
+      window.location.reload();
+    }
+  };
+
+  // Delete
+  const handleDeletePracticeTest = async () => {
+    if (confirm("Xác nhận xoá học phần")) {
+      if (!practiceTestId) return;
+      if (await deletePracticeTestService(practiceTestId)) {
+        router.replace("/my-lib");
+      }
     }
   };
 
@@ -601,5 +612,6 @@ export default function useMyPractice() {
     handleDeleteOption,
     // Save
     handleSaveChange,
+    handleDeletePracticeTest
   };
 }

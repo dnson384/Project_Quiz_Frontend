@@ -46,10 +46,8 @@ export default function useNavigationBar() {
   const handleSubmitSearchForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (keyword) {
+    if (keyword && keyword.trim().length > 0) {
       router.push(`/search?keyword=${keyword}&type=all`);
-    } else {
-      console.log("blank");
     }
 
     setKeyword(null);

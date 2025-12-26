@@ -11,7 +11,6 @@ interface Data {
     questionIndex: number,
     questionType: string,
     optionId: string,
-    isCorrect: boolean
   ) => void;
 }
 
@@ -44,7 +43,6 @@ export default function MultipleChoice({
                       questionIndex,
                       "MULTIPLE_CHOICE",
                       option.id,
-                      option.isCorrect
                     )
                   }
                 />

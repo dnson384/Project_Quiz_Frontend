@@ -21,6 +21,7 @@ export default function MyCourse() {
     handleTermChange,
     // Save
     handleSaveChange,
+    handleDeleteCourse,
   } = useMyCourse();
 
   const titleMissing = changedName?.name.length === 0;
@@ -44,16 +45,24 @@ export default function MyCourse() {
             <div className="sticky top-0 py-4 bg-[#F8F8FF]">
               <div className="w-6xl class flex justify-between items-center">
                 <h1 className="font-bold text-2xl">{baseInfo?.name}</h1>
-                <button
-                  className={`bg-indigo-500 text-white font-semibold w-20 py-2 rounded-full ${
-                    1 == 1
-                      ? "cursor-pointer hover:bg-indigo-700"
-                      : "pointer-events-none"
-                  }`}
-                  onClick={() => handleSaveChange(isFormValid)}
-                >
-                  Lưu
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    className={`bg-gray-200 text-gray-500 font-semibold px-4 py-2 rounded-full cursor-pointer hover:bg-gray-500 hover:text-white`}
+                    onClick={handleDeleteCourse}
+                  >
+                    Xoá học phần
+                  </button>
+                  <button
+                    className={`bg-indigo-500 text-white font-semibold px-4 py-2 rounded-full ${
+                      isFormValid
+                        ? "cursor-pointer hover:bg-indigo-700"
+                        : "pointer-events-none"
+                    }`}
+                    onClick={() => handleSaveChange(isFormValid)}
+                  >
+                    Lưu
+                  </button>
+                </div>
               </div>
             </div>
 

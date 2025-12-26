@@ -8,9 +8,6 @@ import {
   PracticeTest,
 } from "@/domain/entities/PracticeTest";
 
-import usePracticeTestDetail from "./usePracticeTestDetail";
-import { shuffleArray } from "@/presentation/utils/arrayHelpers";
-import { usePracticeTestResult } from "@/presentation/store/practiceTestStore";
 import { generateSlug } from "@/presentation/utils/textFormatter";
 import {
   getPracticeTestRandomDetail,
@@ -26,15 +23,13 @@ export default function useTakePracticeTest() {
   const [questions, setQuestions] = useState<PracticeTestQuestions[]>();
 
   const [timer, setTimer] = useState<number>(0);
-  const [isTimeOut, setIsTimeOut] = useState<boolean>(false);
   const [answeredQuestions, setAnsweredQuestions] =
     useState<AnswerQuestionData>({});
 
   const handleOptionSelected = (
     questionIndex: number,
     questionType: string,
-    optionId: string,
-    isCorrect: boolean
+    optionId: string
   ) => {
     setAnsweredQuestions((prev) => {
       const newAnsweredOptions = { ...prev };
@@ -102,7 +97,7 @@ export default function useTakePracticeTest() {
       score
     );
     if (resultId) {
-      console.log(resultId)
+      console.log(resultId);
       router.replace(`/history/${practiceTestId}?rid=${resultId}`);
     }
   };
@@ -128,10 +123,12 @@ export default function useTakePracticeTest() {
   useEffect(() => {
     const fetchData = async () => {
       const practiceTestId = searchParams.get("uuid");
+      const questionsCount = searchParams.get("num_of_ques");
       if (!practiceTestId) return;
 
       const data: PracticeTestDetail = await getPracticeTestRandomDetail(
-        practiceTestId
+        practiceTestId,
+        questionsCount ? Number(questionsCount) : undefined
       );
 
       if (data) {
@@ -162,18 +159,14 @@ export default function useTakePracticeTest() {
   useEffect(() => {
     const timer = searchParams.get("timer");
     if (timer) {
-      setIsTimeOut(false);
       setTimer(Number(timer) * 60);
     }
   }, []);
 
   useEffect(() => {
-    if (isTimeOut) return;
-
     const interval = setInterval(() => {
       setTimer((prev) => {
         if (prev <= 0) {
-          setIsTimeOut(true);
           clearInterval(interval);
           return 0;
         }
@@ -184,11 +177,19 @@ export default function useTakePracticeTest() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (timer === 0) {
+      const submit = async () => {
+        await handleSubmitTestClick();
+      };
+      submit();
+    }
+  }, [timer]);
+
   return {
     baseInfo,
     questions,
     timer,
-    isTimeOut,
     answeredQuestions,
     handleClose,
     handleOptionSelected,

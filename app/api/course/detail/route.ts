@@ -17,13 +17,18 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(courseDetail, { status: 200 });
   } catch (err) {
-    console.error("Lỗi API:", err);
-
-    if (isAxiosError(err) && err.response)
+    if (isAxiosError(err) && err.response) {
+      if (err.status === 422) {
+        return NextResponse.json(
+          { detail: "course_id không hợp lệ" },
+          { status: err.response.status }
+        );
+      }
       return NextResponse.json(
         { detail: err.response.data.detail || "Lỗi từ Backend" },
         { status: err.response.status }
       );
+    }
 
     return NextResponse.json(
       { detail: "Lỗi máy chủ nội bộ (Internal Server Error)" },

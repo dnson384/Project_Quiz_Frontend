@@ -1,5 +1,4 @@
 "use client";
-import PracticeTestQuestion from "@/presentation/components/PracticeTest/practiceTestQuestion";
 import SingleChoice from "@/presentation/components/PracticeTest/SingleChoice";
 import MultipleChoice from "@/presentation/components/PracticeTest/MultipleChoice";
 import TrueFalse from "@/presentation/components/PracticeTest/TrueFalse";

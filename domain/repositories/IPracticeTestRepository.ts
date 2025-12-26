@@ -51,4 +51,8 @@ export interface IPracticeTestRepository {
     accessToken: string,
     deleteQuestions: string[]
   ): Promise<boolean>;
+  deletePracticeTest(
+    practiceTestId: string,
+    accessToken: string
+  ): Promise<boolean>;
 }

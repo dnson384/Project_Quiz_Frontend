@@ -7,11 +7,13 @@ import {
   lockUser,
   unLockUser,
 } from "@/presentation/services/admin.service";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function useDashboardAdmin() {
   const { user } = useAuthContext();
   const [users, setUsers] = useState<User[]>();
+  const router = useRouter()
 
   const grantAdminRole = async (id: string) => {
     if (confirm("Chắc chưa?")) {
@@ -55,6 +57,12 @@ export default function useDashboardAdmin() {
       }
     }
   };
+
+  useEffect(() => {
+    if (user && user.role !== "ADMIN") {
+      router.replace("/dashboard")
+    }
+  }, [user])
 
   useEffect(() => {
     const fetchData = async () => {

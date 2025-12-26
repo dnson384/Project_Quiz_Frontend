@@ -12,6 +12,7 @@ import {
   getUserCoures,
   getCourseDetail,
   updateCourse,
+  deleteCourse,
 } from "@/presentation/services/course.service";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -117,7 +118,18 @@ export default function useMyCourse() {
         details: changedTerms,
       };
       if (await updateCourse(baseInfo.id, updateCourseData, deletedTerms)) {
-        window.location.reload()
+        window.location.reload();
+      }
+    }
+  };
+
+  // Delete
+  const handleDeleteCourse = async () => {
+    if (confirm("Xác nhận xoá học phần")) {
+      const id = baseInfo?.id;
+      if (!id) return;
+      if (await deleteCourse(id)) {
+        router.replace("/my-lib")
       }
     }
   };
@@ -162,5 +174,6 @@ export default function useMyCourse() {
     handleTermChange,
     // Save
     handleSaveChange,
+    handleDeleteCourse,
   };
 }

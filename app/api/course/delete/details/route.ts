@@ -2,10 +2,11 @@ import { isAxiosError } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
 import { CourseRepositoryImpl } from "@/infrastructure/repositories/CourseRepositoryImpl";
-import { DeleteCourseUsecase } from "@/application/usecases/course/deleteCourse";
+import { DeleteTermsUsecase } from "@/application/usecases/course/deleteTerms";
 
 interface BodyData {
-  id: string;
+  id: string,
+  deletedTerms: string[]
 }
 
 export async function DELETE(req: NextRequest) {
@@ -20,9 +21,14 @@ export async function DELETE(req: NextRequest) {
 
     const body: BodyData = await req.json();
 
+
     const repo = new CourseRepositoryImpl();
-    const usecase = new DeleteCourseUsecase(repo);
-    const deleteStatus = await usecase.execute(body.id, accessToken);
+    const usecase = new DeleteTermsUsecase(repo);
+    const deleteStatus = await usecase.execute(
+      body.id,
+      accessToken,
+      body.deletedTerms
+    );
 
     return NextResponse.json(deleteStatus, { status: 200 });
   } catch (err) {

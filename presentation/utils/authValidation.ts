@@ -12,6 +12,7 @@ export const validateRegister = (
   if (!data.email) return "Vui lòng nhập email";
   if (!data.username) return "Vui lòng nhập tên người dùng";
   if (!data.plainPassword) return "Vui lòng nhập mật khẩu";
+  if (!data.confirmPassword) return "Vui lòng nhập mật khẩu xác nhận";
 
   if (data.plainPassword.length < 8 || data.plainPassword.length > 64)
     return "Độ dài mật khẩu không hợp lệ (8-64 ký tự)";

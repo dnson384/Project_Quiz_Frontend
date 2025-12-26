@@ -1,6 +1,7 @@
 import { UploadAvatarUsecase } from "@/application/usecases/user/uploadAvatar";
 import { UserRepositoryImpl } from "@/infrastructure/repositories/UserRepositoryImpl";
 import { NextRequest, NextResponse } from "next/server";
+import { isAxiosError } from "axios";
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,7 +11,12 @@ export async function POST(req: NextRequest) {
     const newAvatar = await usecase.execute(formData);
     return NextResponse.json(newAvatar, { status: 200 });
   } catch (err) {
-    console.error(err);
+    if (isAxiosError(err)) {
+      return NextResponse.json(
+        { detail: err.response?.data.detail },
+        { status: err.status }
+      );
+    }
     return NextResponse.json(
       { detail: "An error occurred while fetching token" },
       { status: 500 }

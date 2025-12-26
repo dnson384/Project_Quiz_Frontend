@@ -11,6 +11,7 @@ export default function useCreateCoures() {
   const [baseInfo, setBaseInfo] = useState<NewBaseInfo>({ name: "" });
   const [termData, setTermData] = useState<NewTerm[]>([]);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleAddCartClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -59,19 +60,33 @@ export default function useCreateCoures() {
   const handleCreateClick = async (valid: boolean) => {
     setIsSubmitted(true);
     if (valid) {
-      const newCourse: NewCourse = { baseInfo: baseInfo, terms: termData };
-      if (await createNewCoures(newCourse)) {
-        router.replace("/my-lib");
+      if (termData.length >= 2) {
+        const newCourse: NewCourse = { baseInfo: baseInfo, terms: termData };
+        if (await createNewCoures(newCourse)) {
+          router.replace("/my-lib");
+        } else {
+          alert("Lỗi gì đó");
+        }
       } else {
-        alert("Lỗi gì đó");
+        setError("Phải có ít nhất 2 cặp thuật ngữ - định nghĩa");
       }
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
   return {
     // UI
     termCount,
     isSubmitted,
+    error,
     // FieldData
     termData,
     baseInfo,

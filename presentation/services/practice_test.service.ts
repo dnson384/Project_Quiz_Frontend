@@ -33,10 +33,14 @@ export async function getPracticeTestDetail(practiceTestId: string) {
   return response.data;
 }
 
-export async function getPracticeTestRandomDetail(practiceTestId: string) {
+export async function getPracticeTestRandomDetail(
+  practiceTestId: string,
+  count: number | undefined
+) {
   const response = await axios.get(`${base_url}/random-question`, {
     params: {
       practice_test_id: practiceTestId,
+      count: count
     },
   });
   return response.data;
@@ -94,7 +98,7 @@ export async function deleteOptionsService(
   practiceTestId: string,
   deleteOptions: DeleteOptionData[]
 ) {
-  return await axios.delete(`${base_url}/delete-options`, {
+  return await axios.delete(`${base_url}/delete/options`, {
     data: {
       practiceTestId: practiceTestId,
       deletedOptions: deleteOptions,
@@ -106,10 +110,17 @@ export async function deleteQuestionsService(
   practiceTestId: string,
   deleteQuestions: string[]
 ) {
-  return await axios.delete(`${base_url}/delete-questions`, {
+  return await axios.delete(`${base_url}/delete/questions`, {
     data: {
       practiceTestId: practiceTestId,
       deleteQuestions: deleteQuestions,
     },
   });
+}
+
+export async function deletePracticeTestService(practiceTestId: string) {
+  const response = await axios.delete(`${base_url}/delete`, {
+    data: { practiceTestId: practiceTestId },
+  });
+  return response.data;
 }

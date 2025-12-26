@@ -7,12 +7,16 @@ import {
 } from "@/presentation/services/user.service";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState, useRef } from "react";
+import { isAxiosError } from "axios";
 
 export default function usePersonal() {
   const router = useRouter();
   const pathname = usePathname();
 
   const { user } = useAuthContext();
+
+  // Error
+  const [error, setError] = useState<string | null>(null);
 
   // Upload Ảnh
   const [newAvatar, setNewAvatar] = useState<string>();
@@ -53,8 +57,11 @@ export default function usePersonal() {
         if (!prev) return prev;
         return { ...prev, avatarUrl: newAvatarUrl };
       });
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      if (isAxiosError(err)) {
+        const newErr = err.response?.data.detail;
+        setError(newErr);
+      }
     } finally {
       setUploading(false);
     }
@@ -88,8 +95,16 @@ export default function usePersonal() {
 
     if (valid && formValid) {
       if (!confirm("Xác nhận thay đổi")) return;
-      if (await updateMe(updateData)) {
-        window.location.reload();
+      try {
+        const response = await updateMe(updateData);
+        if (response.data) {
+          window.location.reload();
+        }
+      } catch (err) {
+        if (isAxiosError(err)) {
+          const newErr = err.response?.data.detail;
+          setError(newErr);
+        }
       }
     } else {
       alert("Dữ liệu thay đổi không hợp lệ");
@@ -111,7 +126,21 @@ export default function usePersonal() {
       });
     }
   }, [user]);
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 3000);
+      return () => {
+        clearTimeout(timer);
+        window.location.reload();
+      };
+    }
+  }, [error]);
+
   return {
+    error,
     user,
     newAvatar,
     fileInputRef,

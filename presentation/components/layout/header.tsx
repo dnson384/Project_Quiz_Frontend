@@ -122,7 +122,7 @@ export default function Header() {
                     alt={user.name || "user avatar"}
                     width={36}
                     height={36}
-                    className="w-9 h-9 rounded-full cursor-pointer"
+                    className="w-9 h-9 rounded-full cursor-pointer object-cover"
                     onClick={handleUserAvatarClick}
                   ></Image>
                 ) : (

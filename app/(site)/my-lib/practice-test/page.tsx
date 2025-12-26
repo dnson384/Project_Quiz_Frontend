@@ -29,6 +29,7 @@ export default function MyPracticeTest() {
     handleDeleteOption,
     // Save
     handleSaveChange,
+    handleDeletePracticeTest,
   } = useMyPractice();
 
   const titleMissing = changedName?.name.length === 0;
@@ -56,23 +57,32 @@ export default function MyPracticeTest() {
           <div className="sticky z-10 top-0 py-4 bg-[#F8F8FF]">
             <div className="w-6xl class flex justify-between items-center">
               <h1 className="font-bold text-2xl">{baseInfo?.name}</h1>
-              <button
-                className={`bg-indigo-500 text-white font-semibold w-20 py-2 rounded-full ${
-                  changedQuestions.length > 0 ||
-                  deleteOptions.length > 0 ||
-                  deleteQuestions.length > 0 ||
-                  (changedName &&
-                    changedName?.name.length > 0 &&
-                    changedName.name !== baseInfo?.name)
-                    ? "cursor-pointer hover:bg-indigo-700"
-                    : "pointer-events-none"
-                }`}
-                onClick={() => {
-                  handleSaveChange(isFormValid);
-                }}
-              >
-                Lưu
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  className={`bg-gray-200 text-gray-500 font-semibold px-4 py-2 rounded-full hover:bg-gray-500 hover:text-white`}
+                  onClick={handleDeletePracticeTest}
+                >
+                  Xoá bài kiểm tra
+                </button>
+
+                <button
+                  className={`bg-indigo-500 text-white font-semibold px-4 py-2 rounded-full ${
+                    changedQuestions.length > 0 ||
+                    deleteOptions.length > 0 ||
+                    deleteQuestions.length > 0 ||
+                    (changedName &&
+                      changedName?.name.length > 0 &&
+                      changedName.name !== baseInfo?.name)
+                      ? "cursor-pointer hover:bg-indigo-700"
+                      : "pointer-events-none"
+                  }`}
+                  onClick={() => {
+                    handleSaveChange(isFormValid);
+                  }}
+                >
+                  Lưu
+                </button>
+              </div>
             </div>
           </div>
 
@@ -174,7 +184,7 @@ export default function MyPracticeTest() {
                         className={`p-1.5 bg-gray-50 rounded-full ${
                           questions.length > 2
                             ? "hover:bg-gray-300 cursor-pointer"
-                            : ""
+                            : "pointer-events-none"
                         }`}
                         onClick={() =>
                           handleDeleteCard(questionIndex, question.id)

@@ -26,4 +26,5 @@ export interface ICourseRepository {
     accessToken: string,
     deleteTerms: string[]
   ) => Promise<boolean>;
+  deleteCourse(courseId: string, accessToken: string): Promise<boolean>;
 }
