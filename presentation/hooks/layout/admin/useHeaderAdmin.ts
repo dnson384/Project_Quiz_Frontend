@@ -38,7 +38,7 @@ export default function useNavigationBarAdmin() {
   };
 
   const handleSearchInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setKeyword(event.target.value);
   };
@@ -48,8 +48,6 @@ export default function useNavigationBarAdmin() {
 
     if (keyword) {
       router.push(`/admin/search?email=${keyword}`);
-    } else {
-      console.log("blank");
     }
 
     setKeyword(null);

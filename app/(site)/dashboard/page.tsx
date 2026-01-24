@@ -13,14 +13,14 @@ export default function Dashboard() {
       {role !== "ADMIN" && (
         <>
           <Header />
-          <div className="flex">
+          <div className="flex mt-[74px]">
             <SideMenu />
 
-            <section className="mx-auto mt-3 flex flex-col gap-8">
+            <section className="mx-auto mt-3 flex flex-col gap-8 px-5 sm:p-0">
               {courseSample.length > 0 && (
                 <div>
                   <h3 className="font-bold mb-5">Học phần đề xuất</h3>
-                  <div className="grid grid-cols-3 gap-x-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-4">
                     {courseSample.map((course) => (
                       <CourseCard
                         key={course.id}
@@ -39,7 +39,7 @@ export default function Dashboard() {
               {practiceTestSample.length > 0 && (
                 <div className="mx-auto">
                   <h3 className="font-bold mb-5">Bài kiểm tra thử đề xuất</h3>
-                  <div className="grid grid-cols-3 gap-x-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-4">
                     {practiceTestSample.map((test) => (
                       <PracticeTestCard
                         key={test.id}

@@ -5,10 +5,11 @@ interface LearnQuestionParams {
   currentQuestionOptions: Term[];
   correctAnswer: Term;
   selectedOption: string | null;
+  questionsCount: number,
   handleOptionSelected: (
     questionIndex: number,
     option_id: string,
-    correct_id: string
+    correct_id: string,
   ) => void;
 }
 
@@ -17,15 +18,16 @@ export default function TestQuestion({
   currentQuestionOptions,
   correctAnswer,
   selectedOption,
+  questionsCount,
   handleOptionSelected,
 }: LearnQuestionParams) {
   return (
-    <section className="w-5xl mx-auto px-7 py-5 border border-gray-300 rounded-lg">
+    <section className="lg:w-5xl lg:mx-auto mx-5 lg:px-7 py-5 lg:border border-gray-300 rounded-lg">
       {/* Term */}
       <div className="mb-16">
         <div className="flex justify-between">
           <h4 className="text-sm font-bold text-gray-500 mb-6">Định nghĩa</h4>
-          <h3 className="text-sm text-gray-500">{questionIndex + 1}/20</h3>
+          <h3 className="text-sm text-gray-500">{questionIndex + 1}/{questionsCount}</h3>
         </div>
         <p className="text-xl font-semibold">{correctAnswer.term}</p>
       </div>
@@ -35,7 +37,7 @@ export default function TestQuestion({
         <h4 className="text-sm font-bold text-gray-500 mb-5">
           Chọn đáp án đúng
         </h4>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-3 select-none">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-3 select-none">
           {currentQuestionOptions &&
             currentQuestionOptions.map((option) => (
               <div
@@ -43,8 +45,8 @@ export default function TestQuestion({
                 onClick={() =>
                   handleOptionSelected(
                     questionIndex,
-                    option.id,
-                    correctAnswer.id
+                    option.id!,
+                    correctAnswer.id!,
                   )
                 }
                 className={`flex items-center border rounded-md cursor-pointer mb-3 transition-all duration-200  ${

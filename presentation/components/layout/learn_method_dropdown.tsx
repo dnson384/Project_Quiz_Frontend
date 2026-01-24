@@ -11,6 +11,7 @@ export default function LearnMethodDropdown() {
     setShowLearnMethod,
     handleChangeLearnMethod,
   } = useLearnMethod();
+
   const learnIcon = [
     {
       label: "flashcard",
@@ -136,7 +137,7 @@ export default function LearnMethodDropdown() {
   ];
 
   return (
-    <div className="w-60 absolute" ref={dropdownRef}>
+    <div className="sm:w-50 md:w-60 absolute z-20" ref={dropdownRef}>
       <div
         className={`bg-gray-100 w-full px-5 py-3 rounded-lg flex items-center justify-between gap-1 cursor-pointer select-none  ${
           isFocus && showLearnMethod
@@ -149,8 +150,10 @@ export default function LearnMethodDropdown() {
         }}
       >
         <div className="flex gap-2 items-center justify-center  ">
-          {learnIcon.find((item) => item.label === selectedMethod)?.icon}
-          <h3 className="font-semibold">
+          <div className="w-6 flex justify-center items-center">
+            {learnIcon.find((item) => item.label === selectedMethod)?.icon}
+          </div>
+          <h3 className="hidden sm:block font-semibold">
             {learnIcon.find((item) => item.label === selectedMethod)?.text}
           </h3>
         </div>
@@ -168,20 +171,23 @@ export default function LearnMethodDropdown() {
           />
         </svg>
       </div>
+
       {showLearnMethod && (
-        <div className="w-full py-3 mt-2 bg-white rounded-md z-10 shadow-[0_0_15px_rgba(0,0,0,0.1)]">
+        <div className="w-full py-3 mt-2 bg-white rounded-md shadow-[0_0_15px_rgba(0,0,0,0.1)]">
           {learnIcon.map(
             (item) =>
               item.label !== selectedMethod && (
                 <div
                   key={item.label}
-                  className="w-full px-5 py-3 rounded-lg flex items-center gap-1 cursor-pointer select-none hover:bg-gray-200"
+                  className="w-full px-5 py-3 rounded-lg flex items-center gap-2 cursor-pointer select-none hover:bg-gray-200"
                   onClick={() => handleChangeLearnMethod(item.label)}
                 >
-                  {item.icon}
-                  <h3 className="font-semibold">{item.text}</h3>
+                  <div className="w-6 flex justify-center items-center">
+                    {item.icon}
+                  </div>
+                  <h3 className="hidden sm:block font-semibold">{item.text}</h3>
                 </div>
-              )
+              ),
           )}
         </div>
       )}

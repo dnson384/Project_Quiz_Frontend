@@ -18,10 +18,10 @@ export default function MyPracticeTest() {
   return (
     <>
       <Header />
-      <div className="flex">
+      <div className="flex mt-[74px]">
         <SideMenu />
 
-        <section className="w-6xl mx-auto mt-3">
+        <section className="w-md md:w-2xl lg:w-6xl mx-auto mt-3">
           <nav className="flex flex-col gap-8 mb-5">
             <h1 className="text-3xl font-bold">Thư viện của bạn</h1>
             <div className="flex gap-6">

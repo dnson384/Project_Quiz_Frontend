@@ -26,9 +26,9 @@ export default function Header() {
   const { logoutUser } = useAuth();
 
   return (
-    <>
+    <main className="relative">
       {user && (
-        <>
+        <div className="fixed z-20 inset-0 h-fit bg-[#f8f8ff]">
           <nav className="pl-4 pr-6 py-4 flex justify-between items-center">
             {/* Menu & Logo */}
             <div className="flex items-center gap-3">
@@ -63,7 +63,7 @@ export default function Header() {
             {/* Search bar */}
             <form
               id="search-container"
-              className={`w-2xl bg-gray-50 py-2 px-4 rounded-lg flex items-center gap-2 transition-all duration-200 border ${
+              className={`sm:w-md md:w-lg lg:w-2xl bg-gray-50 py-2 px-4 rounded-lg flex items-center gap-2 transition-all duration-200 border ${
                 isFocused ? "border-indigo-500" : "border-gray-200"
               }`}
               onClick={handleSearchInputFocus}
@@ -99,21 +99,6 @@ export default function Header() {
 
             {/* Create course & Account */}
             <div className="flex gap-3 items-center">
-              {/* Create */}
-              <div className="bg-indigo-500 w-9 h-9 flex items-center justify-center rounded-full cursor-pointer hover:bg-indigo-700">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 256 256"
-                >
-                  <path
-                    fill="#ffffff"
-                    d="M228 128a12 12 0 0 1-12 12h-76v76a12 12 0 0 1-24 0v-76H40a12 12 0 0 1 0-24h76V40a12 12 0 0 1 24 0v76h76a12 12 0 0 1 12 12"
-                  />
-                </svg>
-              </div>
-
               {/* Accout */}
               <div ref={avatarRef}>
                 {user ? (
@@ -181,8 +166,8 @@ export default function Header() {
               </div>
             </aside>
           )}
-        </>
+        </div>
       )}
-    </>
+    </main>
   );
 }

@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Quicksand } from "next/font/google";
 import AuthProvider from "@/presentation/context/authContext";
+import { MenuProvider } from "@/presentation/context/menuContext";
 
 const quicksand = Quicksand({
   subsets: ["latin"],
@@ -16,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={quicksand.className}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <MenuProvider>{children}</MenuProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -41,9 +41,9 @@ export default function MyCourse() {
             <span className="loader"></span>
           </div>
         ) : (
-          <section className="w-6xl mx-auto">
+          <section className="mt-[74px] w-md sm:w-xl md:w-2xl lg:w-4xl mx-auto">
             <div className="sticky top-0 py-4 bg-[#F8F8FF]">
-              <div className="w-6xl class flex justify-between items-center">
+              <div className="w-full class flex justify-between items-center">
                 <h1 className="font-bold text-2xl">{baseInfo?.name}</h1>
                 <div className="flex items-center gap-3">
                   <button

@@ -129,7 +129,7 @@ export default function PracticeTestDetail() {
                     type="submit"
                     className="w-full py-2 rounded-full mt-3 bg-indigo-500 text-white font-semibold cursor-pointer hover:bg-indigo-700"
                   >
-                    Triển luôn bạn ei
+                    Bắt đầu làm bài
                   </button>
                 </form>
               </aside>

@@ -55,7 +55,6 @@ export async function getResultHistory(
   resultId: string,
   practiceTestId: string
 ) {
-  console.log("run");
   const response = await axios.get(
     `${base_url}/history/${practiceTestId}?rid=${resultId}`
   );

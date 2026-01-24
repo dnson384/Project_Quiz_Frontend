@@ -20,7 +20,7 @@ export default function PracticeTestCard({
 
   return (
     <main
-      className="border border-gray-300 p-5 rounded-xl w-xs cursor-pointer hover:shadow-md shadow-indigo-300"
+      className="flex flex-col justify-between border border-gray-300 p-5 rounded-xl md:w-60 lg:w-xs cursor-pointer hover:shadow-md shadow-indigo-300"
       onClick={() => handleCardClick(practiceTestId, practiceTestName)}
     >
       <div className="flex flex-col gap-3 mb-8">

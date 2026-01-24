@@ -93,7 +93,7 @@ export default function History() {
                 className="mt-3 py-2 px-3 w-full font-medium bg-indigo-50 rounded-full cursor-pointer hover:bg-indigo-500 hover:text-white"
                 onClick={handleClose}
               >
-                Đéo xem OK
+                Thoát
               </button>
             </aside>
 
@@ -103,7 +103,7 @@ export default function History() {
                 className="px-5 py-3 rounded-full bg-indigo-500 text-white font-bold cursor-pointer hover:bg-indigo-600"
                 onClick={handleClose}
               >
-                Xem xong thì cút!!!
+                Thoát
               </button>
             </div>
           </section>

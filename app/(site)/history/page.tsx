@@ -11,7 +11,7 @@ export default function AllHistories() {
       {user && (
         <>
           <Header />
-          <main className="flex">
+          <main className="flex mt-[74px]">
             <SideMenu />
 
             {histories ? (

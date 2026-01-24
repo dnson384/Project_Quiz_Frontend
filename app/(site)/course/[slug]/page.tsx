@@ -33,7 +33,7 @@ export default function CourseDetail() {
     <>
       <Header />
 
-      <div className="flex mb-5">
+      <div className="flex mt-15 mb-5">
         <SideMenu />
         {error && (
           <div className="fixed inset-0 h-fit flex justify-center top-20">
@@ -57,7 +57,7 @@ export default function CourseDetail() {
           </div>
         )}
         {baseInfo && (
-          <main className="mx-auto my-3 w-3xl">
+          <main className="mx-auto my-3 w-md sm:w-xl md:w-2xl lg:w-3xl px-5 sm:p-0">
             {/* Thông tin chung */}
             <section className="flex flex-col gap-5">
               {/* Tên học phần */}
@@ -98,6 +98,7 @@ export default function CourseDetail() {
                     viewBox="0 0 30 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
+                    className="hidden sm:block"
                   >
                     <rect
                       x="6.3158"
@@ -114,7 +115,7 @@ export default function CourseDetail() {
                       fill="#6366F1"
                     />
                   </svg>
-                  <h3 className=" font-semibold">Thẻ ghi nhớ</h3>
+                  <h3 className="font-semibold">Thẻ ghi nhớ</h3>
                 </div>
                 {/* Học */}
                 <div
@@ -127,6 +128,7 @@ export default function CourseDetail() {
                     viewBox="0 0 26 26"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
+                    className="hidden sm:block"
                   >
                     <path
                       d="M9.91156 4.7301C8.71986 4.99874 7.5635 5.67481 6.36176 6.52502C5.33523 7.25132 4.51881 8.22528 3.97992 9.36975C3.44077 10.5149 3.19151 11.806 3.2641 13.1393C3.33681 14.4735 3.72993 15.8104 4.42133 17.0338C5.11286 18.2574 6.07883 19.3262 7.23773 20.1461C8.39646 20.9658 9.70781 21.509 11.0571 21.736C12.4058 21.9628 13.749 21.8661 14.976 21.4684C17.1035 20.7786 18.4214 19.9863 19.8188 19.0934L21.434 21.6207C19.9511 22.5683 18.3845 23.517 15.9018 24.3219C14.198 24.8743 12.3657 24.9975 10.56 24.694C8.75447 24.3903 7.02194 23.668 5.50433 22.5944C3.98676 21.5207 2.71974 20.1208 1.80902 18.5094C0.8984 16.898 0.366766 15.1143 0.268005 13.3033C0.169269 11.4914 0.506839 9.70294 1.26508 8.09241C2.02369 6.48115 3.17734 5.10242 4.62836 4.07581C5.9042 3.17317 7.45931 2.2073 9.2514 1.80334L9.91156 4.7301Z"
@@ -190,6 +192,7 @@ export default function CourseDetail() {
                     viewBox="0 0 30 37"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
+                    className="hidden sm:block"
                   >
                     <path
                       d="M14.1044 11.7628L12.1174 16.1133H16.0913L14.1044 11.7628Z"
@@ -262,6 +265,7 @@ export default function CourseDetail() {
                   alt={"author avatar"}
                   width={48}
                   height={48}
+                  className="w-12 h-12 object-cover"
                 />
               </div>
 

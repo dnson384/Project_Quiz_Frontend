@@ -10,6 +10,7 @@ export default function Search() {
   const {
     keyword,
     type,
+    isLoading,
     courses,
     practiceTests,
     notification,
@@ -21,92 +22,89 @@ export default function Search() {
   return (
     <>
       <Header />
-      <div className="flex">
+      <div className="flex mt-[74px]">
         <SideMenu />
 
-        <section className="mx-auto py-3 flex flex-col gap-10">
-          <h2 className="text-2xl font-bold">Kết quả cho "{keyword}"</h2>
-          <div>
-            <div className="flex gap-6">
-              <h3
-                id="all"
-                className={`${
-                  type === "all"
-                    ? "border-b-2 border-indigo-500"
-                    : "text-gray-500"
-                } text-sm font-bold pb-2 cursor-pointer`}
-                onClick={(e) => HandlerShowResult(e, type)}
-              >
-                Tẩt cả kết quả
-              </h3>
-              <h3
-                id="courses"
-                className={`${
-                  type === "courses"
-                    ? "border-b-2 border-indigo-500"
-                    : "text-gray-500"
-                } text-sm font-bold pb-2 cursor-pointer`}
-                onClick={(e) => HandlerShowResult(e, type)}
-              >
-                Học phần
-              </h3>
-              <h3
-                id="practice_tests"
-                className={`${
-                  type === "practice_tests"
-                    ? "border-b-2 border-indigo-500"
-                    : "text-gray-500"
-                } text-sm font-bold pb-2 cursor-pointer`}
-                onClick={(e) => HandlerShowResult(e, type)}
-              >
-                Bài kiểm tra thử
-              </h3>
-              <h3
-                id="textbooks"
-                className={`${
-                  type === "textbooks"
-                    ? "border-b-2 border-indigo-500"
-                    : "text-gray-500"
-                } text-sm font-bold pb-2 cursor-pointer`}
-                onClick={(e) => HandlerShowResult(e, type)}
-              >
-                Sách giáo khoa
-              </h3>
-            </div>
-            <div className="grid grid-cols-3 gap-x-4 border border-gray-200">
-              <div className="w-xs"></div>
-              <div className="w-xs"></div>
-              <div className="w-xs"></div>
-            </div>
+        {isLoading ? (
+          <div className="fixed inset-0 z-[-1] flex items-center justify-center">
+            <div className="loader"></div>
           </div>
+        ) : (
+          <section className="mx-auto mt-3 flex flex-col gap-8 px-5 sm:p-0">
+            <>
+              <h2 className="text-2xl font-bold">Kết quả cho "{keyword}"</h2>
+              <div className="relative w-full border-b border-gray-300">
+                <div className="flex gap-6">
+                  <h3
+                    id="all"
+                    className={`${
+                      type === "all"
+                        ? "border-b-2 border-indigo-500"
+                        : "text-gray-500"
+                    } text-sm font-bold pb-2 cursor-pointer`}
+                    onClick={(e) => HandlerShowResult(e, type)}
+                  >
+                    Tẩt cả kết quả
+                  </h3>
+                  <h3
+                    id="courses"
+                    className={`${
+                      type === "courses"
+                        ? "border-b-2 border-indigo-500"
+                        : "text-gray-500"
+                    } text-sm font-bold pb-2 cursor-pointer`}
+                    onClick={(e) => HandlerShowResult(e, type)}
+                  >
+                    Học phần
+                  </h3>
+                  <h3
+                    id="practice_tests"
+                    className={`${
+                      type === "practice_tests"
+                        ? "border-b-2 border-indigo-500"
+                        : "text-gray-500"
+                    } text-sm font-bold pb-2 cursor-pointer`}
+                    onClick={(e) => HandlerShowResult(e, type)}
+                  >
+                    Bài kiểm tra thử
+                  </h3>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-6">
+                  <div className="md:w-60 lg:w-xs"></div>
+                  <div className="md:w-60 lg:w-xs"></div>
+                  <div className="md:w-60 lg:w-xs"></div>
+                </div>
+              </div>
 
-          {/* Show all */}
-          {type === "all" && (
-            <AllResult
-              courses={courses}
-              practiceTests={practiceTests}
-              handleViewAllResult={handleViewAllResult}
-            />
-          )}
+              {/* Show all */}
+              {type === "all" && (
+                <AllResult
+                  courses={courses}
+                  practiceTests={practiceTests}
+                  handleViewAllResult={handleViewAllResult}
+                />
+              )}
 
-          {/* Courses */}
-          {type === "courses" && (
-            <CourseResult
-              courses={courses}
-              handleLoadMoreResults={handleLoadMoreResults}
-              notification={notification}
-            />
-          )}
+              {/* Courses */}
+              {type === "courses" && (
+                <CourseResult
+                  courses={courses}
+                  handleLoadMoreResults={handleLoadMoreResults}
+                  notification={notification}
+                />
+              )}
 
-          {/* Practice Test */}
-          {type === "practice_tests" && (
-            <PracticeTestResult
-              practiceTests={practiceTests}
-              handleLoadMoreResults={handleLoadMoreResults}
-              notification={notification}
-            />
-          )}
-        </section>
+              {/* Practice Test */}
+              {type === "practice_tests" && (
+                <PracticeTestResult
+                  practiceTests={practiceTests}
+                  handleLoadMoreResults={handleLoadMoreResults}
+                  notification={notification}
+                />
+              )}
+            </>
+          </section>
+        )}
       </div>
     </>
   );

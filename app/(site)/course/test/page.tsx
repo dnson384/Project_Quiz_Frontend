@@ -61,12 +61,14 @@ export default function CourseDetailTest() {
                         correctAnswer={question.question}
                         currentQuestionOptions={currentQuestionOptions}
                         selectedOption={selectedOption[index]?.optionId || null}
+                        questionsCount={questions.length}
                         handleOptionSelected={handleOptionSelected}
                       />
+                      <hr className="mx-5 mt-3 border border-gray-200 block lg:hidden" />
                     </div>
                   );
                 })}
-                <aside className="fixed left-5 w-fit grid grid-cols-4 gap-2 select-none cursor-pointer">
+                <aside className="hidden fixed left-5 w-fit xl:grid grid-cols-2 2xl:grid-cols-4 gap-2 select-none cursor-pointer">
                   {questions.map((question, index) => {
                     return (
                       <div
@@ -84,8 +86,28 @@ export default function CourseDetailTest() {
                   })}
                 </aside>
 
+                <div className="flex xl:hidden justify-center">
+                  <div className="w-fit grid grid-cols-10 gap-x-3 gap-y-3">
+                    {questions.map((question, index) => {
+                      return (
+                        <div
+                          key={question.question.id}
+                          className={`w-8 h-8 text-sm p-2 ${
+                            selectedOption[index]
+                              ? "bg-indigo-500 text-white"
+                              : "bg-gray-200"
+                          } rounded-full flex justify-center items-center cursor-pointer`}
+                          onClick={() => handleSidebarClick(index)}
+                        >
+                          {index + 1}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 {/* Submit Btn */}
-                <div className="my-5 flex justify-center">
+                <div className="mb-5 xl:mt-5 flex justify-center">
                   <button
                     className="px-5 py-3 rounded-full bg-indigo-500 text-white font-bold cursor-pointer hover:bg-indigo-600"
                     onClick={handleSubmitTestClick}

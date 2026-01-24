@@ -18,8 +18,8 @@ export default function AllResult({
   return (
     <>
       {/* Học phần */}
-      {courses && (
-        <div>
+      {courses.length > 0 && (
+        <div className="w-full">
           <div className="flex justify-between items-center mb-5">
             <h3 className="font-bold">Học phần</h3>
             {courses.length >= 6 && (
@@ -31,7 +31,8 @@ export default function AllResult({
               </h3>
             )}
           </div>
-          <div className="grid grid-cols-3 gap-x-4 gap-y-6">
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-6">
             {courses.slice(0, 6).map((course) => (
               <CourseCard
                 key={course.id}
@@ -48,8 +49,8 @@ export default function AllResult({
       )}
 
       {/* Bài kiểm tra */}
-      {practiceTests && (
-        <div>
+      {practiceTests.length > 0 && (
+        <div className="mb-10">
           <div className="flex justify-between items-center mb-5">
             <h3 className="font-bold">Bài kiểm tra thử</h3>
             {practiceTests.length > 6 && (
@@ -61,7 +62,7 @@ export default function AllResult({
               </h3>
             )}
           </div>
-          <div className="grid grid-cols-3 gap-x-4 gap-y-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-6">
             {practiceTests.slice(0, 6).map((practiceTest) => (
               <PracticeTestCard
                 key={practiceTest.id}

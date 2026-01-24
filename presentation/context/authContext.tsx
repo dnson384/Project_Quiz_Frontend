@@ -81,19 +81,17 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         const success = await refreshAccessToken();
 
         if (success) {
-          console.log("Refresh successful, retrying fetch...");
           try {
             await mutate();
             setSendRefresh(false);
           } catch (mutateError) {
             console.error(
               "Mutate failed after refresh, redirecting.",
-              mutateError
+              mutateError,
             );
             router.push("/auth");
           }
         } else {
-          console.log("Refresh failed, redirecting to auth.");
           router.push("/auth");
         }
       };
@@ -115,7 +113,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 export const useAuthContext = (): AuthContextType => {
-  const router = useRouter();
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");

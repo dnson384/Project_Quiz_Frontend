@@ -100,7 +100,7 @@ export default function TestResult() {
                     className="mt-3 w-full px-3 py-2 bg-indigo-50 font-medium p-2 rounded-full cursor-pointer hover:bg-indigo-500 hover:text-white"
                     onClick={handleClose}
                   >
-                    Đéo xem OK!
+                    Thoát
                   </button>
                 </aside>
 
@@ -110,7 +110,7 @@ export default function TestResult() {
                     className="px-5 py-3 rounded-full bg-indigo-500 text-white font-bold cursor-pointer hover:bg-indigo-600"
                     onClick={handleClose}
                   >
-                    Xem xong thì cút!!!
+                    Thoát
                   </button>
                 </div>
               </>

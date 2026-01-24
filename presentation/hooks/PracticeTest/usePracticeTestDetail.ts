@@ -17,7 +17,7 @@ export default function usePracticeTestDetail() {
   const [questions, setQuestions] = useState<PracticeTestQuestions[]>([]);
 
   const [formData, setFormData] = useState({
-    num_of_ques: "20",
+    num_of_ques: "",
     timer: "30",
   });
   const [error, setError] = useState<string | null>(null);
@@ -68,6 +68,13 @@ export default function usePracticeTestDetail() {
         if (data) {
           setBaseInfo(data.baseInfo);
           setQuestions(data.questions);
+          setFormData({
+            num_of_ques:
+              data.questions.length >= 20
+                ? "20"
+                : data.questions.length.toString(),
+            timer: "30",
+          });
         }
       } catch (err) {
         if (isAxiosError(err)) {

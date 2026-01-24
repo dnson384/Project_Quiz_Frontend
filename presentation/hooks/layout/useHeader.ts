@@ -3,6 +3,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { useShowFullMenu } from "@/presentation/store/dashboard";
 import { useAuthContext } from "@/presentation/context/authContext";
+import { useMenuContext } from "@/presentation/context/menuContext";
 
 export default function useNavigationBar() {
   const pathname = usePathname();
@@ -13,6 +14,8 @@ export default function useNavigationBar() {
   const [isFocused, setIsFocused] = useState(false);
   const [keyword, setKeyword] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const { showMenu, setShowMenu } = useMenuContext();
 
   const showFullMenu = useShowFullMenu((state) => state.showFullMenu);
   const setShowFullMenu = useShowFullMenu((state) => state.setShowFullMenu);
@@ -34,11 +37,17 @@ export default function useNavigationBar() {
   }, [pathname]);
 
   const handleMenuIcon = () => {
-    setShowFullMenu(!showFullMenu);
+    const showFullMenuTemp =
+      window.innerWidth >= 1440 && showFullMenu ? true : false;
+    setShowFullMenu(!showFullMenuTemp);
+    setShowMenu((prev) => {
+      if (window.innerWidth < 1440) return !prev;
+      return prev;
+    });
   };
 
   const handleSearchInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setKeyword(event.target.value);
   };

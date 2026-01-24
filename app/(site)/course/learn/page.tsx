@@ -136,7 +136,7 @@ export default function CourseDetailLearn() {
           />
 
           {/* Question */}
-          <section className="w-5xl mx-auto px-7 py-5  border border-gray-300 rounded-lg">
+          <section className="lg:w-5xl lg:mx-auto mx-5 lg:px-7 py-5 lg:border border-gray-300 rounded-lg">
             {/* Term */}
             <div className="mb-16">
               <h4 className="text-sm font-bold text-gray-500 mb-6">
@@ -152,7 +152,7 @@ export default function CourseDetailLearn() {
               <h4 className="text-sm font-bold text-gray-500 mb-5">
                 Chọn đáp án đúng
               </h4>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-3 select-none">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-3 select-none">
                 {currentQuestionOptions.map((option, index) => {
                   const correctAnwser =
                     shuffledQuestions[currentIndex].question.id;
@@ -185,8 +185,8 @@ export default function CourseDetailLearn() {
                       key={option.id}
                       onClick={() =>
                         handleOptionSelected(
-                          option.id,
-                          correctAnwser
+                          option.id!,
+                          correctAnwser!
                         )
                       }
                       className={`flex items-center border rounded-md cursor-pointer mb-3 transition-all duration-200 ${containerStyle} ${

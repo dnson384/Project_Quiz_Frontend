@@ -31,7 +31,7 @@ export default function CourseResult({
               />
             ))}
           </div>
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center mt-6 mb-8">
             {notification ? (
               <p className="font-medium">{notification}</p>
             ) : (

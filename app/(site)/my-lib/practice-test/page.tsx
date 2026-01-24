@@ -95,7 +95,7 @@ export default function MyPracticeTest() {
                 name="name"
                 placeholder={
                   changedName?.name.length === 0 && isSubmitted
-                    ? "DCM nhập tiêu đề nhanh"
+                    ? "Vui lòng nhập tiêu đề"
                     : "Nhập tiêu đề"
                 }
                 className={`w-full bg-indigo-50 px-4 py-2 border ${

@@ -13,6 +13,8 @@ export default function useSearch() {
   const keyword = searchParams.get("keyword");
   const type = searchParams.get("type");
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const [courses, setCourses] = useState<Course[]>([]);
   const [practiceTests, setPracticeTests] = useState<PracticeTest[]>([]);
   const [notification, setNotification] = useState<string | null>(null);
@@ -30,6 +32,7 @@ export default function useSearch() {
       try {
         let cursor_id = null;
         const result = await search(keyword, type, cursor_id);
+        if (result) setIsLoading(false);
 
         if (isMounted) {
           setCourses(result.courses);
@@ -48,7 +51,7 @@ export default function useSearch() {
 
   const HandlerShowResult = (
     event: React.MouseEvent<HTMLHeadingElement>,
-    type: string | null
+    type: string | null,
   ) => {
     const target = event.target as HTMLElement;
     const newType = target.id;
@@ -102,6 +105,7 @@ export default function useSearch() {
   return {
     keyword,
     type,
+    isLoading,
     courses,
     practiceTests,
     notification,

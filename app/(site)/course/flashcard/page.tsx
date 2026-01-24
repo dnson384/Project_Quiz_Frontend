@@ -72,7 +72,7 @@ export default function CourseDetailFlashCard() {
           </header>
 
           {/* Flashcard */}
-          <div className="mx-auto w-[70%] h-max z-0">
+          <div className="mx-auto w-md sm:w-[70%] h-max z-0">
             <section className="flex flex-col gap-5">
               {/* Flashcard Demo */}
               {currentTermData ? (
