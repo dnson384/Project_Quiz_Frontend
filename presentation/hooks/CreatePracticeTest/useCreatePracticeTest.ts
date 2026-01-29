@@ -29,7 +29,7 @@ export default function useCreatePracticeTest() {
 
   const [baseInfo, setBaseInfo] = useState<NewBaseInfo>({ name: "" });
   const [questions, setQuestions] = useState<NewQuestion[]>(
-    Array.from({ length: 2 }, () => getNewQuestion())
+    Array.from({ length: 2 }, () => getNewQuestion()),
   );
 
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -67,13 +67,12 @@ export default function useCreatePracticeTest() {
 
   const handleDeleteOption = (questionIndex: number, optionIndex: number) => {
     setIsSubmitted(false);
-    console.log(questions[questionIndex].options.length);
     setQuestions((prev) => {
       const newQuestions = [...prev];
       newQuestions[questionIndex] = {
         ...newQuestions[questionIndex],
         options: newQuestions[questionIndex].options.filter(
-          (_, index) => index !== optionIndex
+          (_, index) => index !== optionIndex,
         ),
       };
       return newQuestions;
@@ -91,14 +90,13 @@ export default function useCreatePracticeTest() {
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     questionIndex: number,
     optionIndex: number | null,
-    questionType: string | null
+    questionType: string | null,
   ) => {
     setIsSubmitted(false);
     const target = event.target;
     const section = event.target.dataset.section;
 
     const { name, value } = target;
-    console.log(name, value)
     setQuestions((prev) => {
       const newQuestions = [...prev];
       while (questionIndex >= newQuestions.length) {
@@ -123,7 +121,7 @@ export default function useCreatePracticeTest() {
           ) {
             newQuestions[questionIndex].options = Array.from(
               { length: 4 },
-              () => getNewOption()
+              () => getNewOption(),
             );
           }
         }
@@ -171,8 +169,6 @@ export default function useCreatePracticeTest() {
         baseInfo: baseInfo,
         questions: questions,
       };
-
-      console.log(newPracticeTest)
 
       if (await createNewPracticeTest(newPracticeTest)) {
         router.push("/my-lib");

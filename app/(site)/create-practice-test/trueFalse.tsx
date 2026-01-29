@@ -22,7 +22,6 @@ export default function TrueFalse({
       {/* Question options */}
       <div className="mt-3 flex flex-col gap-2">
         {question.options.map((option, optionIndex) => {
-          console.log(optionIndex);
           return (
             <div key={option.tempId} className="flex items-center gap-3">
               <label className="w-8 h-8 flex items-center justify-center rounded-full cursor-pointer">

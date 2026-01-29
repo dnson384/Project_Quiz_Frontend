@@ -14,7 +14,7 @@ interface RawUserResponse {
 
 export class AdminRepositoryImpl implements IAdminRepository {
   constructor(
-    private readonly baseUrl: string = process.env.BACKEND_URL || ""
+    private readonly baseUrl: string = process.env.BACKEND_URL!
   ) {}
 
   async getAllUsers(accessToken: string): Promise<User[]> {

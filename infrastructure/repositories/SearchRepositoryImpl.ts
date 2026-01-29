@@ -28,7 +28,7 @@ interface RawSearchResponse {
 
 export class SearchRepositoryImpl implements ISearchRepository {
   constructor(
-    private readonly baseUrl: string = process.env.BACKEND_URL || ""
+    private readonly baseUrl: string = process.env.BACKEND_URL!
   ) {}
 
   async searchByKeyword(

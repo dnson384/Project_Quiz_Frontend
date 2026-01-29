@@ -29,7 +29,7 @@ export default function MyCourse() {
     if (changedTerm.term.length === 0) return true;
     if (changedTerm.definition.length === 0) return true;
   });
-  const isFormValid = !titleMissing && !anyMissing;
+  const isFormValid = !titleMissing && !anyMissing && changedTerms.length > 0;
 
   return (
     <>
@@ -94,12 +94,12 @@ export default function MyCourse() {
                 {terms.map((term, index) => {
                   const missingTerm =
                     changedTerms.find(
-                      (changedTerm) => changedTerm.id === term.id
+                      (changedTerm) => changedTerm.id === term.id,
                     )?.term.length === 0 && isSubmitted;
 
                   const missingDef =
                     changedTerms.find(
-                      (changedTerm) => changedTerm.id === term.id
+                      (changedTerm) => changedTerm.id === term.id,
                     )?.definition.length === 0 && isSubmitted;
 
                   return (

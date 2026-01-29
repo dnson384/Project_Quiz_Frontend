@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const REAL_BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
+  process.env.NEXT_PUBLIC_BACKEND_URL!;
 
 export async function GET(
   req: NextRequest,

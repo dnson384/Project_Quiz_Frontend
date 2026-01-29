@@ -13,7 +13,7 @@ interface RawUserResponse {
 
 export class UserRepositoryImpl implements IUserRepository {
   constructor(
-    private readonly baseUrl: string = process.env.BACKEND_URL || ""
+    private readonly baseUrl: string = process.env.BACKEND_URL!
   ) {}
 
   async getMe(accessToken: string): Promise<User> {

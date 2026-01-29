@@ -49,7 +49,7 @@ interface RawCourseTestResponse {
 
 export class CourseRepositoryImpl implements ICourseRepository {
   constructor(
-    private readonly baseUrl: string = process.env.BACKEND_URL || ""
+    private readonly baseUrl: string = process.env.BACKEND_URL!
   ) {}
 
   async getUserCourses(accessToken: string): Promise<Course[]> {

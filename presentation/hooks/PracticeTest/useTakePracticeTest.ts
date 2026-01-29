@@ -97,7 +97,6 @@ export default function useTakePracticeTest() {
       score
     );
     if (resultId) {
-      console.log(resultId);
       router.replace(`/history/${practiceTestId}?rid=${resultId}`);
     }
   };

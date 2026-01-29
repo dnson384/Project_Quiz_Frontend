@@ -338,7 +338,6 @@ export default function useMyPractice() {
         ...newQuestions[questionIndex],
         options: [...newQuestions[questionIndex].options, newOption],
       };
-      console.log(newQuestions[questionIndex]);
       return newQuestions;
     });
 

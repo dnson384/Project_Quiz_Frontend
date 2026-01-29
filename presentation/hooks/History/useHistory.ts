@@ -32,7 +32,6 @@ export default function useHistory() {
   };
 
   useEffect(() => {
-    console.log(user)
     const fetchData = async () => {
       const resultId = searchParams.get("rid");
       if (!resultId) return;

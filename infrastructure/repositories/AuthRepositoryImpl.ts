@@ -20,7 +20,7 @@ interface RawUserResponse {
 
 export class AuthRepositoryImpl implements IAuthRepository {
   constructor(
-    private readonly baseUrl: string = process.env.BACKEND_URL || ""
+    private readonly baseUrl: string = process.env.BACKEND_URL!
   ) {}
 
   async registerEmail(payload: UserCreationParams): Promise<User> {

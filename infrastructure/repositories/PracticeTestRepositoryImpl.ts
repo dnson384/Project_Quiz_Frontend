@@ -72,7 +72,7 @@ interface RawResultWithHistory {
 
 export class PracticeTestRepositoryImpl implements IPracticeTestRepository {
   constructor(
-    private readonly baseUrl: string = process.env.BACKEND_URL || ""
+    private readonly baseUrl: string = process.env.BACKEND_URL!
   ) {}
 
   async getUserPracticeTests(accessToken: string): Promise<PracticeTest[]> {
